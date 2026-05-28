@@ -280,14 +280,7 @@ function renderClases(clases) {
   }
 
   // Instrucciones para agregar una clase nueva (visible solo si la persona sabe dónde mirar)
-  html += `
-  <div class="update-box">
-    <strong>📌 Para agregar una clase nueva</strong>
-    Editá el archivo <code>clases.json</code> y cambiá <code>"disponible": false</code> a <code>"disponible": true</code> en la clase que corresponda. Después subí el HTML de la clase a la carpeta <code>clases/</code> con el nombre que figura en el campo <code>"archivo"</code>.<br><br>
-    <strong>Ejemplo:</strong> para habilitar la clase 2, cambiá la línea en <code>clases.json</code>:
-    <br><code>"disponible": false</code> → <code>"disponible": true</code>
-    <br>y subí el archivo <code>clases/clase2.html</code>.
-  </div>`;
+ 
 
   contenido.innerHTML = html;
 
