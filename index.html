@@ -1,1 +1,317 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backend desde Cero — CapOL × Apoc Automation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root { --accent:#00c896; --danger:#ff4757; --warn:#ffa502; --purple:#a29bfe; --blue:#74b9ff; }
+[data-theme="dark"] {
+  --bg:#0f0f11; --bg2:#16161a; --bg3:#1c1c21;
+  --border:#2a2a32; --border2:#35353f;
+  --fg:#e2e2ec; --fg2:#a0a0b0; --fg3:#505060;
+  --shadow:0 4px 32px rgba(0,0,0,.5);
+}
+[data-theme="light"] {
+  --bg:#f4f4ef; --bg2:#ffffff; --bg3:#ebebе6;
+  --border:#d8d8d0; --border2:#c5c5bc;
+  --fg:#1a1a24; --fg2:#505060; --fg3:#909098;
+  --shadow:0 4px 32px rgba(0,0,0,.1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--fg); font-family: 'DM Sans', sans-serif; line-height: 1.7; min-height: 100vh; }
+::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
 
+/* ── TOPBAR ── */
+#topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg); border-bottom: 1px solid var(--border);
+  padding: 0 32px; display: flex; align-items: center; gap: 14px; height: 56px;
+}
+.brand { display: flex; align-items: center; gap: 10px; font-family: 'Fraunces', serif; font-weight: 700; font-size: 17px; }
+.brand-dot { width: 30px; height: 30px; border-radius: 8px; background: var(--accent); display: flex; align-items: center; justify-content: center; color: #000; font-size: 13px; font-weight: 800; font-family: 'IBM Plex Mono', monospace; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.theme-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg2); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--fg2); font-size: 16px; transition: all .2s; }
+.theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+.powered { font-size: 11px; color: var(--fg3); font-family: 'IBM Plex Mono', monospace; }
+@media(max-width:600px){ .powered { display:none; } }
+
+/* ── HERO ── */
+.hero { max-width: 860px; margin: 0 auto; padding: 72px 24px 52px; }
+.hero-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.hero-eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--accent); }
+.hero h1 { font-family: 'Fraunces', serif; font-size: clamp(36px, 6vw, 58px); font-weight: 700; line-height: 1.08; color: var(--fg); margin-bottom: 18px; }
+.hero h1 em { color: var(--accent); font-style: normal; }
+.hero-desc { font-size: 16px; color: var(--fg2); max-width: 540px; line-height: 1.75; margin-bottom: 32px; }
+.hero-stats { display: flex; gap: 32px; flex-wrap: wrap; padding: 20px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 0; }
+.stat { display: flex; flex-direction: column; gap: 2px; }
+.stat-num { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700; color: var(--accent); line-height: 1; }
+.stat-label { font-size: 12px; color: var(--fg3); font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: .08em; }
+
+/* ── MAIN ── */
+.main { max-width: 860px; margin: 0 auto; padding: 48px 24px 100px; }
+
+/* ── BLOQUE HEADER ── */
+.bloque-header {
+  display: flex; align-items: center; gap: 12px;
+  margin: 48px 0 16px;
+}
+.bloque-header:first-child { margin-top: 0; }
+.bloque-line { flex: 1; height: 1px; background: var(--border); }
+.bloque-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 99px; border: 1px solid; white-space: nowrap;
+}
+
+/* ── CLASE GRID ── */
+.clases-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+
+/* ── CLASE CARD ── */
+.clase-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 12px;
+  padding: 18px 20px; text-decoration: none; color: var(--fg);
+  display: flex; flex-direction: column; gap: 10px;
+  transition: all .2s; position: relative; overflow: hidden;
+}
+.clase-card:hover:not(.locked) {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+.clase-card.locked { opacity: .45; cursor: not-allowed; }
+.clase-card.locked::after {
+  content: '🔒'; position: absolute; top: 14px; right: 14px;
+  font-size: 14px; opacity: .6;
+}
+.clase-num {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  color: var(--accent); letter-spacing: .1em; text-transform: uppercase;
+}
+.clase-locked .clase-num { color: var(--fg3); }
+.clase-titulo { font-family: 'Fraunces', serif; font-weight: 700; font-size: 16px; line-height: 1.25; }
+.clase-temas { display: flex; flex-wrap: wrap; gap: 5px; }
+.tema-chip {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  background: var(--bg3); border: 1px solid var(--border);
+  padding: 2px 7px; border-radius: 5px; color: var(--fg3);
+}
+.clase-card:hover:not(.locked) .tema-chip { border-color: color-mix(in srgb, var(--accent) 30%, transparent); color: var(--fg2); }
+.clase-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 2px; }
+.clase-dur { font-size: 12px; color: var(--fg3); font-family: 'IBM Plex Mono', monospace; }
+.clase-arrow { font-size: 16px; color: var(--fg3); transition: color .2s, transform .2s; }
+.clase-card:hover:not(.locked) .clase-arrow { color: var(--accent); transform: translateX(3px); }
+
+/* ── PROXIMAS ── */
+.proximas-banner {
+  margin-top: 48px; padding: 20px 24px;
+  background: color-mix(in srgb, var(--accent) 5%, var(--bg2));
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+  border-radius: 12px;
+  display: flex; align-items: flex-start; gap: 14px; font-size: 14px;
+}
+.proximas-banner .ico { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+
+/* ── HOW TO UPDATE ── */
+.update-box {
+  margin-top: 24px; padding: 18px 22px;
+  background: color-mix(in srgb, var(--blue) 5%, var(--bg2));
+  border: 1px solid color-mix(in srgb, var(--blue) 20%, transparent);
+  border-radius: 12px; font-size: 13.5px; line-height: 1.7;
+}
+.update-box strong { display: block; color: var(--blue); margin-bottom: 8px; font-size: 14px; }
+.update-box code {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  background: var(--bg3); padding: 1px 6px; border-radius: 4px; color: var(--blue);
+}
+.update-steps { margin: 10px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 5px; }
+
+/* ── FOOTER ── */
+.footer {
+  max-width: 860px; margin: 0 auto; padding: 0 24px 40px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px; padding-top: 24px; font-size: 12px; color: var(--fg3);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+/* ── ERROR STATE ── */
+#error-msg { display:none; text-align:center; padding:60px 24px; color:var(--fg3); font-size:14px; }
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="brand"><div class="brand-dot">B</div>Backend desde Cero</div>
+  <div class="topbar-right">
+    <span class="powered">CapOL × Apoc Automation</span>
+    <button class="theme-btn" id="themeBtn" title="Cambiar tema">
+      <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-eyebrow">Curso completo · Martes y Jueves 21–22 hs</div>
+  <h1>Backend<br><em>desde Cero</em></h1>
+  <p class="hero-desc">Construí una API REST completa con Node.js, Express y PostgreSQL, y deployala en producción. Sin requisitos previos.</p>
+  <div class="hero-stats" id="stats">
+    <div class="stat"><div class="stat-num">32</div><div class="stat-label">Clases</div></div>
+    <div class="stat"><div class="stat-num" id="stat-disponibles">1</div><div class="stat-label">Disponibles</div></div>
+    <div class="stat"><div class="stat-num">7</div><div class="stat-label">Bloques</div></div>
+    <div class="stat"><div class="stat-num">16</div><div class="stat-label">Semanas</div></div>
+  </div>
+</div>
+
+<div class="main" id="main">
+  <div id="error-msg">
+    <p>⚠️ No se pudo cargar <code>clases.json</code>.</p>
+    <p style="margin-top:8px">Asegurate de que el archivo existe en la misma carpeta que <code>index.html</code>.</p>
+  </div>
+  <div id="contenido"></div>
+</div>
+
+<div class="footer">
+  <span>CapOL × Apoc Automation · Backend desde Cero</span>
+  <span id="footer-updated"></span>
+</div>
+
+<script>
+// ── Theme ─────────────────────────────────────────────────────────
+const html = document.documentElement;
+const MOON = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+const SUN  = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+const icon = document.getElementById('themeIcon');
+
+function applyTheme(t) {
+  html.dataset.theme = t;
+  icon.innerHTML = t === 'dark' ? SUN : MOON;
+  localStorage.setItem('theme', t);
+}
+document.getElementById('themeBtn').addEventListener('click', () => {
+  applyTheme(html.dataset.theme === 'dark' ? 'light' : 'dark');
+});
+applyTheme(localStorage.getItem('theme') || 'dark');
+
+// ── Colores por bloque ─────────────────────────────────────────────
+const BLOQUE_COLORS = {
+  'Bloque 1': { tag: '#4a90d9', bg: '#0d1a2a' },
+  'Bloque 2': { tag: '#e94560', bg: '#1a0a10' },
+  'Bloque 3': { tag: '#a29bfe', bg: '#100a1a' },
+  'Bloque 4': { tag: '#00cec9', bg: '#021a1a' },
+  'Bloque 5': { tag: '#ffa502', bg: '#1a1000' },
+  'Bloque 6': { tag: '#00b894', bg: '#001a12' },
+  'Bloque 7': { tag: '#e2e2ec', bg: '#16161a' },
+};
+
+function getBloqueColor(bloque) {
+  const key = Object.keys(BLOQUE_COLORS).find(k => bloque.startsWith(k));
+  return key ? BLOQUE_COLORS[key] : { tag: '#e2e2ec', bg: '#16161a' };
+}
+
+// ── Render ─────────────────────────────────────────────────────────
+function renderClases(clases) {
+  const contenido = document.getElementById('contenido');
+
+  // Group by bloque
+  const bloques = {};
+  for (const c of clases) {
+    if (!bloques[c.bloque]) bloques[c.bloque] = [];
+    bloques[c.bloque].push(c);
+  }
+
+  let html = '';
+  for (const [bloque, items] of Object.entries(bloques)) {
+    const col = getBloqueColor(bloque);
+
+    html += `
+    <div class="bloque-header">
+      <div class="bloque-line"></div>
+      <div class="bloque-tag" style="color:${col.tag};border-color:${col.tag}40;background:${col.bg}">${bloque}</div>
+      <div class="bloque-line"></div>
+    </div>
+    <div class="clases-grid">`;
+
+    for (const c of items) {
+      const temas = c.temas.map(t => `<span class="tema-chip">${t}</span>`).join('');
+      if (c.disponible) {
+        html += `
+        <a href="${c.archivo}" class="clase-card">
+          <div class="clase-num">Clase ${String(c.id).padStart(2,'0')} · ${c.duracion}</div>
+          <div class="clase-titulo">${c.titulo}</div>
+          <div class="clase-temas">${temas}</div>
+          <div class="clase-footer">
+            <span></span>
+            <span class="clase-arrow">→</span>
+          </div>
+        </a>`;
+      } else {
+        html += `
+        <div class="clase-card locked">
+          <div class="clase-num" style="color:var(--fg3)">Clase ${String(c.id).padStart(2,'0')} · ${c.duracion}</div>
+          <div class="clase-titulo" style="color:var(--fg2)">${c.titulo}</div>
+          <div class="clase-temas">${temas}</div>
+        </div>`;
+      }
+    }
+    html += `</div>`;
+  }
+
+  // Banner proximas clases
+  const bloqueada = clases.find(c => !c.disponible);
+  if (bloqueada) {
+    html += `
+    <div class="proximas-banner">
+      <span class="ico">📅</span>
+      <div>
+        <strong style="color:var(--fg)">Próxima clase: ${bloqueada.titulo}</strong><br>
+        Las clases se van habilitando a medida que avanza el curso — martes y jueves de 21 a 22 hs.
+      </div>
+    </div>`;
+  }
+
+  // Instrucciones para agregar una clase nueva (visible solo si la persona sabe dónde mirar)
+  html += `
+  <div class="update-box">
+    <strong>📌 Para agregar una clase nueva</strong>
+    Editá el archivo <code>clases.json</code> y cambiá <code>"disponible": false</code> a <code>"disponible": true</code> en la clase que corresponda. Después subí el HTML de la clase a la carpeta <code>clases/</code> con el nombre que figura en el campo <code>"archivo"</code>.<br><br>
+    <strong>Ejemplo:</strong> para habilitar la clase 2, cambiá la línea en <code>clases.json</code>:
+    <br><code>"disponible": false</code> → <code>"disponible": true</code>
+    <br>y subí el archivo <code>clases/clase2.html</code>.
+  </div>`;
+
+  contenido.innerHTML = html;
+
+  // Update stats
+  const disponibles = clases.filter(c => c.disponible).length;
+  document.getElementById('stat-disponibles').textContent = disponibles;
+
+  // Footer date
+  const now = new Date();
+  document.getElementById('footer-updated').textContent =
+    'Actualizado: ' + now.toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' });
+}
+
+// ── Fetch clases.json ──────────────────────────────────────────────
+fetch('clases.json')
+  .then(r => {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  })
+  .then(clases => renderClases(clases))
+  .catch(err => {
+    console.error('No se pudo cargar clases.json:', err);
+    document.getElementById('error-msg').style.display = 'block';
+  });
+</script>
+</body>
+</html>
