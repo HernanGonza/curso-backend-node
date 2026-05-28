@@ -1038,6 +1038,7 @@ window.runCode = function(edId, outId) {
 // ── Quiz ─────────────────────────────────────────────────────────
 // correct[i] = index of correct option for question i
 const CORRECT = [0, 1, 1, 1, 1, 1, 1, 1];
+
 const EXPLAIN = [
   'HTTP = HyperText Transfer Protocol. Es el protocolo de comunicación de la web.',
   'El backend vive en servidores, no en el dispositivo del usuario.',
@@ -1048,23 +1049,34 @@ const EXPLAIN = [
   '404 Not Found: la ruta o recurso no existe en el servidor.',
   'Si dijera cuál falló, un atacante podría probar emails hasta encontrar uno válido.',
 ];
-let answers = new Array(8).fill(null);
-let done    = new Array(8).fill(false);
+
+let answers = new Array(CORRECT.length).fill(null);
+let done = new Array(CORRECT.length).fill(false);
 
 window.answer = function(btn, selected, qi) {
   if (done[qi]) return;
+
   done[qi] = true;
   answers[qi] = selected;
 
-  const opts = btn.closest('.quiz-opts').querySelectorAll('.quiz-opt-btn');
+  const opts = btn
+    .closest('.quiz-opts')
+    .querySelectorAll('.quiz-opt-btn');
+
   opts.forEach((b, i) => {
     b.disabled = true;
-    if (i === CORRECT[qi]) b.classList.add('correct');
-    else if (i === selected) b.classList.add('wrong');
+
+    if (i === CORRECT[qi]) {
+      b.classList.add('correct');
+    } else if (i === selected) {
+      b.classList.add('wrong');
+    }
   });
 
   const fb = document.getElementById('fb' + qi);
-  fb.classList.add('show');
+
+  fb.className = 'quiz-feedback show';
+
   if (selected === CORRECT[qi]) {
     fb.classList.add('ok');
     fb.innerHTML = '✓ Correcto. ' + EXPLAIN[qi];
@@ -1073,38 +1085,55 @@ window.answer = function(btn, selected, qi) {
     fb.innerHTML = '✗ Incorrecto. ' + EXPLAIN[qi];
   }
 
-  // Check if all answered
-  if (done.every(Boolean)) showScore();
+  if (done.every(Boolean)) {
+    showScore();
+  }
 };
 
 function showScore() {
   const correct = answers.filter((a, i) => a === CORRECT[i]).length;
-  const total   = CORRECT.length;
-  const score   = document.getElementById('quizScore');
+  const total = CORRECT.length;
+
+  const score = document.getElementById('quizScore');
+
   score.classList.add('show');
-  document.getElementById('scoreNum').textContent = correct + '/' + total;
+
+  document.getElementById('scoreNum').textContent =
+    correct + '/' + total;
+
   const pct = Math.round((correct / total) * 100);
+
   let label = '';
-  if (pct === 100)      label = '🎉 Perfecto. Estás listo para la clase 2.';
-  else if (pct >= 75)   label = '💪 Muy bien. Repasá los que erraste.';
-  else if (pct >= 50)   label = '📚 Pasable. Vale la pena releer la clase.';
-  else                  label = '🔄 Repasá el material y volvé a intentarlo.';
+
+  if (pct === 100) {
+    label = '🎉 Perfecto. Estás listo para la clase 2.';
+  } else if (pct >= 75) {
+    label = '💪 Muy bien. Repasá los que erraste.';
+  } else if (pct >= 50) {
+    label = '📚 Pasable. Vale la pena releer la clase.';
+  } else {
+    label = '🔄 Repasá el material y volvé a intentarlo.';
+  }
+
   document.getElementById('scoreLabel').textContent = label;
 }
 
 window.resetQuiz = function() {
-  answers = new Array(8).fill(null);
-  done    = new Array(8).fill(false);
-  document.querySelectorAll('.quiz-opt-btn').forEach(b => {
-    b.disabled = false;
-    b.classList.remove('correct','wrong');
+  answers = new Array(CORRECT.length).fill(null);
+  done = new Array(CORRECT.length).fill(false);
+
+  document.querySelectorAll('.quiz-opt-btn').forEach(btn => {
+    btn.disabled = false;
+    btn.classList.remove('correct', 'wrong');
   });
+
   document.querySelectorAll('.quiz-feedback').forEach(fb => {
-    fb.classList.remove('show','ok','no');
+    fb.className = 'quiz-feedback';
     fb.innerHTML = '';
   });
-  const score = document.getElementById('quizScore');
-  score.classList.remove('show');
+
+  document.getElementById('quizScore')
+    .classList.remove('show');
 };
 </script>
 </body>
