@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 1 — Backend desde Cero · CapOL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── Variables ──────────────────────────────────────────────────── */
+:root {
+  --accent: #00c896;
+  --accent-dim: #007a5a;
+  --danger: #ff4757;
+  --warn: #ffa502;
+  --purple: #a29bfe;
+  --blue-tag: #74b9ff;
+  font-size: 16px;
+}
+[data-theme="dark"] {
+  --bg:       #0f0f11;
+  --bg2:      #16161a;
+  --bg3:      #1c1c21;
+  --border:   #2a2a32;
+  --border2:  #35353f;
+  --fg:       #e2e2ec;
+  --fg2:      #a0a0b0;
+  --fg3:      #606070;
+  --card-bg:  #16161a;
+  --code-bg:  #0a0a0d;
+  --code-fg:  #b8d0c8;
+  --shadow:   0 4px 24px rgba(0,0,0,.5);
+}
+[data-theme="light"] {
+  --bg:       #f5f5f0;
+  --bg2:      #ffffff;
+  --bg3:      #ebebе6;
+  --border:   #d8d8d0;
+  --border2:  #c5c5bc;
+  --fg:       #1a1a24;
+  --fg2:      #505060;
+  --fg3:      #909098;
+  --card-bg:  #ffffff;
+  --code-bg:  #1a1a24;
+  --code-fg:  #c8e0d8;
+  --shadow:   0 4px 24px rgba(0,0,0,.1);
+}
+
+/* ── Reset ──────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.75;
+  min-height: 100vh;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+
+/* ── Layout ─────────────────────────────────────────────────────── */
+.page { max-width: 800px; margin: 0 auto; padding: 0 24px 120px; }
+
+/* ── Topbar ─────────────────────────────────────────────────────── */
+#topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  display: flex; align-items: center; gap: 16px;
+  height: 56px;
+}
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Fraunces', serif;
+  font-weight: 700; font-size: 17px;
+}
+.brand-dot {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  color: #000; font-size: 13px; font-weight: 800;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.theme-btn {
+  width: 36px; height: 36px; border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: var(--fg2); font-size: 16px; transition: all .2s;
+}
+.theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+.powered {
+  font-size: 11px; color: var(--fg3);
+  font-family: 'IBM Plex Mono', monospace;
+}
+@media (max-width: 600px) { .powered { display: none; } }
+
+/* ── Progress bar ───────────────────────────────────────────────── */
+#progress-bar {
+  position: fixed; top: 56px; left: 0; right: 0; height: 2px;
+  background: var(--border); z-index: 99;
+}
+#progress-fill {
+  height: 100%; background: var(--accent);
+  width: 0%; transition: width .1s;
+}
+
+/* ── Hero ───────────────────────────────────────────────────────── */
+.hero {
+  padding: 64px 0 40px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+}
+.hero-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.hero-eyebrow::before {
+  content: ''; display: block; width: 28px; height: 1px; background: var(--accent);
+}
+.hero h1 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(32px, 6vw, 52px);
+  font-weight: 700; line-height: 1.1;
+  color: var(--fg); margin-bottom: 18px;
+}
+.hero h1 em { color: var(--accent); font-style: normal; }
+.hero-desc {
+  font-size: 16px; color: var(--fg2);
+  max-width: 560px; line-height: 1.7;
+  margin-bottom: 28px;
+}
+.hero-meta {
+  display: flex; gap: 20px; flex-wrap: wrap;
+}
+.hero-chip {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--fg2);
+  font-family: 'IBM Plex Mono', monospace;
+}
+.hero-chip svg { color: var(--accent); }
+
+/* ── Objetivos ──────────────────────────────────────────────────── */
+.objetivos {
+  background: color-mix(in srgb, var(--accent) 6%, var(--bg2));
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 48px;
+}
+.objetivos-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 14px;
+}
+.objetivos ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.objetivos li { display: flex; gap: 10px; font-size: 14.5px; }
+.objetivos li::before {
+  content: '▸'; color: var(--accent); flex-shrink: 0; margin-top: 2px;
+}
+
+/* ── Sections ───────────────────────────────────────────────────── */
+.section { margin-bottom: 52px; }
+.sec-title {
+  font-family: 'Fraunces', serif;
+  font-size: 22px; font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 18px;
+  display: flex; align-items: center; gap: 12px;
+}
+.sec-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  padding: 2px 8px; border-radius: 5px;
+}
+
+p.body { font-size: 15px; line-height: 1.8; color: var(--fg2); margin-bottom: 12px; }
+h4.sub {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600; font-size: 14px;
+  color: var(--fg); margin: 18px 0 8px;
+}
+
+/* ── Cards ──────────────────────────────────────────────────────── */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+}
+.cmp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 560px) { .cmp-grid { grid-template-columns: 1fr; } }
+
+/* ── Diagram ────────────────────────────────────────────────────── */
+.net-diagram {
+  display: grid; grid-template-columns: 1fr 52px 1fr;
+  gap: 0; text-align: center; margin: 18px 0;
+}
+.net-box {
+  background: var(--card-bg); border: 1px solid var(--border);
+  padding: 18px 12px; font-size: 14px;
+}
+.net-box:first-child { border-radius: 10px 0 0 10px; border-right: none; }
+.net-box:last-child  { border-radius: 0 10px 10px 0; border-left: none;
+  background: color-mix(in srgb, var(--accent) 6%, var(--bg2));
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.net-arrow {
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg3); border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-size: 22px; color: var(--accent);
+}
+.net-box .ico { font-size: 24px; margin-bottom: 6px; }
+.net-box strong { display: block; margin-bottom: 2px; }
+.net-box span { font-size: 12px; color: var(--fg3); font-family: 'IBM Plex Mono', monospace; }
+
+/* ── Flow ───────────────────────────────────────────────────────── */
+.flow { display: flex; flex-direction: column; gap: 0; margin: 14px 0; }
+.flow-step {
+  padding: 12px 18px; font-size: 14px;
+  border: 1px solid var(--border);
+  border-radius: 0; border-bottom: none;
+  background: var(--card-bg); transition: background .2s;
+}
+.flow-step:first-child { border-radius: 10px 10px 0 0; }
+.flow-step:last-child  { border-radius: 0 0 10px 10px; border-bottom: 1px solid var(--border); }
+.flow-step.green {
+  background: color-mix(in srgb, var(--accent) 6%, var(--bg2));
+  border-color: color-mix(in srgb, var(--accent) 25%, transparent);
+}
+.flow-step.blue {
+  background: color-mix(in srgb, var(--blue-tag) 6%, var(--bg2));
+  border-color: color-mix(in srgb, var(--blue-tag) 25%, transparent);
+}
+.flow-step.purple {
+  background: color-mix(in srgb, var(--purple) 6%, var(--bg2));
+  border-color: color-mix(in srgb, var(--purple) 25%, transparent);
+}
+
+/* ── Tables ─────────────────────────────────────────────────────── */
+.tbl-wrap { overflow-x: auto; margin: 12px 0; border-radius: 10px; border: 1px solid var(--border); }
+table {
+  width: 100%; border-collapse: collapse;
+  font-size: 14px;
+}
+thead th {
+  background: var(--bg3);
+  padding: 10px 14px; text-align: left;
+  font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--fg3); font-weight: 600;
+}
+tbody td {
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  vertical-align: top;
+}
+tbody tr:hover td { background: var(--bg3); }
+
+/* ── Tags ───────────────────────────────────────────────────────── */
+.tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px; font-weight: 600;
+  padding: 2px 8px; border-radius: 5px;
+  display: inline-block;
+}
+.tg { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.tb { color: var(--blue-tag); background: color-mix(in srgb, var(--blue-tag) 12%, transparent); }
+.ta { color: var(--warn); background: color-mix(in srgb, var(--warn) 12%, transparent); }
+.tr { color: var(--danger); background: color-mix(in srgb, var(--danger) 12%, transparent); }
+.tp { color: var(--purple); background: color-mix(in srgb, var(--purple) 12%, transparent); }
+
+/* ── Code blocks ────────────────────────────────────────────────── */
+.cb {
+  background: var(--code-bg);
+  border: 1px solid var(--border2);
+  border-radius: 10px; overflow: hidden; margin: 12px 0;
+}
+.cb-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border2);
+  background: color-mix(in srgb, #000 20%, var(--code-bg));
+}
+.cb-dots { display: flex; gap: 5px; }
+.cb-dots span { width: 10px; height: 10px; border-radius: 50%; }
+.cb-dots .r { background: #ff5f56; } .cb-dots .y { background: #ffbd2e; } .cb-dots .g { background: #27c93f; }
+.cb-lang {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: #555;
+}
+.cb pre {
+  padding: 16px 18px; overflow-x: auto;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px; line-height: 1.7;
+  color: var(--code-fg);
+  white-space: pre;
+}
+
+/* ── Code-explained table ───────────────────────────────────────── */
+.ce {
+  width: 100%; border-collapse: collapse;
+  background: var(--code-bg);
+  border: 1px solid var(--border2);
+  border-radius: 10px; overflow: hidden;
+  margin: 10px 0;
+}
+.ce tr { border-top: 1px solid #1e1e26; }
+.ce tr:first-child { border-top: none; }
+.ce td {
+  padding: 5px 14px;
+  font-size: 13px; vertical-align: top;
+}
+.ce td:first-child {
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--code-fg); width: 55%; white-space: pre;
+}
+.ce td:last-child {
+  color: #556; font-size: 12px; padding-left: 20px;
+  border-left: 1px solid #1e1e26;
+}
+[data-theme="light"] .ce td:last-child { color: var(--fg3); }
+.ce tr:hover td { background: #12121a; }
+[data-theme="light"] .ce tr:hover td { background: #f0f0e8; }
+
+code {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12.5px;
+  background: color-mix(in srgb, var(--blue-tag) 10%, var(--bg3));
+  color: var(--blue-tag);
+  padding: 1px 6px; border-radius: 4px;
+}
+
+/* ── Info boxes ─────────────────────────────────────────────────── */
+.ib {
+  border-radius: 10px; padding: 14px 18px;
+  margin: 12px 0; display: flex; gap: 12px;
+  align-items: flex-start; font-size: 14px; line-height: 1.65;
+}
+.ib .ico { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.ib.green { background: color-mix(in srgb, var(--accent) 8%, var(--bg2)); border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent); }
+.ib.amber { background: color-mix(in srgb, var(--warn) 8%, var(--bg2)); border: 1px solid color-mix(in srgb, var(--warn) 28%, transparent); }
+.ib.red   { background: color-mix(in srgb, var(--danger) 8%, var(--bg2)); border: 1px solid color-mix(in srgb, var(--danger) 28%, transparent); }
+.ib.blue  { background: color-mix(in srgb, var(--blue-tag) 8%, var(--bg2)); border: 1px solid color-mix(in srgb, var(--blue-tag) 28%, transparent); }
+
+/* ── Quiz ───────────────────────────────────────────────────────── */
+.quiz-wrap { display: flex; flex-direction: column; gap: 16px; margin: 20px 0; }
+.quiz-item {
+  border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+  transition: border-color .2s;
+}
+.quiz-q {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14.5px; font-weight: 600;
+  background: var(--bg2);
+}
+.quiz-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; color: var(--accent);
+  letter-spacing: .08em; text-transform: uppercase;
+  display: block; margin-bottom: 4px;
+}
+.quiz-opts { padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+.quiz-opt-btn {
+  width: 100%; text-align: left;
+  padding: 10px 16px;
+  background: var(--bg3); border: 1.5px solid var(--border);
+  border-radius: 8px; cursor: pointer;
+  font-size: 14px; color: var(--fg);
+  font-family: 'DM Sans', sans-serif;
+  display: flex; align-items: center; gap: 10px;
+  transition: all .15s;
+}
+.quiz-opt-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, var(--bg3));
+}
+.quiz-opt-btn .opt-letter {
+  width: 22px; height: 22px; border-radius: 6px;
+  background: var(--border2);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all .15s;
+  color: var(--fg3);
+}
+.quiz-opt-btn:hover:not(:disabled) .opt-letter {
+  background: var(--accent); color: #000;
+}
+.quiz-opt-btn.correct {
+  background: color-mix(in srgb, var(--accent) 12%, var(--bg3));
+  border-color: var(--accent); color: var(--accent);
+}
+.quiz-opt-btn.correct .opt-letter { background: var(--accent); color: #000; }
+.quiz-opt-btn.wrong {
+  background: color-mix(in srgb, var(--danger) 10%, var(--bg3));
+  border-color: var(--danger); color: var(--danger);
+}
+.quiz-opt-btn.wrong .opt-letter { background: var(--danger); color: #fff; }
+.quiz-opt-btn:disabled { cursor: default; }
+.quiz-feedback {
+  padding: 10px 18px 14px;
+  font-size: 13.5px; display: none;
+}
+.quiz-feedback.show { display: flex; align-items: center; gap: 8px; }
+.quiz-feedback.ok { color: var(--accent); }
+.quiz-feedback.no { color: var(--danger); }
+.quiz-score {
+  margin-top: 20px;
+  padding: 18px 22px;
+  background: color-mix(in srgb, var(--accent) 8%, var(--bg2));
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 12px;
+  display: none; align-items: center; gap: 16px;
+}
+.quiz-score.show { display: flex; }
+.quiz-score-num {
+  font-family: 'Fraunces', serif;
+  font-size: 40px; font-weight: 700;
+  color: var(--accent); line-height: 1;
+}
+.quiz-score-label { font-size: 14px; color: var(--fg2); }
+
+/* ── Ejercicio terminal ─────────────────────────────────────────── */
+.ejercicio {
+  background: color-mix(in srgb, #000 30%, var(--bg2));
+  border: 1px solid var(--border2);
+  border-radius: 12px; overflow: hidden; margin: 16px 0;
+}
+[data-theme="light"] .ejercicio { background: #f0f0ea; }
+.ej-header {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--code-bg);
+}
+.ej-title {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600; font-size: 13px; color: var(--fg);
+}
+.ej-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; color: var(--fg3);
+}
+textarea.editor {
+  width: 100%; background: var(--code-bg);
+  color: #b8d0c8; border: none; outline: none;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px; line-height: 1.7;
+  padding: 16px 18px; resize: vertical; min-height: 120px;
+  tab-size: 2;
+}
+.run-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 11px;
+  background: var(--accent); color: #000;
+  border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 14px;
+  transition: background .15s;
+}
+.run-btn:hover { background: color-mix(in srgb, var(--accent) 80%, #fff); }
+.terminal-out {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12.5px;
+  padding: 14px 18px; line-height: 1.7;
+  background: color-mix(in srgb, #000 50%, var(--code-bg));
+  border-top: 1px solid var(--border2);
+  display: none;
+}
+.terminal-out.show { display: block; }
+.t-line { color: #a0c8a8; }
+.t-ok   { color: var(--accent); }
+.t-err  { color: var(--danger); }
+.t-prompt { color: var(--fg3); margin-bottom: 8px; font-size: 11px; }
+
+/* ── Tarea ──────────────────────────────────────────────────────── */
+.tarea {
+  background: color-mix(in srgb, var(--blue-tag) 6%, var(--bg2));
+  border: 1px solid color-mix(in srgb, var(--blue-tag) 25%, transparent);
+  border-radius: 12px; padding: 24px 28px;
+}
+.tarea h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 18px; font-weight: 700;
+  color: var(--blue-tag); margin-bottom: 14px;
+}
+.tarea ol { padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 14.5px; }
+
+/* ── Footer ─────────────────────────────────────────────────────── */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 0 0;
+  margin-top: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+.footer-brand {
+  font-family: 'Fraunces', serif; font-weight: 700; font-size: 15px;
+}
+.footer-right {
+  font-size: 12px; color: var(--fg3);
+  font-family: 'IBM Plex Mono', monospace;
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="brand">
+    <div class="brand-dot">B</div>
+    Backend desde Cero
+  </div>
+  <div class="topbar-right">
+    <span class="powered">CapOL × Apoc Automation</span>
+    <button class="theme-btn" id="themeBtn" title="Cambiar tema" aria-label="Cambiar tema">
+      <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div id="progress-bar"><div id="progress-fill"></div></div>
+
+<!-- MAIN CONTENT -->
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Clase 01 · Bloque 1: Introducción</div>
+    <h1>Qué es Backend y<br>Cómo Funciona <em>Internet</em></h1>
+    <p class="hero-desc">Entendé los fundamentos de cómo funciona la web antes de escribir una sola línea de código backend.</p>
+    <div class="hero-meta">
+      <span class="hero-chip">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        60 minutos
+      </span>
+      <span class="hero-chip">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Teoría + Ejercicios
+      </span>
+      <span class="hero-chip">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Sin requisitos previos
+      </span>
+    </div>
+  </div>
+
+  <!-- OBJETIVOS -->
+  <div class="objetivos">
+    <div class="objetivos-title">Objetivos de la clase</div>
+    <ul>
+      <li>Entender qué es Internet y cómo se conectan clientes y servidores.</li>
+      <li>Diferenciar claramente entre Frontend y Backend.</li>
+      <li>Comprender qué es HTTP y cuáles son sus métodos principales.</li>
+      <li>Conocer la estructura completa de un Request y un Response.</li>
+      <li>Entender los códigos de estado HTTP más comunes.</li>
+      <li>Conocer los headers más importantes que vas a ver siempre.</li>
+      <li>Aprender a usar DevTools Network para ver requests reales.</li>
+    </ul>
+  </div>
+
+  <!-- 1. INTERNET -->
+  <div class="section">
+    <h2 class="sec-title"><span class="sec-num">01</span>¿Qué es Internet?</h2>
+    <p class="body">Internet es una red mundial de computadoras conectadas entre sí. Cuando abrís una app o una página web, tu dispositivo (el <strong>cliente</strong>) se comunica con otra computadora que está siempre encendida en algún lugar del mundo: el <strong>servidor</strong>.</p>
+    <div class="net-diagram">
+      <div class="net-box">
+        <div class="ico">💻</div>
+        <strong>Tu dispositivo</strong>
+        <span>Cliente</span>
+      </div>
+      <div class="net-arrow">⇄</div>
+      <div class="net-box">
+        <div class="ico">🖥️</div>
+        <strong>Servidor</strong>
+        <span>Backend vive acá</span>
+      </div>
+    </div>
+    <p class="body" style="text-align:center;font-size:13px;color:var(--fg3);margin-top:4px">Se comunican usando el protocolo HTTP</p>
+  </div>
+
+  <!-- 2. FRONTEND VS BACKEND -->
+  <div class="section">
+    <h2 class="sec-title"><span class="sec-num">02</span>Frontend vs Backend</h2>
+    <div class="cmp-grid">
+      <div class="card">
+        <div style="font-size:26px;margin-bottom:10px">🎨</div>
+        <strong style="font-size:16px">Frontend</strong>
+        <ul style="list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:7px;color:var(--fg2);font-size:14px">
+          <li>• Lo que el usuario <strong>ve</strong> y toca</li>
+          <li>• Corre en tu dispositivo</li>
+          <li>• HTML, CSS, JavaScript</li>
+          <li>• Botones, formularios, colores</li>
+        </ul>
+      </div>
+      <div class="card" style="background:color-mix(in srgb, var(--accent) 5%, var(--card-bg));border-color:color-mix(in srgb, var(--accent) 25%, transparent)">
+        <div style="font-size:26px;margin-bottom:10px">⚙️</div>
+        <strong style="font-size:16px;color:var(--accent)">Backend</strong>
+        <ul style="list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:7px;color:var(--fg2);font-size:14px">
+          <li>• Lo que ocurre <strong>detrás de escena</strong></li>
+          <li>• Corre en el servidor</li>
+          <li>• Node.js, Python, Java...</li>
+          <li>• Base de datos, lógica, seguridad</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ib amber">
+      <span class="ico">🍽️</span>
+      <div><strong>Analogía del Restaurante:</strong> El Frontend es el salón (menú, mesas, mozos). El Backend es la cocina (ingredientes, recetas, preparación). El cliente pide → la cocina procesa → el mozo trae la respuesta.</div>
+    </div>
+  </div>
+
+  <!-- 3. HTTP -->
+  <div class="section">
+    <h2 class="sec-title"><span class="sec-num">03</span>¿Qué es HTTP?</h2>
+    <p class="body"><strong>HTTP (HyperText Transfer Protocol)</strong> es el protocolo que usan clientes y servidores para comunicarse en internet. Cada vez que abrís una página, cargás una foto o iniciás sesión, se están enviando mensajes HTTP.</p>
+    <h4 class="sub">Métodos HTTP principales</h4>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Método</th><th>Acción</th><th>Ejemplo</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag tg">GET</span></td><td>Leer / obtener datos</td><td>Listar usuarios, ver un producto</td></tr>
+          <tr><td><span class="tag tb">POST</span></td><td>Crear datos nuevos</td><td>Registrarse, publicar un post</td></tr>
+          <tr><td><span class="tag ta">PUT</span></td><td>Reemplazar datos completos</td><td>Actualizar todo el perfil</td></tr>
+          <tr><td><span class="tag tp">PATCH</span></td><td>Modificar parcialmente</td><td>Cambiar solo el nombre</td></tr>
+          <tr><td><span class="tag tr">DELETE</span></td><td>Eliminar datos</td><td>Borrar una cuenta</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 4. FLUJO -->
+  <div class="section">
+    <h2 class="sec-title"><span class="sec-num">04</span>Flujo Request → Response</h2>
+    <p class="body">Cada interacción en la web sigue el mismo ciclo. El cliente envía una petición; el servidor la procesa y devuelve una respuesta.</p>
+    <div class="flow">
+      <div class="flow-step green"><strong>1)</strong> Cliente hace clic o realiza una acción</div>
+      <div class="flow-step">→ Envía un <strong>HTTP Request</strong> al servidor</div>
+      <div class="flow-step blue"><strong>2)</strong> Servidor recibe el request</div>
+      <div class="flow-step">→ Procesa: lógica + consulta a la base de datos</div>
+      <div class="flow-step purple"><strong>3)</strong> Servidor arma el <strong>HTTP Response</strong></div>
+      <div class="flow-step">→ Lo envía de vuelta al cliente</div>
+      <div class="flow-step green"><strong>4)</strong> Cliente recibe y muestra el resultado</div>
+    </div>
+  </div>
+
+  <!-- 5. ESTRUCTURA REQUEST -->
+  <div class="section">
+    <h2 class="sec-title"><span class="sec-num">05</span>Estructura del Request</h2>
+    <p class="body">Un Request tiene tres partes: la <strong>línea de inicio</strong>, los <strong>headers</strong> y (opcionalmente) el <strong>body</strong>.</p>
+
+    <div class="cb">
+      <div class="cb-header">
+        <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <span class="cb-lang">HTTP Request — Login</span>
+      </div>
+      <pre>POST /api/login HTTP/1.1          ← línea de inicio: método + ruta + versión
+Host: backend.curso.com           ← headers
+Content-Type: application/json
+Authorization: Bearer eyJhb...
+
+{                                  ← body (solo en POST, PUT, PATCH)
+  "email": "hernan@gmail.com",
+  "password": "123456"
+}</pre>
+    </div>
+
+    <div class="tbl-wrap" style="margin-top:14px">
+      <table>
+        <thead><tr><th>Parte</th><th>Ejemplo</th><th>Qué es</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Línea de inicio</strong></td><td><code>POST /api/login HTTP/1.1</code></td><td>Método + ruta + versión del protocolo</td></tr>
+          <tr><td><strong>Headers</strong></td><td><code>Content-Type: application/json</code></td><td>Metadatos: tipo de datos, autenticación, etc.</td></tr>
+          <tr><td><strong>Body</strong></td><td><code>{"email": "..."}</code></td><td>Datos enviados. Solo en POST, PUT y PATCH.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="ib green">
+      <span class="ico">💡</span>
+      <div><strong>GET no tiene body.</strong> Los datos van en la URL: <code>/api/productos?categoria=ropa&amp;precio_max=5000</code> — esto se llama <strong>Query String</strong>.</div>
+    </div>
+  </div>
+
+  <!-- 6. ESTRUCTURA RESPONSE -->
+  <div class="section">
+    <h2 class="sec-title"><span class="sec-num">06</span>Estructura del Response</h2>
+
+    <div class="cb">
+      <div class="cb-header">
+        <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <span class="cb-lang">HTTP Response — Login exitoso</span>
+      </div>
+      <pre>HTTP/1.1 200 OK                    ← línea de estado
+Content-Type: application/json     ← headers
+Set-Cookie: session=abc123; HttpOnly
+
+{                                   ← body con los datos
+  "success": true,
+  "mensaje": "Login exitoso",
+  "token": "eyJhbGciOiJIUzI1NiJ9..."
+}</pre>
+    </div>
+
+    <div class="cb">
+      <div class="cb-header">
+        <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <span class="cb-lang">HTTP Response — Password incorrecta</span>
+      </div>
+      <pre>HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+
+{
+  "success": false,
+  "error": "Email o password incorrectos"
+}</pre>
+    </div>
+
+    <h4 class="sub">Códigos de estado más importantes</h4>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Código</th><th>Significado</th><th>Cuándo ocurre</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag tg">200 OK</span></td><td>Todo salió bien</td><td>Respuesta exitosa estándar</td></tr>
+          <tr><td><span class="tag tg">201 Created</span></td><td>Recurso creado</td><td>POST exitoso</td></tr>
+          <tr><td><span class="tag tg">204 No Content</span></td><td>OK sin datos</td><td>DELETE exitoso</td></tr>
+          <tr><td><span class="tag ta">400 Bad Request</span></td><td>Datos mal enviados</td><td>Falta un campo, formato incorrecto</td></tr>
+          <tr><td><span class="tag ta">401 Unauthorized</span></td><td>No autenticado</td><td>Sin login o token inválido</td></tr>
+          <tr><td><span class="tag ta">403 Forbidden</span></td><td>Sin permiso</td><td>Autenticado pero sin acceso</td></tr>
+          <tr><td><span class="tag ta">404 Not Found</span></td><td>No encontrado</td><td>Ruta o recurso inexistente</td></tr>
+          <tr><td><span class="tag tr">500 Server Error</span></td><td>Bug en el servidor</td><td>Error no controlado en el backend</td></tr>
+          <tr><td><span class="tag tr">503 Unavailable</span></td><td>Servidor caído</td><td>Reinicio, sobrecarga</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="ib red">
+      <span class="ico">🔒</span>
+      <div><strong>Seguridad:</strong> Cuando la password es incorrecta, el backend nunca dice "la password es incorrecta" ni "el email no existe". Siempre responde <em>"Email o password incorrectos"</em> sin especificar cuál. Si dijera cuál falló, un atacante podría probar emails hasta encontrar uno válido.</div>
+    </div>
+  </div>
+
+  <!-- 7. HEADERS -->
+  <div class="section">
+    <h2 class="sec-title"><span class="sec-num">07</span>Headers Más Importantes</h2>
+    <p class="body">Los headers son pares <strong>clave: valor</strong> que viajan en el Request y en el Response. Estos son los que vas a ver siempre:</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Header</th><th>Para qué sirve</th><th>Ejemplo</th></tr></thead>
+        <tbody>
+          <tr><td><code>Content-Type</code></td><td>Tipo de datos enviados</td><td><code>application/json</code></td></tr>
+          <tr><td><code>Authorization</code></td><td>Credenciales del usuario</td><td><code>Bearer eyJhb...</code></td></tr>
+          <tr><td><code>Accept</code></td><td>Qué formato espera el cliente</td><td><code>application/json</code></td></tr>
+          <tr><td><code>Host</code></td><td>Dominio del servidor destino</td><td><code>api.misitio.com</code></td></tr>
+          <tr><td><code>Cookie / Set-Cookie</code></td><td>Manejo de sesiones</td><td><code>session=abc123; HttpOnly</code></td></tr>
+          <tr><td><code>Cache-Control</code></td><td>Política de caché</td><td><code>no-cache · max-age=3600</code></td></tr>
+          <tr><td><code>Access-Control-Allow-Origin</code></td><td>Permisos CORS entre dominios</td><td><code>* o https://misitio.com</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 8. HERRAMIENTAS -->
+  <div class="section">
+    <h2 class="sec-title"><span class="sec-num">08</span>Herramientas para Probar Requests</h2>
+    <p class="body">Como backend developer necesitás probar tus endpoints sin abrir el navegador. Estas son las más usadas:</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Herramienta</th><th>Descripción</th><th>Dónde</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Thunder Client</strong></td><td>Extensión de VS Code. La que usamos en el curso.</td><td>Marketplace VS Code</td></tr>
+          <tr><td><strong>Postman</strong></td><td>App visual, ideal para principiantes. Guarda colecciones.</td><td>postman.com</td></tr>
+          <tr><td><strong>Insomnia</strong></td><td>Similar a Postman, más liviano.</td><td>insomnia.rest</td></tr>
+          <tr><td><strong>curl</strong></td><td>Línea de comandos, muy rápido.</td><td>Viene en Linux/Mac</td></tr>
+          <tr><td><strong>DevTools → Network</strong></td><td>F12: ves todos los requests en tiempo real.</td><td>Cualquier navegador</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 9. EJERCICIO DEVTOOLS -->
+  <div class="section">
+    <h2 class="sec-title"><span class="sec-num">09</span>Ejercicio Práctico — DevTools Network</h2>
+
+    <div class="ib blue">
+      <span class="ico">🔍</span>
+      <div>
+        <strong>Paso a paso con YouTube:</strong><br>
+        1) Abrí YouTube → <strong>F12</strong> → pestaña <strong>Network</strong> → filtro <strong>Fetch/XHR</strong> → recargá con F5<br>
+        2) Hacé clic en el primer request largo → pestaña <strong>Headers</strong>: mirá método, URL y status code<br>
+        3) Pestaña <strong>Response</strong>: es el JSON crudo que devuelve el backend de YouTube<br>
+        4) Columna <strong>Time</strong>: cuánto tardó en responder (buen backend &lt; 200ms)<br><br>
+        <em>Lo que ves en Response es exactamente lo que el backend de YouTube le manda al frontend.</em>
+      </div>
+    </div>
+
+    <div class="ib green" style="margin-top:8px">
+      <span class="ico">🔥</span>
+      <div>
+        <strong>Desafío — encontrá estos 3 requests:</strong><br>
+        • Un GET a una URL con <strong>browse</strong> o <strong>next</strong> (el feed de videos)<br>
+        • Un request con el header <strong>Authorization</strong> (te identifica como usuario logueado)<br>
+        • Un request con Status <strong>304</strong> (el servidor dice: "ya tenés esa data en caché")
+      </div>
+    </div>
+
+    <!-- Mini terminal JS -->
+    <div class="ejercicio" style="margin-top:20px">
+      <div class="ej-header">
+        <span class="ej-title">⌨ Practicá conceptos de esta clase en JavaScript</span>
+        <span class="ej-badge">JS · se ejecuta en el navegador</span>
+      </div>
+      <textarea class="editor" id="editor1" spellcheck="false">// Practicá los conceptos de la clase
+// Este código se ejecuta en el navegador
+
+// Simular una respuesta de un servidor
+const response = {
+  status: 200,
+  headers: { 'Content-Type': 'application/json' },
+  body: {
+    success: true,
+    usuario: { id: 42, nombre: 'Hernan', rol: 'admin' },
+    token: 'eyJhbGciOiJIUzI1NiJ9...'
+  }
+};
+
+console.log('Status:', response.status);
+console.log('Tipo de contenido:', response.headers['Content-Type']);
+console.log('Usuario:', response.body.usuario.nombre);
+console.log('Es admin:', response.body.usuario.rol === 'admin');
+
+// Verificar qué tipo de respuesta es según el código
+const status = response.status;
+if (status >= 200 && status < 300) {
+  console.log('✓ Respuesta exitosa (2xx)');
+} else if (status >= 400 && status < 500) {
+  console.log('✗ Error del cliente (4xx)');
+} else if (status >= 500) {
+  console.log('✗ Error del servidor (5xx)');
+}</textarea>
+      <button class="run-btn" onclick="runCode('editor1','out1')">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3 2l11 6-11 6V2z"/></svg>
+        Ejecutar código
+      </button>
+      <div class="terminal-out" id="out1"></div>
+    </div>
+  </div>
+
+  <!-- 10. QUIZ -->
+  <div class="section">
+    <h2 class="sec-title"><span class="sec-num">10</span>Mini Quiz</h2>
+    <p class="body" style="margin-bottom:20px">Hacé clic en la respuesta que creas correcta. Podés intentarlo todas las veces que quieras.</p>
+
+    <div class="quiz-wrap" id="quiz">
+
+      <div class="quiz-item">
+        <div class="quiz-q"><span class="quiz-num">Pregunta 01</span>¿Qué significa HTTP?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt-btn" onclick="answer(this,0,0)"><span class="opt-letter">A</span>HyperText Transfer Protocol</button>
+          <button class="quiz-opt-btn" onclick="answer(this,1,0)"><span class="opt-letter">B</span>High Technology Process</button>
+        </div>
+        <div class="quiz-feedback" id="fb0"></div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-q"><span class="quiz-num">Pregunta 02</span>¿Dónde se ejecuta el Backend?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>En el navegador del usuario</button>
+          <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>En un servidor</button>
+        </div>
+        <div class="quiz-feedback" id="fb1"></div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-q"><span class="quiz-num">Pregunta 03</span>¿Qué método HTTP se usa para crear datos nuevos?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>GET</button>
+          <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>POST</button>
+        </div>
+        <div class="quiz-feedback" id="fb2"></div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-q"><span class="quiz-num">Pregunta 04</span>¿Qué código de estado indica que todo salió bien?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>404</button>
+          <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>200</button>
+        </div>
+        <div class="quiz-feedback" id="fb3"></div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-q"><span class="quiz-num">Pregunta 05</span>¿Dónde van los datos en un GET request?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>En el body del request</button>
+          <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>En la URL (Query String)</button>
+        </div>
+        <div class="quiz-feedback" id="fb4"></div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-q"><span class="quiz-num">Pregunta 06</span>¿Qué header se usa para enviar credenciales del usuario?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Content-Type</button>
+          <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Authorization</button>
+        </div>
+        <div class="quiz-feedback" id="fb5"></div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-q"><span class="quiz-num">Pregunta 07</span>¿Qué código indica que el recurso no existe?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>500</button>
+          <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>404</button>
+        </div>
+        <div class="quiz-feedback" id="fb6"></div>
+      </div>
+
+      <div class="quiz-item">
+        <div class="quiz-q"><span class="quiz-num">Pregunta 08</span>¿Por qué el backend no dice si el email o la password fue lo incorrecto?</div>
+        <div class="quiz-opts">
+          <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Para simplificar el código</button>
+          <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Por seguridad: un atacante podría usar esa info para encontrar emails válidos</button>
+        </div>
+        <div class="quiz-feedback" id="fb7"></div>
+      </div>
+
+    </div>
+
+    <!-- Score -->
+    <div class="quiz-score" id="quizScore">
+      <div class="quiz-score-num" id="scoreNum">0/8</div>
+      <div>
+        <div class="quiz-score-label" id="scoreLabel">Completá el quiz para ver tu puntaje</div>
+        <button onclick="resetQuiz()" style="margin-top:8px;font-size:13px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;text-decoration:underline">↺ Reintentar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAREA -->
+  <div class="tarea section">
+    <h3>📚 Tarea para la Próxima Clase</h3>
+    <ol>
+      <li>Crear una cuenta en <strong>Render.com</strong> o <strong>Railway.app</strong> — son las plataformas donde vamos a deployar las apps.</li>
+      <li>Abrir DevTools (F12) → pestaña Network → navegar por cualquier sitio y observar método, URL, headers y código de respuesta de al menos 3 requests.</li>
+      <li>Pensar en una app que te gustaría construir durante el curso: ¿qué datos guardarías? ¿qué funcionalidades debería tener el backend?</li>
+      <li>(Opcional) Instalar <strong>Postman</strong> o la extensión <strong>Thunder Client</strong> en VS Code.</li>
+    </ol>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-brand">CapOL × Apoc Automation</div>
+    <div class="footer-right">Clase 01 · Backend desde Cero · 2025</div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+// ── Theme toggle ─────────────────────────────────────────────────
+const html = document.documentElement;
+const btn  = document.getElementById('themeBtn');
+const icon = document.getElementById('themeIcon');
+
+const MOON = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+const SUN  = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+
+function applyTheme(t) {
+  html.dataset.theme = t;
+  icon.innerHTML = t === 'dark' ? SUN : MOON;
+  localStorage.setItem('theme', t);
+}
+btn.addEventListener('click', () => {
+  applyTheme(html.dataset.theme === 'dark' ? 'light' : 'dark');
+});
+// Apply saved theme
+const saved = localStorage.getItem('theme') || 'dark';
+applyTheme(saved);
+
+// ── Progress bar ─────────────────────────────────────────────────
+const fill = document.getElementById('progress-fill');
+window.addEventListener('scroll', () => {
+  const h  = document.documentElement;
+  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  fill.style.width = pct + '%';
+}, { passive: true });
+
+// ── Code runner ──────────────────────────────────────────────────
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+window.runCode = function(edId, outId) {
+  const code = document.getElementById(edId).value;
+  const out  = document.getElementById(outId);
+  out.classList.add('show');
+
+  const lines = [];
+  const orig  = console.log;
+  console.log = (...args) => {
+    lines.push(args.map(a => {
+      if (a === null) return 'null';
+      if (a === undefined) return 'undefined';
+      if (typeof a === 'object') {
+        try { return JSON.stringify(a, null, 2); } catch { return String(a); }
+      }
+      return String(a);
+    }).join(' '));
+  };
+
+  let html = '<div class="t-prompt">▶ OUTPUT</div>';
+  try {
+    eval(code);
+    html += lines.length
+      ? lines.map(l => `<div class="t-line">${esc(l)}</div>`).join('')
+      : '<div class="t-ok">✓ Código ejecutado (sin output)</div>';
+  } catch(e) {
+    html += `<div class="t-err">✗ Error: ${esc(e.message)}</div>`;
+  }
+  out.innerHTML = html;
+  console.log = orig;
+};
+
+// ── Quiz ─────────────────────────────────────────────────────────
+// correct[i] = index of correct option for question i
+const CORRECT = [0, 1, 1, 1, 1, 1, 1, 1];
+const EXPLAIN = [
+  'HTTP = HyperText Transfer Protocol. Es el protocolo de comunicación de la web.',
+  'El backend vive en servidores, no en el dispositivo del usuario.',
+  'POST envía datos al servidor para crear un nuevo recurso. GET solo lee.',
+  '200 OK es la respuesta estándar para una petición exitosa.',
+  'GET no tiene body — los parámetros viajan en la URL como Query String.',
+  'Authorization lleva el token o credenciales del usuario.',
+  '404 Not Found: la ruta o recurso no existe en el servidor.',
+  'Si dijera cuál falló, un atacante podría probar emails hasta encontrar uno válido.',
+];
+let answers = new Array(8).fill(null);
+let done    = new Array(8).fill(false);
+
+window.answer = function(btn, selected, qi) {
+  if (done[qi]) return;
+  done[qi] = true;
+  answers[qi] = selected;
+
+  const opts = btn.closest('.quiz-opts').querySelectorAll('.quiz-opt-btn');
+  opts.forEach((b, i) => {
+    b.disabled = true;
+    if (i === CORRECT[qi]) b.classList.add('correct');
+    else if (i === selected) b.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('fb' + qi);
+  fb.classList.add('show');
+  if (selected === CORRECT[qi]) {
+    fb.classList.add('ok');
+    fb.innerHTML = '✓ Correcto. ' + EXPLAIN[qi];
+  } else {
+    fb.classList.add('no');
+    fb.innerHTML = '✗ Incorrecto. ' + EXPLAIN[qi];
+  }
+
+  // Check if all answered
+  if (done.every(Boolean)) showScore();
+};
+
+function showScore() {
+  const correct = answers.filter((a, i) => a === CORRECT[i]).length;
+  const total   = CORRECT.length;
+  const score   = document.getElementById('quizScore');
+  score.classList.add('show');
+  document.getElementById('scoreNum').textContent = correct + '/' + total;
+  const pct = Math.round((correct / total) * 100);
+  let label = '';
+  if (pct === 100)      label = '🎉 Perfecto. Estás listo para la clase 2.';
+  else if (pct >= 75)   label = '💪 Muy bien. Repasá los que erraste.';
+  else if (pct >= 50)   label = '📚 Pasable. Vale la pena releer la clase.';
+  else                  label = '🔄 Repasá el material y volvé a intentarlo.';
+  document.getElementById('scoreLabel').textContent = label;
+}
+
+window.resetQuiz = function() {
+  answers = new Array(8).fill(null);
+  done    = new Array(8).fill(false);
+  document.querySelectorAll('.quiz-opt-btn').forEach(b => {
+    b.disabled = false;
+    b.classList.remove('correct','wrong');
+  });
+  document.querySelectorAll('.quiz-feedback').forEach(fb => {
+    fb.classList.remove('show','ok','no');
+    fb.innerHTML = '';
+  });
+  const score = document.getElementById('quizScore');
+  score.classList.remove('show');
+};
+</script>
+</body>
+</html>
