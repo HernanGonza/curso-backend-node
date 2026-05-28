@@ -1,0 +1,290 @@
+[
+  {
+    "id": 1,
+    "titulo": "Qué es Backend y Cómo Funciona Internet",
+    "bloque": "Bloque 1 · Introducción",
+    "archivo": "clases/clase1.html",
+    "duracion": "60 min",
+    "temas": ["HTTP", "Request/Response", "Frontend vs Backend", "DevTools"],
+    "disponible": true
+  },
+  {
+    "id": 2,
+    "titulo": "Cómo Funciona una Aplicación Real",
+    "bloque": "Bloque 1 · Introducción",
+    "archivo": "clases/clase2.html",
+    "duracion": "60 min",
+    "temas": ["API REST", "Ciclo del login", "Base de datos", "Arquitectura"],
+    "disponible": false
+  },
+  {
+    "id": 3,
+    "titulo": "Instalación y Entorno",
+    "bloque": "Bloque 1 · Introducción",
+    "archivo": "clases/clase3.html",
+    "duracion": "60 min",
+    "temas": ["Terminal", "Node.js", "VS Code", "npm", "nodemon"],
+    "disponible": false
+  },
+  {
+    "id": 4,
+    "titulo": "Variables y Tipos de Datos",
+    "bloque": "Bloque 2 · JavaScript",
+    "archivo": "clases/clase4.html",
+    "duracion": "60 min",
+    "temas": ["const/let", "String", "Number", "Boolean", "typeof"],
+    "disponible": false
+  },
+  {
+    "id": 5,
+    "titulo": "Condicionales",
+    "bloque": "Bloque 2 · JavaScript",
+    "archivo": "clases/clase5.html",
+    "duracion": "60 min",
+    "temas": ["if/else", "Ternario", "Switch", "Truthy/Falsy"],
+    "disponible": false
+  },
+  {
+    "id": 6,
+    "titulo": "Bucles",
+    "bloque": "Bloque 2 · JavaScript",
+    "archivo": "clases/clase6.html",
+    "duracion": "60 min",
+    "temas": ["for", "while", "for...of", "break/continue"],
+    "disponible": false
+  },
+  {
+    "id": 7,
+    "titulo": "Arrays",
+    "bloque": "Bloque 2 · JavaScript",
+    "archivo": "clases/clase7.html",
+    "duracion": "60 min",
+    "temas": ["Índices", "push/pop", "find", "splice/slice"],
+    "disponible": false
+  },
+  {
+    "id": 8,
+    "titulo": "Objetos y JSON",
+    "bloque": "Bloque 2 · JavaScript",
+    "archivo": "clases/clase8.html",
+    "duracion": "60 min",
+    "temas": ["Objetos", "JSON.stringify", "JSON.parse", "Destructuring"],
+    "disponible": false
+  },
+  {
+    "id": 9,
+    "titulo": "Funciones",
+    "bloque": "Bloque 2 · JavaScript",
+    "archivo": "clases/clase9.html",
+    "duracion": "60 min",
+    "temas": ["Declaración", "Parámetros", "Return", "Scope", "Callbacks"],
+    "disponible": false
+  },
+  {
+    "id": 10,
+    "titulo": "Funciones Flecha",
+    "bloque": "Bloque 2 · JavaScript",
+    "archivo": "clases/clase10.html",
+    "duracion": "60 min",
+    "temas": ["Arrow functions", "Return implícito", "Shorthand"],
+    "disponible": false
+  },
+  {
+    "id": 11,
+    "titulo": "Métodos de Arrays",
+    "bloque": "Bloque 2 · JavaScript",
+    "archivo": "clases/clase11.html",
+    "duracion": "60 min",
+    "temas": ["map()", "filter()", "reduce()", "Encadenamiento"],
+    "disponible": false
+  },
+  {
+    "id": 12,
+    "titulo": "Qué es Asincronía",
+    "bloque": "Bloque 3 · Asincronía",
+    "archivo": "clases/clase12.html",
+    "duracion": "60 min",
+    "temas": ["Event loop", "Callbacks asíncronos", "setTimeout"],
+    "disponible": false
+  },
+  {
+    "id": 13,
+    "titulo": "Promesas",
+    "bloque": "Bloque 3 · Asincronía",
+    "archivo": "clases/clase13.html",
+    "duracion": "60 min",
+    "temas": [".then()", ".catch()", "Promise.all"],
+    "disponible": false
+  },
+  {
+    "id": 14,
+    "titulo": "Async / Await",
+    "bloque": "Bloque 3 · Asincronía",
+    "archivo": "clases/clase14.html",
+    "duracion": "60 min",
+    "temas": ["async/await", "try/catch", "Comparación con .then()"],
+    "disponible": false
+  },
+  {
+    "id": 15,
+    "titulo": "Introducción a Node",
+    "bloque": "Bloque 4 · Node.js",
+    "archivo": "clases/clase15.html",
+    "duracion": "60 min",
+    "temas": ["Módulos nativos", "require()", "fs", "path"],
+    "disponible": false
+  },
+  {
+    "id": 16,
+    "titulo": "Crear Servidor con http",
+    "bloque": "Bloque 4 · Node.js",
+    "archivo": "clases/clase16.html",
+    "duracion": "60 min",
+    "temas": ["http.createServer", "req/res", "Puertos"],
+    "disponible": false
+  },
+  {
+    "id": 17,
+    "titulo": "Request y Response",
+    "bloque": "Bloque 4 · Node.js",
+    "archivo": "clases/clase17.html",
+    "duracion": "60 min",
+    "temas": ["req.url", "req.method", "res.writeHead", "JSON"],
+    "disponible": false
+  },
+  {
+    "id": 18,
+    "titulo": "Rutas",
+    "bloque": "Bloque 4 · Node.js",
+    "archivo": "clases/clase18.html",
+    "duracion": "60 min",
+    "temas": ["Routing manual", "404", "Parámetros de URL"],
+    "disponible": false
+  },
+  {
+    "id": 19,
+    "titulo": "Manejo de JSON",
+    "bloque": "Bloque 4 · Node.js",
+    "archivo": "clases/clase19.html",
+    "duracion": "60 min",
+    "temas": ["Parsear body", "CRUD en memoria", "Status codes"],
+    "disponible": false
+  },
+  {
+    "id": 20,
+    "titulo": "Introducción a Express",
+    "bloque": "Bloque 5 · Express",
+    "archivo": "clases/clase20.html",
+    "duracion": "60 min",
+    "temas": ["Express vs http nativo", "app.get()", "res.json()"],
+    "disponible": false
+  },
+  {
+    "id": 21,
+    "titulo": "Servidor con Express",
+    "bloque": "Bloque 5 · Express",
+    "archivo": "clases/clase21.html",
+    "duracion": "60 min",
+    "temas": ["app.listen()", "Estructura del proyecto", "nodemon"],
+    "disponible": false
+  },
+  {
+    "id": 22,
+    "titulo": "CRUD con Rutas",
+    "bloque": "Bloque 5 · Express",
+    "archivo": "clases/clase22.html",
+    "duracion": "60 min",
+    "temas": ["GET/POST/PUT/DELETE", "Controllers", "Organizar rutas"],
+    "disponible": false
+  },
+  {
+    "id": 23,
+    "titulo": "Params y Query",
+    "bloque": "Bloque 5 · Express",
+    "archivo": "clases/clase23.html",
+    "duracion": "60 min",
+    "temas": ["req.params", "req.query", "req.body", "Paginación"],
+    "disponible": false
+  },
+  {
+    "id": 24,
+    "titulo": "Middlewares",
+    "bloque": "Bloque 5 · Express",
+    "archivo": "clases/clase24.html",
+    "duracion": "60 min",
+    "temas": ["Qué es un middleware", "express.json()", "Autenticación"],
+    "disponible": false
+  },
+  {
+    "id": 25,
+    "titulo": "Introducción a Bases de Datos",
+    "bloque": "Bloque 6 · PostgreSQL",
+    "archivo": "clases/clase25.html",
+    "duracion": "60 min",
+    "temas": ["SQL vs NoSQL", "Tablas", "Tipos de datos", "Claves"],
+    "disponible": false
+  },
+  {
+    "id": 26,
+    "titulo": "PostgreSQL Básico",
+    "bloque": "Bloque 6 · PostgreSQL",
+    "archivo": "clases/clase26.html",
+    "duracion": "60 min",
+    "temas": ["CREATE TABLE", "INSERT", "SELECT", "WHERE"],
+    "disponible": false
+  },
+  {
+    "id": 27,
+    "titulo": "CRUD con SQL",
+    "bloque": "Bloque 6 · PostgreSQL",
+    "archivo": "clases/clase27.html",
+    "duracion": "60 min",
+    "temas": ["UPDATE", "DELETE", "JOIN", "COUNT/SUM"],
+    "disponible": false
+  },
+  {
+    "id": 28,
+    "titulo": "Conexión Node + PostgreSQL",
+    "bloque": "Bloque 6 · PostgreSQL",
+    "archivo": "clases/clase28.html",
+    "duracion": "60 min",
+    "temas": ["node-postgres", "Pool", "dotenv", "Queries con parámetros"],
+    "disponible": false
+  },
+  {
+    "id": 29,
+    "titulo": "Estructura de API",
+    "bloque": "Bloque 7 · Proyecto Final",
+    "archivo": "clases/clase29.html",
+    "duracion": "60 min",
+    "temas": ["Arquitectura en capas", "routes/controllers/services", ".env"],
+    "disponible": false
+  },
+  {
+    "id": 30,
+    "titulo": "CRUD Completo",
+    "bloque": "Bloque 7 · Proyecto Final",
+    "archivo": "clases/clase30.html",
+    "duracion": "60 min",
+    "temas": ["Todos los endpoints", "PostgreSQL real", "Thunder Client"],
+    "disponible": false
+  },
+  {
+    "id": 31,
+    "titulo": "Validaciones y Errores",
+    "bloque": "Bloque 7 · Proyecto Final",
+    "archivo": "clases/clase31.html",
+    "duracion": "60 min",
+    "temas": ["Validar entrada", "Middleware de validación", "Mensajes de error"],
+    "disponible": false
+  },
+  {
+    "id": 32,
+    "titulo": "Deploy",
+    "bloque": "Bloque 7 · Proyecto Final",
+    "archivo": "clases/clase32.html",
+    "duracion": "60 min",
+    "temas": ["Render / Railway", "Variables de entorno", "URL pública"],
+    "disponible": false
+  }
+]
