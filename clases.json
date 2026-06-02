@@ -15,7 +15,7 @@
     "archivo": "clases/clase2.html",
     "duracion": "60 min",
     "temas": ["API REST", "Ciclo del login", "Base de datos", "Arquitectura"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 3,
