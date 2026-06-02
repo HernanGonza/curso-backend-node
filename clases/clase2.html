@@ -7,26 +7,29 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root { --accent:#00c896; --accent-dim:#007a5a; --danger:#ff4757; --warn:#ffa502; --purple:#a29bfe; --blue-tag:#74b9ff; }
-[data-theme="dark"] { --bg:#0f0f11;--bg2:#16161a;--bg3:#1c1c21;--border:#2a2a32;--border2:#35353f;--fg:#e2e2ec;--fg2:#a0a0b0;--fg3:#606070;--card-bg:#16161a;--code-bg:#0a0a0d;--code-fg:#b8d0c8;--shadow:0 4px 24px rgba(0,0,0,.5); }
-[data-theme="light"] { --bg:#f5f5f0;--bg2:#ffffff;--bg3:#ebebeb;--border:#d8d8d0;--border2:#c5c5bc;--fg:#1a1a24;--fg2:#505060;--fg3:#909098;--card-bg:#ffffff;--code-bg:#1a1a24;--code-fg:#c8e0d8;--shadow:0 4px 24px rgba(0,0,0,.1); }
+:root{--accent:#00c896;--danger:#ff4757;--warn:#ffa502;--purple:#a29bfe;--blue-tag:#74b9ff}
+[data-theme="dark"]{--bg:#0f0f11;--bg2:#16161a;--bg3:#1c1c21;--border:#2a2a32;--border2:#35353f;--fg:#e2e2ec;--fg2:#a0a0b0;--fg3:#606070;--card-bg:#16161a;--code-bg:#0a0a0d;--code-fg:#b8d0c8;--shadow:0 4px 24px rgba(0,0,0,.5)}
+[data-theme="light"]{--bg:#f5f5f0;--bg2:#ffffff;--bg3:#ebebeb;--border:#d8d8d0;--border2:#c5c5bc;--fg:#1a1a24;--fg2:#505060;--fg3:#909098;--card-bg:#ffffff;--code-bg:#1a1a24;--code-fg:#c8e0d8;--shadow:0 4px 24px rgba(0,0,0,.1)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;line-height:1.75;min-height:100vh}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
 .page{max-width:800px;margin:0 auto;padding:0 24px 120px}
+/* topbar */
 #topbar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;height:56px}
 .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:17px;text-decoration:none;color:var(--fg)}
 .brand-dot{width:30px;height:30px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#000;font-size:13px;font-weight:800;font-family:'IBM Plex Mono',monospace}
 .topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
-.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fg2);font-size:16px;transition:all .2s}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fg2);transition:all .2s}
 .theme-btn:hover{border-color:var(--accent);color:var(--accent)}
 .powered{font-size:11px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
 .back-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s}
 .back-btn:hover{color:var(--accent)}
 @media(max-width:600px){.powered{display:none}}
+/* progress */
 #progress-bar{position:fixed;top:56px;left:0;right:0;height:2px;background:var(--border);z-index:99}
 #progress-fill{height:100%;background:var(--accent);width:0%;transition:width .1s}
+/* hero */
 .hero{padding:64px 0 40px;border-bottom:1px solid var(--border);margin-bottom:48px}
 .hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .hero-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--accent)}
@@ -36,30 +39,32 @@ body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;line-
 .hero-meta{display:flex;gap:20px;flex-wrap:wrap}
 .hero-chip{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--fg2);font-family:'IBM Plex Mono',monospace}
 .hero-chip svg{color:var(--accent)}
+/* objetivos */
 .objetivos{background:color-mix(in srgb,var(--accent) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);border-radius:12px;padding:24px 28px;margin-bottom:48px}
 .objetivos-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
 .objetivos ul{list-style:none;display:flex;flex-direction:column;gap:9px}
 .objetivos li{display:flex;gap:10px;font-size:14.5px}
 .objetivos li::before{content:'▸';color:var(--accent);flex-shrink:0;margin-top:2px}
+/* sections */
 .section{margin-bottom:52px}
 .sec-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--fg);margin-bottom:18px;display:flex;align-items:center;gap:12px}
 .sec-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:2px 8px;border-radius:5px}
 p.body{font-size:15px;line-height:1.8;color:var(--fg2);margin-bottom:12px}
 h4.sub{font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;color:var(--fg);margin:18px 0 8px}
-.card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px 24px}
-.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-@media(max-width:560px){.cmp-grid{grid-template-columns:1fr}}
+/* tables */
 .tbl-wrap{overflow-x:auto;margin:12px 0;border-radius:10px;border:1px solid var(--border)}
 table{width:100%;border-collapse:collapse;font-size:14px}
 thead th{background:var(--bg3);padding:10px 14px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--fg3);font-weight:600}
 tbody td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top}
 tbody tr:hover td{background:var(--bg3)}
+/* tags */
 .tag{font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:5px;display:inline-block}
 .tg{color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
 .tb{color:var(--blue-tag);background:color-mix(in srgb,var(--blue-tag) 12%,transparent)}
 .ta{color:var(--warn);background:color-mix(in srgb,var(--warn) 12%,transparent)}
 .tr{color:var(--danger);background:color-mix(in srgb,var(--danger) 12%,transparent)}
 .tp{color:var(--purple);background:color-mix(in srgb,var(--purple) 12%,transparent)}
+/* code */
 .cb{background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:12px 0}
 .cb-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border2);background:color-mix(in srgb,#000 20%,var(--code-bg))}
 .cb-dots{display:flex;gap:5px}
@@ -68,27 +73,48 @@ tbody tr:hover td{background:var(--bg3)}
 .cb-lang{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#555}
 .cb pre{padding:16px 18px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--code-fg);white-space:pre}
 code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix(in srgb,var(--blue-tag) 10%,var(--bg3));color:var(--blue-tag);padding:1px 6px;border-radius:4px}
+/* info boxes */
 .ib{border-radius:10px;padding:14px 18px;margin:12px 0;display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.65}
 .ib .ico{font-size:18px;flex-shrink:0;margin-top:1px}
 .ib.green{background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 28%,transparent)}
 .ib.amber{background:color-mix(in srgb,var(--warn) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--warn) 28%,transparent)}
 .ib.red{background:color-mix(in srgb,var(--danger) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--danger) 28%,transparent)}
 .ib.blue{background:color-mix(in srgb,var(--blue-tag) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 28%,transparent)}
-.flow{display:flex;flex-direction:column;gap:0;margin:14px 0}
-.flow-step{padding:12px 18px;font-size:14px;border:1px solid var(--border);border-bottom:none;background:var(--card-bg)}
-.flow-step:first-child{border-radius:10px 10px 0 0}
-.flow-step:last-child{border-radius:0 0 10px 10px;border-bottom:1px solid var(--border)}
-.flow-step.green{background:color-mix(in srgb,var(--accent) 6%,var(--bg2));border-color:color-mix(in srgb,var(--accent) 25%,transparent)}
-.flow-step.blue{background:color-mix(in srgb,var(--blue-tag) 6%,var(--bg2));border-color:color-mix(in srgb,var(--blue-tag) 25%,transparent)}
-.flow-step.purple{background:color-mix(in srgb,var(--purple) 6%,var(--bg2));border-color:color-mix(in srgb,var(--purple) 25%,transparent)}
-.flow-step.red{background:color-mix(in srgb,var(--danger) 6%,var(--bg2));border-color:color-mix(in srgb,var(--danger) 25%,transparent)}
-.arch-grid{display:grid;grid-template-columns:1fr;gap:0;margin:14px 0}
-.arch-row{display:grid;grid-template-columns:140px 1fr;border:1px solid var(--border);border-bottom:none;font-size:14px}
+/* flow / pasos numerados */
+.pasos{display:flex;flex-direction:column;gap:0;margin:14px 0}
+.paso{display:grid;grid-template-columns:44px 1fr;border:1px solid var(--border);border-bottom:none;background:var(--card-bg);transition:background .15s}
+.paso:first-child{border-radius:10px 10px 0 0}
+.paso:last-child{border-radius:0 0 10px 10px;border-bottom:1px solid var(--border)}
+.paso:hover{background:var(--bg3)}
+.paso-num{display:flex;align-items:flex-start;justify-content:center;padding:14px 0 0;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:12px;color:var(--accent);border-right:1px solid var(--border)}
+.paso-body{padding:12px 16px;font-size:14px;line-height:1.65;color:var(--fg2)}
+.paso-body strong{color:var(--fg)}
+.paso.green .paso-num{color:#000;background:var(--accent);align-items:center;border-radius:0}
+.paso.blue  .paso-body{background:color-mix(in srgb,var(--blue-tag) 5%,var(--card-bg))}
+.paso.purple .paso-body{background:color-mix(in srgb,var(--purple) 5%,var(--card-bg))}
+.paso.red   .paso-body{background:color-mix(in srgb,var(--danger) 5%,var(--card-bg))}
+.paso.ok    .paso-body{background:color-mix(in srgb,var(--accent) 5%,var(--card-bg))}
+/* arch rows */
+.arch-grid{display:flex;flex-direction:column;gap:0;margin:14px 0}
+.arch-row{display:grid;grid-template-columns:130px 1fr;border:1px solid var(--border);border-bottom:none;font-size:14px}
 .arch-row:first-child{border-radius:10px 10px 0 0}
 .arch-row:last-child{border-radius:0 0 10px 10px;border-bottom:1px solid var(--border)}
 .arch-row:hover .arch-label,.arch-row:hover .arch-desc{background:var(--bg3)}
 .arch-label{padding:12px 14px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:var(--accent);background:var(--bg3);display:flex;align-items:center;border-right:1px solid var(--border)}
 .arch-desc{padding:12px 16px;color:var(--fg2);display:flex;align-items:center}
+/* ejercicio steps */
+.ej-steps{display:flex;flex-direction:column;gap:0;margin:14px 0}
+.ej-step{display:grid;grid-template-columns:36px 1fr;border:1px solid var(--border);border-bottom:none;background:var(--bg2)}
+.ej-step:first-child{border-radius:10px 10px 0 0}
+.ej-step:last-child{border-radius:0 0 10px 10px;border-bottom:1px solid var(--border)}
+.ej-num{display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;color:#fff;background:var(--accent);border-right:1px solid var(--border)}
+.ej-txt{padding:10px 14px;font-size:14px;color:var(--fg2)}
+.ej-txt strong{color:var(--fg)}
+/* que buscar */
+.buscar-item{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:8px}
+.buscar-titulo{font-size:13px;font-weight:700;color:var(--accent);font-family:'IBM Plex Mono',monospace;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
+.buscar-desc{font-size:14px;color:var(--fg2);line-height:1.65}
+/* quiz */
 .quiz-wrap{display:flex;flex-direction:column;gap:16px;margin:20px 0}
 .quiz-item{border:1px solid var(--border);border-radius:12px;overflow:hidden}
 .quiz-q{padding:14px 18px;border-bottom:1px solid var(--border);font-size:14.5px;font-weight:600;background:var(--bg2)}
@@ -96,7 +122,7 @@ code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix
 .quiz-opts{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
 .quiz-opt-btn{width:100%;text-align:left;padding:10px 16px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;color:var(--fg);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:10px;transition:all .15s}
 .quiz-opt-btn:hover:not(:disabled){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--bg3))}
-.quiz-opt-btn .opt-letter{width:22px;height:22px;border-radius:6px;background:var(--border2);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;color:var(--fg3)}
+.opt-letter{width:22px;height:22px;border-radius:6px;background:var(--border2);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;color:var(--fg3)}
 .quiz-opt-btn:hover:not(:disabled) .opt-letter{background:var(--accent);color:#000}
 .quiz-opt-btn.correct{background:color-mix(in srgb,var(--accent) 12%,var(--bg3));border-color:var(--accent);color:var(--accent)}
 .quiz-opt-btn.correct .opt-letter{background:var(--accent);color:#000}
@@ -109,9 +135,11 @@ code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix
 .quiz-score{margin-top:20px;padding:18px 22px;background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:12px;display:none;align-items:center;gap:16px}
 .quiz-score.show{display:flex}
 .quiz-score-num{font-family:'Fraunces',serif;font-size:40px;font-weight:700;color:var(--accent);line-height:1}
+/* tarea */
 .tarea{background:color-mix(in srgb,var(--blue-tag) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 25%,transparent);border-radius:12px;padding:24px 28px}
 .tarea h3{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--blue-tag);margin-bottom:14px}
 .tarea ol{padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+/* footer */
 .footer{border-top:1px solid var(--border);padding:32px 0 0;margin-top:64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
 .footer-brand{font-family:'Fraunces',serif;font-weight:700;font-size:15px}
 .footer-right{font-size:12px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
@@ -124,10 +152,7 @@ code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
     Inicio
   </a>
-  <div class="brand" style="font-size:15px">
-    <div class="brand-dot">B</div>
-    Backend desde Cero
-  </div>
+  <div class="brand" style="font-size:15px"><div class="brand-dot">B</div>Backend desde Cero</div>
   <div class="topbar-right">
     <span class="powered">CapOL × Apoc Automation</span>
     <button class="theme-btn" id="themeBtn" title="Cambiar tema">
@@ -144,6 +169,7 @@ code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix
 
 <div class="page">
 
+<!-- HERO -->
 <div class="hero">
   <div class="hero-eyebrow">Clase 02 · Bloque 1: Introducción</div>
   <h1>Cómo Funciona una<br><em>Aplicación Real</em></h1>
@@ -164,140 +190,180 @@ code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix
   </div>
 </div>
 
+<!-- OBJETIVOS -->
 <div class="objetivos">
   <div class="objetivos-title">Objetivos de la clase</div>
   <ul>
-    <li>Entender las tres capas de una app: Frontend, Backend y Base de datos.</li>
-    <li>Comprender qué es una API REST y qué son los endpoints.</li>
-    <li>Seguir el ciclo completo de un login paso a paso.</li>
-    <li>Entender por qué las passwords se hashean y nunca se guardan en texto plano.</li>
-    <li>Conocer la arquitectura de una app en producción.</li>
-    <li>Ejercicio práctico: analizar la API de Mercado Libre con DevTools.</li>
+    <li>Entender cómo se organiza una aplicación real con frontend y backend separados.</li>
+    <li>Conocer el rol de la base de datos dentro de una app.</li>
+    <li>Comprender el concepto de API y por qué existe.</li>
+    <li>Ver el ciclo completo de una acción del usuario: desde el clic hasta la base de datos y la vuelta.</li>
+    <li>Identificar las capas de una arquitectura web moderna.</li>
   </ul>
 </div>
 
 <!-- 1. TRES CAPAS -->
 <div class="section">
-  <h2 class="sec-title"><span class="sec-num">01</span>Las Tres Capas de una App</h2>
-  <p class="body">Toda aplicación web moderna está dividida en tres capas que se comunican entre sí. Separar las capas permite que equipos distintos trabajen en paralelo y que cada parte se pueda escalar de forma independiente.</p>
+  <h2 class="sec-title"><span class="sec-num">01</span>Una App Real No es una Sola Cosa</h2>
+  <p class="body">Cuando usás Instagram, YouTube o Mercado Libre, no estás hablando con un solo programa. Hay <strong>tres partes bien diferenciadas</strong> trabajando juntas todo el tiempo.</p>
 
   <div class="tbl-wrap">
     <table>
-      <thead><tr><th>Capa</th><th>Qué hace</th><th>Tecnologías</th><th>Corre en</th></tr></thead>
+      <thead>
+        <tr>
+          <th style="color:var(--blue-tag)">Frontend</th>
+          <th style="color:var(--accent)">Backend (API)</th>
+          <th style="color:var(--purple)">Base de Datos</th>
+        </tr>
+      </thead>
       <tbody>
-        <tr><td><span class="tag tb">Frontend</span></td><td>La pantalla que ve el usuario</td><td>React, HTML, CSS</td><td>Dispositivo del usuario</td></tr>
-        <tr><td><span class="tag tg">Backend (API)</span></td><td>El cerebro de la app — lógica y reglas</td><td>Node.js, Python, Java</td><td>Servidor (la nube)</td></tr>
-        <tr><td><span class="tag tp">Base de datos</span></td><td>La memoria permanente — guarda todo</td><td>PostgreSQL, MongoDB</td><td>Servidor</td></tr>
+        <tr><td>La pantalla que ves</td><td>El cerebro de la app</td><td>La memoria permanente</td></tr>
+        <tr><td>React, HTML, CSS, apps móviles</td><td>Node.js, Python, Java, etc.</td><td>PostgreSQL, MySQL, MongoDB</td></tr>
+        <tr><td>Corre en el dispositivo del usuario</td><td>Corre en el servidor (la nube)</td><td>Corre en el servidor, guarda todo</td></tr>
+        <tr><td>Habla con el backend via HTTP</td><td>Recibe requests, procesa, responde</td><td>El backend le hace consultas (SQL)</td></tr>
       </tbody>
     </table>
-  </div>
-
-  <div class="cb" style="margin-top:14px">
-    <div class="cb-header">
-      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-      <span class="cb-lang">Arquitectura simplificada</span>
-    </div>
-    <pre>[Usuario]  →→→  [Frontend]  →→→  [Backend/API]  →→→  [Base de datos]
-               React/App       Node.js/Express       PostgreSQL
-               (navegador)     (servidor nube)        (servidor nube)</pre>
   </div>
 
   <div class="ib amber">
     <span class="ico">🍽️</span>
-    <div><strong>La analogía más útil:</strong> el Frontend es el salón del restaurante — lo que ves, el menú, los mozos. El Backend es la cocina — donde se prepara la comida con los ingredientes (base de datos). El cliente nunca entra a la cocina: solo hace el pedido y recibe el plato.</div>
+    <div><strong>Analogía del restaurante:</strong> La API es como el menú — lista todo lo que podés pedir (endpoints), cómo pedirlo (método HTTP + datos requeridos) y qué te van a traer (formato de la respuesta). No necesitás saber cómo se cocina — solo usás el menú.</div>
   </div>
 </div>
 
-<!-- 2. API REST -->
+<!-- 2. QUE ES UNA API -->
 <div class="section">
-  <h2 class="sec-title"><span class="sec-num">02</span>Qué es una API REST</h2>
-  <p class="body"><strong>API (Application Programming Interface)</strong> es el contrato entre el Frontend y el Backend: define qué URLs existen, qué datos se mandan y qué datos se reciben.</p>
-  <p class="body"><strong>REST</strong> es el estilo más usado para diseñar APIs: usa los métodos HTTP (GET, POST, PUT, DELETE) más URLs claras para representar acciones sobre <em>recursos</em>.</p>
+  <h2 class="sec-title"><span class="sec-num">02</span>Qué es una API</h2>
+  <p class="body"><strong>API</strong> significa <strong>Application Programming Interface</strong> — interfaz de programación de aplicaciones. Es el conjunto de reglas que define cómo el frontend puede hablar con el backend: qué URLs existen, qué datos se mandan y qué datos se reciben.</p>
+  <p class="body">El estilo de diseño que usa métodos HTTP + URLs claras para representar acciones sobre recursos se llama <strong>REST</strong> (Representational State Transfer). Es el estándar más usado en el mundo para construir backends. Durante todo el curso vamos a construir APIs REST.</p>
 
-  <h4 class="sub">Ejemplo: API de una app de tareas</h4>
+  <h4 class="sub">Ejemplo: endpoints de una app de tareas (To-Do)</h4>
   <div class="tbl-wrap">
     <table>
       <thead><tr><th>Método</th><th>URL (endpoint)</th><th>Qué hace</th></tr></thead>
       <tbody>
-        <tr><td><span class="tag tg">GET</span></td><td><code>/api/tareas</code></td><td>Devuelve todas las tareas del usuario</td></tr>
-        <tr><td><span class="tag tg">GET</span></td><td><code>/api/tareas/5</code></td><td>Devuelve solo la tarea con id = 5</td></tr>
-        <tr><td><span class="tag tb">POST</span></td><td><code>/api/tareas</code></td><td>Crea una tarea nueva (datos en el body)</td></tr>
+        <tr><td><span class="tag tg">GET</span></td><td><code>/api/tareas</code></td><td>Devuelve la lista de todas las tareas</td></tr>
+        <tr><td><span class="tag tg">GET</span></td><td><code>/api/tareas/5</code></td><td>Devuelve solo la tarea con id 5</td></tr>
+        <tr><td><span class="tag tb">POST</span></td><td><code>/api/tareas</code></td><td>Crea una tarea nueva (manda datos en el body)</td></tr>
         <tr><td><span class="tag ta">PUT</span></td><td><code>/api/tareas/5</code></td><td>Reemplaza completamente la tarea 5</td></tr>
-        <tr><td><span class="tag tp">PATCH</span></td><td><code>/api/tareas/5</code></td><td>Modifica solo algunos campos de la tarea 5</td></tr>
+        <tr><td><span class="tag tp">PATCH</span></td><td><code>/api/tareas/5</code></td><td>Marca la tarea 5 como completada</td></tr>
         <tr><td><span class="tag tr">DELETE</span></td><td><code>/api/tareas/5</code></td><td>Elimina la tarea 5</td></tr>
       </tbody>
     </table>
   </div>
-
-  <div class="ib green">
-    <span class="ico">💡</span>
-    <div><strong>La URL representa el recurso, el método representa la acción.</strong> <code>/api/tareas</code> es el recurso "tareas". GET sobre ese recurso = leer. POST = crear. La combinación método + URL define completamente qué operación se hace.</div>
-  </div>
 </div>
 
-<!-- 3. CICLO DEL LOGIN -->
+<!-- 3. CICLO COMPLETO -->
 <div class="section">
-  <h2 class="sec-title"><span class="sec-num">03</span>El Ciclo Completo de un Login</h2>
-  <p class="body">Cuando un usuario inicia sesión en cualquier app, pasan exactamente estos 7 pasos. Entender este ciclo es clave para construir cualquier backend con autenticación.</p>
+  <h2 class="sec-title"><span class="sec-num">03</span>El Ciclo Completo: del Clic a la Base de Datos</h2>
+  <p class="body">Vamos a seguir paso a paso lo que pasa cuando un usuario inicia sesión en una app real. Es el ejemplo más común y el que mejor ilustra cómo trabajan las tres capas juntas.</p>
+  <p class="body" style="color:var(--accent);font-weight:600">Escenario: el usuario hace clic en "Iniciar Sesión"</p>
 
-  <div class="flow">
-    <div class="flow-step"><strong>Paso 1</strong> — El usuario completa el formulario: escribe su email y password y hace clic en "Ingresar"</div>
-    <div class="flow-step blue"><strong>Paso 2</strong> — El frontend envía un <code>POST /api/login</code> con los datos en el body en formato JSON</div>
-    <div class="flow-step"><strong>Paso 3</strong> — El backend recibe el request y valida que lleguen los campos requeridos. Si falta algo → responde 400</div>
-    <div class="flow-step purple"><strong>Paso 4</strong> — Consulta la base de datos: busca el usuario por email con SQL</div>
-    <div class="flow-step"><strong>Paso 5</strong> — Si el usuario no existe → 401. Si existe, verifica la password contra el hash guardado</div>
-    <div class="flow-step red"><strong>Paso 6 (si falla)</strong> — Hash no coincide → responde 401: "Email o password incorrectos"</div>
-    <div class="flow-step green"><strong>Paso 7 (si sale bien)</strong> — Genera un JWT (token), responde 200 con el token y los datos del usuario</div>
+  <div class="pasos">
+    <div class="paso">
+      <div class="paso-num">1</div>
+      <div class="paso-body"><strong>El usuario completa el formulario.</strong> El frontend (React, HTML, app móvil) recolecta el email y la password. El usuario hace clic en el botón.</div>
+    </div>
+    <div class="paso blue">
+      <div class="paso-num">2</div>
+      <div class="paso-body"><strong>El frontend envía un HTTP Request al backend.</strong> Se arma y envía un <code>POST</code> a <code>/api/login</code> con los datos en el body (JSON).</div>
+    </div>
+    <div class="paso">
+      <div class="paso-num">3</div>
+      <div class="paso-body"><strong>El backend recibe el request.</strong> El servidor de Node.js (o Python, etc.) recibe el POST. Valida que vengan email y password. Si falta alguno, devuelve <code>400 Bad Request</code>.</div>
+    </div>
+    <div class="paso purple">
+      <div class="paso-num">4</div>
+      <div class="paso-body"><strong>El backend consulta la base de datos.</strong> Hace una query SQL: <code>SELECT * FROM usuarios WHERE email = 'hernan@gmail.com'</code>. La base de datos busca y devuelve el registro si existe.</div>
+    </div>
+    <div class="paso">
+      <div class="paso-num">5</div>
+      <div class="paso-body"><strong>El backend verifica la password.</strong> Compara la password ingresada con el hash guardado en la base de datos. Si no coincide, devuelve <code>401 Unauthorized</code>.</div>
+    </div>
+    <div class="paso ok">
+      <div class="paso-num">6</div>
+      <div class="paso-body"><strong>El backend genera un token y responde.</strong> Si todo está bien, genera un JWT (JSON Web Token) y envía un <code>200 OK</code> con el token.</div>
+    </div>
+    <div class="paso">
+      <div class="paso-num">7</div>
+      <div class="paso-body"><strong>El frontend recibe la respuesta.</strong> Guarda el token (en memoria o localStorage) y redirige al usuario a la pantalla principal.</div>
+    </div>
   </div>
 
-  <div class="cb" style="margin-top:16px">
+  <h4 class="sub" style="margin-top:24px">El Request y Response de login en código</h4>
+  <p class="body">Esto es exactamente lo que viaja por la red en el ciclo que acabamos de ver:</p>
+
+  <div class="cb">
     <div class="cb-header">
       <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
-      <span class="cb-lang">HTTP — Request y Response del login</span>
+      <span class="cb-lang">El frontend envía este Request</span>
     </div>
-    <pre>// El frontend envía:
-POST /api/login HTTP/1.1
+    <pre>POST /api/login HTTP/1.1
+Host: api.miapp.com
 Content-Type: application/json
 
-{ "email": "hernan@gmail.com", "password": "miPass123" }
+{
+  "email": "hernan@gmail.com",
+  "password": "miPassword123"
+}</pre>
+  </div>
 
-
-// El backend responde si todo OK:
-HTTP/1.1 200 OK
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <span class="cb-lang">El backend responde — caso exitoso</span>
+    </div>
+    <pre>HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
   "success": true,
-  "token": "eyJhbGciOiJIUzI1NiJ9...",
-  "usuario": { "id": 42, "nombre": "Hernan", "rol": "admin" }
-}
+  "mensaje": "Bienvenido, Hernan",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "usuario": {
+    "id": 42,
+    "nombre": "Hernan",
+    "email": "hernan@gmail.com"
+  }
+}</pre>
+  </div>
 
-
-// El backend responde si la password es incorrecta:
-HTTP/1.1 401 Unauthorized
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <span class="cb-lang">El backend responde — password incorrecta</span>
+    </div>
+    <pre>HTTP/1.1 401 Unauthorized
 Content-Type: application/json
 
-{ "success": false, "error": "Email o password incorrectos" }</pre>
+{
+  "success": false,
+  "error": "Email o password incorrectos"
+}</pre>
   </div>
 
   <div class="ib red">
     <span class="ico">🔒</span>
-    <div><strong>Seguridad clave:</strong> el backend nunca dice cuál de los dos falló — ni "el email no existe" ni "la password es incorrecta". Siempre el mensaje genérico: <em>"Email o password incorrectos"</em>. Si dijera cuál, un atacante podría probar emails hasta encontrar uno válido en el sistema.</div>
+    <div><strong>¿Por qué no se dice "password incorrecta"?</strong><br>Por seguridad, el backend nunca le dice al usuario si el email existe o no. Si dijera "email no registrado", un atacante podría probar emails hasta encontrar uno válido. Por eso siempre se responde: <em>"Email o password incorrectos"</em>, sin especificar cuál de los dos falló.</div>
   </div>
 </div>
 
 <!-- 4. BASE DE DATOS -->
 <div class="section">
-  <h2 class="sec-title"><span class="sec-num">04</span>La Base de Datos</h2>
-  <p class="body">La base de datos guarda la información de forma <strong>persistente</strong>: sobrevive reinicios del servidor, cortes de luz y actualizaciones del código. Sin base de datos, todo se perdería al apagar.</p>
+  <h2 class="sec-title"><span class="sec-num">04</span>La Base de Datos: la Memoria de la App</h2>
+  <p class="body">La base de datos guarda toda la información de la app de forma <strong>persistente</strong>: sobrevive reinicios del servidor, cortes de luz y despliegues nuevos. Sin base de datos, todo se perdería cuando el servidor se apaga.</p>
 
-  <h4 class="sub">Ejemplo de tabla <code>usuarios</code> en PostgreSQL</h4>
+  <h4 class="sub">Cómo se organiza la información: tablas y filas</h4>
+  <p class="body">Una base de datos relacional (como PostgreSQL) organiza los datos en tablas, igual que una hoja de cálculo. Cada tabla tiene <strong>columnas</strong> (campos) y <strong>filas</strong> (registros).</p>
+
+  <h4 class="sub" style="margin-top:16px">Tabla: usuarios</h4>
   <div class="tbl-wrap">
     <table>
-      <thead><tr><th>id</th><th>nombre</th><th>email</th><th>password_hash</th><th>rol</th><th>creado_en</th></tr></thead>
+      <thead><tr><th>id</th><th>nombre</th><th>email</th><th>password_hash</th><th>creado_en</th></tr></thead>
       <tbody>
-        <tr><td>1</td><td>María</td><td>maria@mail.com</td><td><code style="font-size:11px">$2b$10$abc...</code></td><td>admin</td><td>2024-01-10</td></tr>
-        <tr><td>2</td><td>Hernán</td><td>hernan@gmail.com</td><td><code style="font-size:11px">$2b$10$xyz...</code></td><td>viewer</td><td>2024-01-15</td></tr>
+        <tr><td>1</td><td>María</td><td>maria@mail.com</td><td><code style="font-size:11px">$2b$10$abc...</code></td><td>2024-01-10</td></tr>
+        <tr><td>2</td><td>Hernán</td><td>hernan@gmail.com</td><td><code style="font-size:11px">$2b$10$xyz...</code></td><td>2024-01-15</td></tr>
+        <tr><td>3</td><td>Sofía</td><td>sofia@mail.com</td><td><code style="font-size:11px">$2b$10$mno...</code></td><td>2024-01-20</td></tr>
       </tbody>
     </table>
   </div>
@@ -305,82 +371,99 @@ Content-Type: application/json
   <div class="ib red">
     <span class="ico">🔑</span>
     <div>
-      <strong>Las passwords NUNCA se guardan en texto plano.</strong><br>
-      Se guardan como un <strong>hash irreversible</strong> generado con bcrypt. El hash <code>$2b$10$abc...</code> no puede convertirse de vuelta a la password original — ni el propio servidor la conoce.<br><br>
-      Cuando el usuario inicia sesión, bcrypt <em>compara</em> la password ingresada contra el hash guardado. Si coinciden → acceso. Si no → 401. Nunca se desencripta nada.
+      <strong>Las passwords nunca se guardan en texto plano.</strong><br>
+      Si la base de datos se filtra, los atacantes no deben poder leer las passwords. Por eso se guardan como un <strong>hash</strong> — una transformación irreversible. <strong>bcrypt</strong> es la librería más usada para esto en Node.js. El hash <code>$2b$10$abc...</code> no puede convertirse de vuelta a la password original.
     </div>
   </div>
 
-  <h4 class="sub">Tipos de base de datos</h4>
+  <h4 class="sub" style="margin-top:20px">Tipos de bases de datos</h4>
   <div class="tbl-wrap">
     <table>
-      <thead><tr><th>Tipo</th><th>Ejemplos</th><th>Cuándo usarlo</th></tr></thead>
+      <thead><tr><th>Tipo</th><th>Cómo funciona</th><th>Ejemplos</th><th>Cuándo usarlo</th></tr></thead>
       <tbody>
-        <tr><td><strong>SQL / Relacional</strong></td><td>PostgreSQL, MySQL</td><td>Datos estructurados con relaciones entre tablas. El estándar para la mayoría de las apps.</td></tr>
-        <tr><td><strong>NoSQL</strong></td><td>MongoDB, Firebase</td><td>Documentos JSON flexibles, estructuras que cambian mucho.</td></tr>
-        <tr><td><strong>Cache (en memoria)</strong></td><td>Redis</td><td>Datos en RAM: muy rápido pero temporal. Ideal para sesiones y datos frecuentes.</td></tr>
+        <tr>
+          <td><strong>Relacional (SQL)</strong></td>
+          <td>Tablas con columnas fijas. Relaciones entre tablas.</td>
+          <td>PostgreSQL, MySQL, SQLite</td>
+          <td>Usuarios, pedidos, productos — datos estructurados</td>
+        </tr>
+        <tr>
+          <td><strong>No relacional (NoSQL)</strong></td>
+          <td>Documentos JSON, sin esquema fijo.</td>
+          <td>MongoDB, Firebase</td>
+          <td>Contenido variable, datos anidados complejos</td>
+        </tr>
+        <tr>
+          <td><strong>En memoria (Cache)</strong></td>
+          <td>Guarda datos en RAM, muy rápido pero temporal.</td>
+          <td>Redis</td>
+          <td>Sesiones, contadores, datos que cambian mucho</td>
+        </tr>
       </tbody>
     </table>
   </div>
-  <div class="ib green">
-    <span class="ico">✓</span>
-    <div>En este curso usamos <strong>PostgreSQL</strong> — es el más usado en el mundo para backends profesionales, es open source y las plataformas de deploy lo incluyen gratis.</div>
-  </div>
 </div>
 
-<!-- 5. ARQUITECTURA EN PRODUCCION -->
+<!-- 5. ARQUITECTURA -->
 <div class="section">
-  <h2 class="sec-title"><span class="sec-num">05</span>Arquitectura en Producción</h2>
-  <p class="body">Una app real en producción tiene más piezas que solo el backend y la base de datos. Acá está el panorama completo:</p>
+  <h2 class="sec-title"><span class="sec-num">05</span>Arquitectura Completa de una App Real</h2>
+  <p class="body">En producción (una app real funcionando en internet) hay más piezas además de las tres capas. Esta es la arquitectura típica de una startup o app moderna:</p>
 
   <div class="arch-grid">
     <div class="arch-row"><div class="arch-label">Usuario</div><div class="arch-desc">Abre la app desde su celular o navegador.</div></div>
-    <div class="arch-row"><div class="arch-label">DNS</div><div class="arch-desc">Traduce "www.miapp.com" a la IP real del servidor. Es como la guía telefónica de internet.</div></div>
-    <div class="arch-row"><div class="arch-label">CDN</div><div class="arch-desc">Entrega el frontend estático (HTML, CSS, imágenes) desde servidores cerca del usuario. Muy rápido.</div></div>
-    <div class="arch-row"><div class="arch-label">Load Balancer</div><div class="arch-desc">Distribuye el tráfico entre múltiples instancias del backend para no saturar ninguna.</div></div>
-    <div class="arch-row"><div class="arch-label">Backend (API)</div><div class="arch-desc">Recibe los requests, corre la lógica de negocio y consulta la base de datos. Acá vivimos nosotros.</div></div>
-    <div class="arch-row"><div class="arch-label">Base de datos</div><div class="arch-desc">PostgreSQL: guarda toda la información de forma permanente.</div></div>
-    <div class="arch-row"><div class="arch-label">Cache (Redis)</div><div class="arch-desc">Guarda respuestas frecuentes en memoria RAM. El backend la consulta antes de ir a la DB — mucho más rápido.</div></div>
-    <div class="arch-row"><div class="arch-label">Servicios ext.</div><div class="arch-desc">Stripe (pagos), SendGrid (emails), S3 (archivos). El backend los llama cuando los necesita.</div></div>
+    <div class="arch-row"><div class="arch-label">CDN</div><div class="arch-desc"><strong>Content Delivery Network:</strong> entrega el frontend estático (HTML, CSS, JS) desde servidores cercanos al usuario. Muy rápido.</div></div>
+    <div class="arch-row"><div class="arch-label">DNS</div><div class="arch-desc">Traduce "www.miapp.com" a la IP real del servidor. Como una guía telefónica.</div></div>
+    <div class="arch-row"><div class="arch-label">Load Balancer</div><div class="arch-desc">Distribuye el tráfico entre múltiples instancias del backend para que ninguna se sobrecargue.</div></div>
+    <div class="arch-row"><div class="arch-label" style="color:var(--accent)">Backend (API)</div><div class="arch-desc"><strong>Acá vivimos nosotros.</strong> Recibe los requests, corre la lógica de negocio, consulta la base de datos y responde.</div></div>
+    <div class="arch-row"><div class="arch-label">Base de datos</div><div class="arch-desc">Guarda toda la información de forma permanente.</div></div>
+    <div class="arch-row"><div class="arch-label">Cache (Redis)</div><div class="arch-desc">Guarda respuestas frecuentes en memoria para no ir a la base de datos en cada request. Hace la app mucho más rápida.</div></div>
+    <div class="arch-row"><div class="arch-label">Servicios ext.</div><div class="arch-desc">Stripe (pagos), SendGrid (emails), Twilio (SMS), S3 (archivos). El backend los llama cuando los necesita.</div></div>
   </div>
 
   <div class="ib blue">
     <span class="ico">🎯</span>
-    <div><strong>En este curso nos enfocamos en el Backend y la Base de datos.</strong> Al terminar vas a poder construir y deployar una API completa en Render o Railway. El Load Balancer, CDN y Redis los vas a conocer cuando el proyecto escale.</div>
+    <div><strong>En este curso nos enfocamos en el Backend (API) y la Base de Datos.</strong> No te preocupes por el resto. CDN, Load Balancer, Redis y servicios externos son conceptos que van a quedar claros solos a medida que avancés. Al final del curso vas a deployar tu propia API con base de datos en la nube.</div>
   </div>
 </div>
 
-<!-- 6. EJERCICIO DEVTOOLS -->
+<!-- 6. EJERCICIO -->
 <div class="section">
-  <h2 class="sec-title"><span class="sec-num">06</span>Ejercicio — Analizar Mercado Libre</h2>
-  <p class="body">Vamos a ver en vivo cómo el backend de Mercado Libre responde a los requests del frontend.</p>
+  <h2 class="sec-title"><span class="sec-num">06</span>Ejercicio Práctico — Analizá Mercado Libre</h2>
+  <p class="body">Vamos a usar el DevTools para ver en vivo cómo una app real separa el frontend del backend. Usamos Mercado Libre porque tiene una API bien visible.</p>
 
-  <div class="ib blue">
-    <span class="ico">🔍</span>
-    <div>
-      <strong>Paso a paso:</strong><br>
-      1) Abrí <strong>mercadolibre.com.ar</strong> → F12 → pestaña <strong>Network</strong> → filtro <strong>Fetch/XHR</strong> → recargá con F5<br>
-      2) Hacé clic en el primer request largo (suele tener una URL con <code>/search</code> o <code>/recommendations</code>)<br>
-      3) Pestaña <strong>Headers</strong>: mirá el método (GET), la URL completa y el status code (200)<br>
-      4) Pestaña <strong>Response</strong>: expandí el campo <code>results</code> — ahí están los productos<br>
-      5) Expandí un resultado: vas a ver <code>id</code>, <code>title</code>, <code>price</code>, <code>thumbnail</code><br>
-      6) Eso es <em>exactamente</em> lo que el backend de ML le manda al frontend
-    </div>
+  <h4 class="sub">Preparación</h4>
+  <div class="ej-steps">
+    <div class="ej-step"><div class="ej-num">1</div><div class="ej-txt"><strong>Abrí mercadolibre.com.ar</strong> en tu navegador</div></div>
+    <div class="ej-step"><div class="ej-num">2</div><div class="ej-txt"><strong>Presioná F12</strong> para abrir el DevTools</div></div>
+    <div class="ej-step"><div class="ej-num">3</div><div class="ej-txt"><strong>Andá a la pestaña Network y activá el filtro Fetch/XHR.</strong> Esto muestra solo los requests de datos, no imágenes ni scripts.</div></div>
+    <div class="ej-step"><div class="ej-num">4</div><div class="ej-txt"><strong>Recargá la página con F5.</strong> Vas a ver cómo se llenan de requests.</div></div>
   </div>
 
-  <div class="ib green" style="margin-top:8px">
-    <span class="ico">🔥</span>
-    <div>
-      <strong>Desafío:</strong><br>
-      • Agregá un producto al carrito y buscá el <strong>POST</strong> que aparece → pestaña <strong>Payload</strong> para ver qué datos manda el frontend<br>
-      • Buscá un request que tenga el header <strong>Authorization</strong> — eso significa que el usuario está logueado<br>
-      • Fijate en la columna <strong>Time</strong>: ¿cuántos milisegundos tarda en responder el backend de ML?
-    </div>
+  <h4 class="sub" style="margin-top:20px">Qué buscar y analizar</h4>
+
+  <div class="buscar-item">
+    <div class="buscar-titulo">Buscá el request principal de productos</div>
+    <div class="buscar-desc">Debería ser un GET a una URL como <code>/sites/MLA/search?q=...</code>. Hacé clic en él y andá a la pestaña <strong>Response</strong>. Vas a ver un JSON con todos los productos que aparecen en pantalla.</div>
   </div>
 
-  <div class="ib amber" style="margin-top:8px">
+  <div class="buscar-item">
+    <div class="buscar-titulo">Encontrá el campo "results"</div>
+    <div class="buscar-desc">En el JSON de respuesta, buscá la clave <code>results</code>. Es un array de objetos. Cada objeto es un producto con su <code>id</code>, <code>title</code>, <code>price</code>, <code>thumbnail</code> y más. Eso es exactamente lo que el backend devuelve al frontend.</div>
+  </div>
+
+  <div class="buscar-item">
+    <div class="buscar-titulo">Fijate cuánto tarda cada request</div>
+    <div class="buscar-desc">La columna <strong>Time</strong> muestra el tiempo de respuesta en milisegundos. Un buen backend responde en menos de 200ms. Si tarda más de 1000ms, algo está mal (o es una consulta compleja).</div>
+  </div>
+
+  <div class="buscar-item">
+    <div class="buscar-titulo">Buscá un request POST</div>
+    <div class="buscar-desc">Agregá un producto al carrito. En ese momento vas a ver un POST en Network. Hacé clic y mirá el <strong>Payload</strong>: vas a ver el id del producto que se mandó al servidor. El backend lo recibe, verifica que el usuario esté logueado y guarda el carrito en la DB.</div>
+  </div>
+
+  <div class="ib amber">
     <span class="ico">💡</span>
-    <div>Lo que ves en la pestaña Response es el JSON crudo que genera el backend. El frontend agarra ese JSON y lo convierte en la pantalla de productos que ves. <strong>Al final de este curso vas a poder construir algo equivalente.</strong></div>
+    <div><strong>Lo que estás viendo es el contrato entre frontend y backend.</strong> Ese JSON que devuelve el backend es exactamente lo que el frontend espera. Si el backend cambia la estructura del JSON sin avisarle al equipo de frontend, la app se rompe. Por eso las APIs tienen documentación y se versionan (v1, v2, v3...) cuando hay cambios grandes.</div>
   </div>
 </div>
 
@@ -392,81 +475,72 @@ Content-Type: application/json
   <div class="quiz-wrap" id="quiz">
 
     <div class="quiz-item">
-      <div class="quiz-q"><span class="quiz-num">Pregunta 01</span>¿Cuáles son las tres capas de una app moderna?</div>
+      <div class="quiz-q"><span class="quiz-num">Pregunta 01</span>¿Qué significa API?</div>
       <div class="quiz-opts">
-        <button class="quiz-opt-btn" onclick="answer(this,0,0)"><span class="opt-letter">A</span>HTML, CSS y JavaScript</button>
-        <button class="quiz-opt-btn" onclick="answer(this,1,0)"><span class="opt-letter">B</span>Frontend, Backend y Base de datos</button>
+        <button class="quiz-opt-btn" onclick="answer(this,0,0)"><span class="opt-letter">A</span>Application Programming Interface</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,0)"><span class="opt-letter">B</span>Automatic Page Index</button>
       </div>
       <div class="quiz-feedback" id="fb0"></div>
     </div>
 
     <div class="quiz-item">
-      <div class="quiz-q"><span class="quiz-num">Pregunta 02</span>¿Qué es una API REST?</div>
+      <div class="quiz-q"><span class="quiz-num">Pregunta 02</span>¿Cuáles son las tres capas de una app web?</div>
       <div class="quiz-opts">
-        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Un lenguaje de programación para servidores</button>
-        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Un estilo para diseñar APIs usando métodos HTTP y URLs que representan recursos</button>
+        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>HTML, CSS y JavaScript</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Frontend, Backend y Base de datos</button>
       </div>
       <div class="quiz-feedback" id="fb1"></div>
     </div>
 
     <div class="quiz-item">
-      <div class="quiz-q"><span class="quiz-num">Pregunta 03</span>¿Cómo se guardan las passwords en la base de datos?</div>
+      <div class="quiz-q"><span class="quiz-num">Pregunta 03</span>¿Qué devuelve el backend cuando el login es exitoso?</div>
       <div class="quiz-opts">
-        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>En texto plano por seguridad</button>
-        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Como un hash irreversible generado con bcrypt</button>
+        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>La password del usuario</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Un token (JWT)</button>
       </div>
       <div class="quiz-feedback" id="fb2"></div>
     </div>
 
     <div class="quiz-item">
-      <div class="quiz-q"><span class="quiz-num">Pregunta 04</span>¿Por qué el backend no dice si falló el email o la password?</div>
+      <div class="quiz-q"><span class="quiz-num">Pregunta 04</span>¿Por qué las passwords se guardan como hash?</div>
       <div class="quiz-opts">
-        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Para simplificar el código del servidor</button>
-        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Por seguridad: si dijera cuál falló, un atacante podría encontrar emails válidos</button>
+        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Para ahorrar espacio en la base de datos</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Para que no puedan leerse si la base de datos se filtra</button>
       </div>
       <div class="quiz-feedback" id="fb3"></div>
     </div>
 
     <div class="quiz-item">
-      <div class="quiz-q"><span class="quiz-num">Pregunta 05</span>¿Qué base de datos usamos en el curso?</div>
+      <div class="quiz-q"><span class="quiz-num">Pregunta 05</span>¿Qué es REST?</div>
       <div class="quiz-opts">
-        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>MongoDB</button>
-        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>PostgreSQL</button>
+        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Un lenguaje de programación</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Un estilo de diseñar APIs usando métodos HTTP y URLs claras</button>
       </div>
       <div class="quiz-feedback" id="fb4"></div>
     </div>
 
     <div class="quiz-item">
-      <div class="quiz-q"><span class="quiz-num">Pregunta 06</span>En el ciclo del login, ¿qué hace el backend si el usuario no existe en la DB?</div>
+      <div class="quiz-q"><span class="quiz-num">Pregunta 06</span>¿Qué hace un Load Balancer?</div>
       <div class="quiz-opts">
-        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Responde 500 (error del servidor)</button>
-        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Responde 401 con el mensaje genérico "Email o password incorrectos"</button>
+        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Guarda datos en memoria RAM</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Distribuye el tráfico entre varias instancias del backend</button>
       </div>
       <div class="quiz-feedback" id="fb5"></div>
     </div>
 
     <div class="quiz-item">
-      <div class="quiz-q"><span class="quiz-num">Pregunta 07</span>¿Para qué sirve Redis en la arquitectura de producción?</div>
+      <div class="quiz-q"><span class="quiz-num">Pregunta 07</span>¿Cuál es la diferencia entre una base de datos SQL y NoSQL?</div>
       <div class="quiz-opts">
-        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Reemplaza a PostgreSQL como base de datos principal</button>
-        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Guarda respuestas frecuentes en RAM para que el backend no consulte la DB en cada request</button>
+        <button class="quiz-opt-btn" onclick="answer(this,0,0)"><span class="opt-letter">A</span>SQL usa tablas con columnas fijas, NoSQL usa documentos JSON flexibles</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,0)"><span class="opt-letter">B</span>SQL es más moderno que NoSQL</button>
       </div>
       <div class="quiz-feedback" id="fb6"></div>
-    </div>
-
-    <div class="quiz-item">
-      <div class="quiz-q"><span class="quiz-num">Pregunta 08</span>¿Qué son los "endpoints" de una API?</div>
-      <div class="quiz-opts">
-        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Los errores que puede devolver un servidor</button>
-        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Las URLs disponibles en la API, cada una con su método HTTP y su función</button>
-      </div>
-      <div class="quiz-feedback" id="fb7"></div>
     </div>
 
   </div>
 
   <div class="quiz-score" id="quizScore">
-    <div class="quiz-score-num" id="scoreNum">0/8</div>
+    <div class="quiz-score-num" id="scoreNum">0/7</div>
     <div>
       <div style="font-size:14px;color:var(--fg2)" id="scoreLabel"></div>
       <button onclick="resetQuiz()" style="margin-top:8px;font-size:13px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;text-decoration:underline">↺ Reintentar</button>
@@ -478,10 +552,11 @@ Content-Type: application/json
 <div class="tarea section">
   <h3>📚 Tarea para la Próxima Clase</h3>
   <ol>
-    <li>Instalar <strong>Node.js LTS</strong> desde <strong>nodejs.org</strong> — verificar con <code>node --version</code> en la terminal.</li>
-    <li>Instalar <strong>VS Code</strong> y las extensiones: Thunder Client, Prettier y ESLint.</li>
-    <li>Analizar los requests de Mercado Libre con DevTools — encontrá el POST del carrito.</li>
-    <li>Diseñar en papel los endpoints de tu app idea (al menos 4 rutas con su método y descripción).</li>
+    <li>Instalá <strong>Node.js</strong> desde nodejs.org — descargá la versión <strong>LTS</strong>. Lo vamos a usar desde la clase 3.</li>
+    <li>Instalá <strong>Visual Studio Code</strong> desde code.visualstudio.com si no lo tenés.</li>
+    <li>Instalá la extensión <strong>Thunder Client</strong> en VS Code (para testear endpoints).</li>
+    <li>Pensá en tu app idea: escribí en papel cuáles serían sus endpoints principales (al menos 4). ¿Qué método usaría cada uno? GET, POST, PUT o DELETE?</li>
+    <li>(Opcional) Abrí la app del banco o de delivery que uses y espiá sus requests con el DevTools. Intentá encontrar el request que trae tu saldo o tu historial.</li>
   </ol>
 </div>
 
@@ -493,39 +568,31 @@ Content-Type: application/json
 </div><!-- /page -->
 
 <script>
-// Theme
 const html = document.documentElement;
-const MOON = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
-const SUN  = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
-const icon = document.getElementById('themeIcon');
-function applyTheme(t) { html.dataset.theme=t; icon.innerHTML=t==='dark'?SUN:MOON; localStorage.setItem('theme',t); }
+const MOON=`<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+const SUN=`<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+const icon=document.getElementById('themeIcon');
+function applyTheme(t){html.dataset.theme=t;icon.innerHTML=t==='dark'?SUN:MOON;localStorage.setItem('theme',t);}
 document.getElementById('themeBtn').addEventListener('click',()=>applyTheme(html.dataset.theme==='dark'?'light':'dark'));
 applyTheme(localStorage.getItem('theme')||'dark');
 
-// Progress bar
-const fill = document.getElementById('progress-fill');
-window.addEventListener('scroll',()=>{
-  const h=document.documentElement;
-  fill.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
-},{passive:true});
+const fill=document.getElementById('progress-fill');
+window.addEventListener('scroll',()=>{const h=document.documentElement;fill.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
 
-// Quiz
-const CORRECT = [1,1,1,1,1,1,1,1];
-const EXPLAIN = [
-  'Frontend (lo que el usuario ve), Backend (la lógica) y Base de datos (la memoria permanente).',
-  'REST usa métodos HTTP + URLs claras para representar recursos y acciones sobre ellos.',
-  'Nunca en texto plano. Se usa bcrypt para generar un hash irreversible.',
-  'Si dijera "email no existe", un atacante podría probar emails hasta encontrar uno válido en el sistema.',
-  'PostgreSQL — relacional, open source y el más usado en backends profesionales.',
-  'Siempre 401 con mensaje genérico. El backend no revela si el usuario existe o no.',
-  'Redis guarda datos en RAM (caché). Mucho más rápido que consultar la DB en cada request.',
-  'Los endpoints son las URLs de la API, cada una con un método HTTP y una función específica.',
+const CORRECT=[0,1,1,1,1,1,0];
+const EXPLAIN=[
+  'API = Application Programming Interface. Es el contrato entre el frontend y el backend.',
+  'Las tres capas son Frontend (pantalla), Backend (lógica) y Base de datos (memoria permanente).',
+  'Cuando el login es exitoso el backend genera y envía un JWT (JSON Web Token), nunca la password.',
+  'Se guarda un hash irreversible con bcrypt. Si se filtra la DB, las passwords no pueden leerse.',
+  'REST es un estilo de diseño para APIs, no un lenguaje. Usa métodos HTTP + URLs claras.',
+  'El Load Balancer distribuye el tráfico. Redis (cache) es el que guarda datos en RAM.',
+  'SQL usa tablas con columnas fijas y relaciones. NoSQL usa documentos JSON flexibles. SQL no es más moderno — son herramientas distintas para distintos casos.',
 ];
-let answers=new Array(8).fill(null), done=new Array(8).fill(false);
-
+let answers=new Array(7).fill(null),done=new Array(7).fill(false);
 window.answer=function(btn,sel,qi){
   if(done[qi])return;
-  done[qi]=true; answers[qi]=sel;
+  done[qi]=true;answers[qi]=sel;
   btn.closest('.quiz-opts').querySelectorAll('.quiz-opt-btn').forEach((b,i)=>{
     b.disabled=true;
     if(i===CORRECT[qi])b.classList.add('correct');
@@ -537,22 +604,20 @@ window.answer=function(btn,sel,qi){
   else{fb.classList.add('no');fb.innerHTML='✗ Incorrecto. '+EXPLAIN[qi];}
   if(done.every(Boolean))showScore();
 };
-
 function showScore(){
   const correct=answers.filter((a,i)=>a===CORRECT[i]).length;
   const sc=document.getElementById('quizScore');
   sc.classList.add('show');
-  document.getElementById('scoreNum').textContent=correct+'/8';
-  const pct=Math.round(correct/8*100);
+  document.getElementById('scoreNum').textContent=correct+'/7';
+  const pct=Math.round(correct/7*100);
   document.getElementById('scoreLabel').textContent=
     pct===100?'🎉 Perfecto. Estás listo para la clase 3.':
     pct>=75?'💪 Muy bien. Repasá los que erraste.':
     pct>=50?'📚 Pasable. Vale la pena releer la clase.':
     '🔄 Repasá el material y volvé a intentarlo.';
 }
-
 window.resetQuiz=function(){
-  answers=new Array(8).fill(null); done=new Array(8).fill(false);
+  answers=new Array(7).fill(null);done=new Array(7).fill(false);
   document.querySelectorAll('.quiz-opt-btn').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong');});
   document.querySelectorAll('.quiz-feedback').forEach(fb=>{fb.classList.remove('show','ok','no');fb.innerHTML='';});
   document.getElementById('quizScore').classList.remove('show');
