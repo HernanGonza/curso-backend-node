@@ -24,7 +24,7 @@
     "archivo": "clases/clase3.html",
     "duracion": "60 min",
     "temas": ["Terminal", "Node.js", "VS Code", "npm", "nodemon"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 4,
