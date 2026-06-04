@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 3 — Instalación y Entorno · CapOL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#00c896;--danger:#ff4757;--warn:#ffa502;--purple:#a29bfe;--blue-tag:#74b9ff}
+[data-theme="dark"]{--bg:#0f0f11;--bg2:#16161a;--bg3:#1c1c21;--border:#2a2a32;--border2:#35353f;--fg:#e2e2ec;--fg2:#a0a0b0;--fg3:#606070;--card-bg:#16161a;--code-bg:#0a0a0d;--code-fg:#b8d0c8;--shadow:0 4px 24px rgba(0,0,0,.5)}
+[data-theme="light"]{--bg:#f5f5f0;--bg2:#ffffff;--bg3:#ebebeb;--border:#d8d8d0;--border2:#c5c5bc;--fg:#1a1a24;--fg2:#505060;--fg3:#909098;--card-bg:#ffffff;--code-bg:#1a1a24;--code-fg:#c8e0d8;--shadow:0 4px 24px rgba(0,0,0,.1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;line-height:1.75;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+.page{max-width:800px;margin:0 auto;padding:0 24px 120px}
+#topbar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:17px;text-decoration:none;color:var(--fg)}
+.brand-dot{width:30px;height:30px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#000;font-size:13px;font-weight:800;font-family:'IBM Plex Mono',monospace}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fg2);transition:all .2s}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+.powered{font-size:11px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+.back-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s}
+.back-btn:hover{color:var(--accent)}
+@media(max-width:600px){.powered{display:none}}
+#progress-bar{position:fixed;top:56px;left:0;right:0;height:2px;background:var(--border);z-index:99}
+#progress-fill{height:100%;background:var(--accent);width:0%;transition:width .1s}
+.hero{padding:64px 0 40px;border-bottom:1px solid var(--border);margin-bottom:48px}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.hero-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--accent)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(32px,6vw,52px);font-weight:700;line-height:1.1;color:var(--fg);margin-bottom:18px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-desc{font-size:16px;color:var(--fg2);max-width:560px;line-height:1.7;margin-bottom:28px}
+.hero-meta{display:flex;gap:20px;flex-wrap:wrap}
+.hero-chip{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--fg2);font-family:'IBM Plex Mono',monospace}
+.hero-chip svg{color:var(--accent)}
+.objetivos{background:color-mix(in srgb,var(--accent) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);border-radius:12px;padding:24px 28px;margin-bottom:48px}
+.objetivos-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.objetivos ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.objetivos li{display:flex;gap:10px;font-size:14.5px}
+.objetivos li::before{content:'▸';color:var(--accent);flex-shrink:0;margin-top:2px}
+.section{margin-bottom:52px}
+.sec-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--fg);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:2px 8px;border-radius:5px}
+p.body{font-size:15px;line-height:1.8;color:var(--fg2);margin-bottom:12px}
+h4.sub{font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;color:var(--fg);margin:18px 0 8px}
+.tbl-wrap{overflow-x:auto;margin:12px 0;border-radius:10px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+thead th{background:var(--bg3);padding:10px 14px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--fg3);font-weight:600}
+tbody td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top}
+tbody tr:hover td{background:var(--bg3)}
+.cb{background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:12px 0}
+.cb-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border2);background:color-mix(in srgb,#000 20%,var(--code-bg))}
+.cb-dots{display:flex;gap:5px}
+.cb-dots span{width:10px;height:10px;border-radius:50%}
+.cb-dots .r{background:#ff5f56}.cb-dots .y{background:#ffbd2e}.cb-dots .g{background:#27c93f}
+.cb-lang{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#555}
+.cb pre{padding:16px 18px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--code-fg);white-space:pre}
+/* code-explained table */
+.ce{width:100%;border-collapse:collapse;background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:10px 0}
+.ce tr{border-top:1px solid #1e1e28}
+.ce tr:first-child{border-top:none}
+.ce td{padding:5px 14px;font-size:13px;vertical-align:top}
+.ce td:first-child{font-family:'IBM Plex Mono',monospace;color:var(--code-fg);width:52%;white-space:pre}
+.ce td:last-child{color:var(--fg3);font-size:12px;padding-left:18px;border-left:1px solid #1e1e28}
+.ce tr:hover td{background:#0f0f14}
+[data-theme="light"] .ce tr:hover td{background:#f0f0e8}
+code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix(in srgb,var(--blue-tag) 10%,var(--bg3));color:var(--blue-tag);padding:1px 6px;border-radius:4px}
+.ib{border-radius:10px;padding:14px 18px;margin:12px 0;display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.65}
+.ib .ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.ib.green{background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 28%,transparent)}
+.ib.amber{background:color-mix(in srgb,var(--warn) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--warn) 28%,transparent)}
+.ib.red{background:color-mix(in srgb,var(--danger) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--danger) 28%,transparent)}
+.ib.blue{background:color-mix(in srgb,var(--blue-tag) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 28%,transparent)}
+/* OS tabs */
+.os-tabs{display:flex;gap:0;margin-bottom:0;border-radius:10px 10px 0 0;overflow:hidden;border:1px solid var(--border);border-bottom:none}
+.os-tab{padding:9px 18px;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;background:var(--bg3);color:var(--fg3);border-right:1px solid var(--border);transition:all .15s;letter-spacing:.06em;text-transform:uppercase}
+.os-tab:last-child{border-right:none}
+.os-tab.active{background:var(--accent);color:#000}
+.os-content{display:none;border:1px solid var(--border);border-radius:0 0 10px 10px;overflow:hidden}
+.os-content.active{display:block}
+/* numbered steps */
+.pasos{display:flex;flex-direction:column;gap:0;margin:14px 0}
+.paso{display:grid;grid-template-columns:44px 1fr;border:1px solid var(--border);border-bottom:none;background:var(--card-bg)}
+.paso:first-child{border-radius:10px 10px 0 0}
+.paso:last-child{border-radius:0 0 10px 10px;border-bottom:1px solid var(--border)}
+.paso:hover{background:var(--bg3)}
+.paso-num{display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:12px;color:#000;background:var(--accent);border-right:1px solid var(--border)}
+.paso-body{padding:11px 16px;font-size:14px;line-height:1.6;color:var(--fg2)}
+.paso-body strong{color:var(--fg);display:block;margin-bottom:2px}
+.paso-body small{font-size:12px;color:var(--fg3);font-style:italic}
+/* practice steps */
+.practice-steps{display:flex;flex-direction:column;gap:0;margin:14px 0}
+.ps{display:grid;grid-template-columns:36px 1fr;border:1px solid var(--border);border-bottom:none;background:var(--bg2)}
+.ps:first-child{border-radius:10px 10px 0 0}
+.ps:last-child{border-radius:0 0 10px 10px;border-bottom:1px solid var(--border)}
+.ps-num{display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;color:#000;background:var(--accent)}
+.ps-txt{padding:10px 14px;font-size:14px;color:var(--fg2)}
+.ps-txt strong{color:var(--fg)}
+.ps-txt small{display:block;font-size:12px;color:var(--fg3);margin-top:2px}
+/* ext table */
+.ext-grid{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.ext-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 18px;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start}
+.ext-name{font-weight:700;font-size:14px;color:var(--fg);margin-bottom:4px}
+.ext-desc{font-size:13.5px;color:var(--fg2);line-height:1.55}
+.ext-id{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--bg3));padding:2px 8px;border-radius:5px;white-space:nowrap;height:fit-content}
+/* quiz */
+.quiz-wrap{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+.quiz-item{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.quiz-q{padding:14px 18px;border-bottom:1px solid var(--border);font-size:14.5px;font-weight:600;background:var(--bg2)}
+.quiz-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:4px}
+.quiz-opts{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.quiz-opt-btn{width:100%;text-align:left;padding:10px 16px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;color:var(--fg);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:10px;transition:all .15s}
+.quiz-opt-btn:hover:not(:disabled){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--bg3))}
+.opt-letter{width:22px;height:22px;border-radius:6px;background:var(--border2);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;color:var(--fg3)}
+.quiz-opt-btn:hover:not(:disabled) .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.correct{background:color-mix(in srgb,var(--accent) 12%,var(--bg3));border-color:var(--accent);color:var(--accent)}
+.quiz-opt-btn.correct .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.wrong{background:color-mix(in srgb,var(--danger) 10%,var(--bg3));border-color:var(--danger);color:var(--danger)}
+.quiz-opt-btn.wrong .opt-letter{background:var(--danger);color:#fff}
+.quiz-opt-btn:disabled{cursor:default}
+.quiz-feedback{padding:10px 18px 14px;font-size:13.5px;display:none}
+.quiz-feedback.show{display:flex;align-items:center;gap:8px}
+.quiz-feedback.ok{color:var(--accent)}.quiz-feedback.no{color:var(--danger)}
+.quiz-score{margin-top:20px;padding:18px 22px;background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:12px;display:none;align-items:center;gap:16px}
+.quiz-score.show{display:flex}
+.quiz-score-num{font-family:'Fraunces',serif;font-size:40px;font-weight:700;color:var(--accent);line-height:1}
+.tarea{background:color-mix(in srgb,var(--blue-tag) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 25%,transparent);border-radius:12px;padding:24px 28px}
+.tarea h3{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--blue-tag);margin-bottom:14px}
+.tarea ol{padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.footer{border-top:1px solid var(--border);padding:32px 0 0;margin-top:64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-brand{font-family:'Fraunces',serif;font-weight:700;font-size:15px}
+.footer-right{font-size:12px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+</style>
+</head>
+<body>
+<div id="topbar">
+  <a href="../index.html" class="back-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Inicio</a>
+  <div class="brand" style="font-size:15px"><div class="brand-dot">B</div>Backend desde Cero</div>
+  <div class="topbar-right">
+    <span class="powered">CapOL × Apoc Automation</span>
+    <button class="theme-btn" id="themeBtn" title="Cambiar tema">
+      <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+
+<div class="page">
+<div class="hero">
+  <div class="hero-eyebrow">Clase 03 · Bloque 1: Introducción</div>
+  <h1>Instalación y<br><em>Entorno de Desarrollo</em></h1>
+  <p class="hero-desc">Terminal, Node.js, VS Code, npm y tu primer archivo JavaScript ejecutándose en el servidor.</p>
+  <div class="hero-meta">
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>60 minutos</span>
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Requiere Clase 2</span>
+  </div>
+</div>
+
+<div class="objetivos">
+  <div class="objetivos-title">Objetivos de la clase</div>
+  <ul>
+    <li>Entender qué es la terminal y por qué la usamos.</li>
+    <li>Aprender los comandos básicos para navegar carpetas.</li>
+    <li>Instalar Node.js y verificar que funciona correctamente.</li>
+    <li>Instalar Visual Studio Code con las extensiones necesarias.</li>
+    <li>Entender qué es npm y el archivo package.json.</li>
+    <li>Crear el primer proyecto Node.js desde cero.</li>
+    <li>Entender qué es console.log y cómo usarlo.</li>
+    <li>Ejecutar el primer archivo JavaScript desde la terminal.</li>
+    <li>Instalar y usar nodemon para recarga automática.</li>
+  </ul>
+</div>
+
+<!-- 1. TERMINAL -->
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">01</span>La Terminal: tu Nueva Mejor Amiga</h2>
+  <div class="ib blue">
+    <span class="ico">💻</span>
+    <div><strong>¿Qué es la terminal?</strong><br>La terminal (también llamada consola, línea de comandos o CLI) es una pantalla negra donde escribís texto para darle órdenes a la computadora. No tiene botones ni menús — solo comandos de texto.<br><em style="color:var(--fg3)">Ejemplo: en vez de hacer doble clic en una carpeta, escribís <code>cd mi-carpeta</code> y presionás Enter.</em></div>
+  </div>
+  <p class="body">Como desarrollador backend vas a usar la terminal para todo: instalar librerías, ejecutar el servidor, ver errores, conectarte a la base de datos. Al principio parece difícil pero en pocas clases se vuelve natural.</p>
+
+  <h4 class="sub">Cómo abrir la terminal según tu sistema</h4>
+  <div class="tbl-wrap">
+    <table>
+      <tbody>
+        <tr><td style="font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--blue-tag);width:90px">Windows</td><td>Buscá 'cmd' o 'PowerShell' en el menú inicio. También podés usar la terminal de VS Code.</td></tr>
+        <tr><td style="font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--accent)">Mac</td><td>Cmd + Espacio, escribí 'Terminal' y Enter. O: Aplicaciones → Utilidades → Terminal.</td></tr>
+        <tr><td style="font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--purple)">Linux</td><td>Ctrl + Alt + T. O buscala en el menú de aplicaciones.</td></tr>
+        <tr><td style="font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--warn)">VS Code</td><td>Ctrl + tilde (el acento grave <code>`</code> que está arriba del tabulador). <strong>Esta es la que más vas a usar.</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 2. COMANDOS -->
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">02</span>Comandos Básicos de la Terminal</h2>
+  <p class="body">Antes de instalar Node.js, necesitás saber moverte dentro de la terminal. Son pocos comandos y se aprenden rápidamente. La lógica es siempre la misma: escribí el comando y presioná Enter.</p>
+
+  <h4 class="sub">Saber dónde estás: <code>pwd</code></h4>
+  <p class="body"><code>pwd</code> — Print Working Directory. Te muestra en qué carpeta estás parado ahora mismo. Es lo primero que conviene revisar para no perderse.</p>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">Terminal</span></div>
+  <pre>pwd
+# La terminal responde algo como:
+# /Users/hernan       (en Mac)
+# /home/hernan        (en Linux)
+# C:\Users\hernan     (en Windows, usar 'dir' en vez de 'pwd')</pre></div>
+
+  <h4 class="sub">Ver el contenido de una carpeta: <code>ls</code> / <code>dir</code></h4>
+  <p class="body"><code>ls</code> (Mac/Linux) o <code>dir</code> (Windows). Lista todos los archivos y carpetas que hay dentro de donde estás. <code>ls -la</code> muestra también los archivos ocultos y los permisos.</p>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">Terminal</span></div>
+  <pre>ls
+# Resultado de ejemplo:
+# Desktop   Documents   Downloads   mi-proyecto</pre></div>
+
+  <h4 class="sub">Entrar a una carpeta: <code>cd</code></h4>
+  <p class="body"><code>cd</code> — Change Directory. Te mueve a otra carpeta. <code>cd ..</code> con dos puntos te lleva a la carpeta anterior (subir un nivel).</p>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">Terminal</span></div>
+  <pre>cd Desktop            # Entrar a la carpeta Desktop
+cd mi-proyecto        # Entrar a la carpeta mi-proyecto
+cd ..                 # Volver atrás (subir un nivel)
+cd ../otra-carpeta    # Subir un nivel y entrar a 'otra-carpeta'
+cd ~                  # Ir directo a tu carpeta de usuario (Mac/Linux)</pre></div>
+
+  <h4 class="sub">Crear carpetas y archivos</h4>
+  <table class="ce">
+    <tbody>
+      <tr><td>mkdir mi-backend</td><td>Crea una carpeta llamada mi-backend</td></tr>
+      <tr><td>mkdir proyecto/src</td><td>Crea carpetas anidadas</td></tr>
+      <tr><td>touch index.js</td><td>Crea un archivo vacío (Mac/Linux)</td></tr>
+      <tr><td>echo '' > index.js</td><td>Crea un archivo vacío (Windows)</td></tr>
+      <tr><td>rm archivo.js</td><td>Borra un archivo (cuidado: sin papelera)</td></tr>
+      <tr><td>rm -rf carpeta/</td><td>Borra una carpeta entera (MUCHO cuidado)</td></tr>
+    </tbody>
+  </table>
+
+  <h4 class="sub">Otros comandos útiles</h4>
+  <table class="ce">
+    <tbody>
+      <tr><td>clear / cls</td><td>Limpia la pantalla (clear Mac/Linux, cls Windows)</td></tr>
+      <tr><td>Ctrl + C</td><td>Detiene el proceso que está corriendo — muy usado</td></tr>
+      <tr><td>↑ (flecha arriba)</td><td>Muestra el comando anterior — para no reescribir</td></tr>
+      <tr><td>Tab</td><td>Autocompleta el nombre del archivo o carpeta</td></tr>
+      <tr><td>history</td><td>Muestra todos los comandos que ejecutaste antes</td></tr>
+    </tbody>
+  </table>
+
+  <div class="ib green">
+    <span class="ico">⚡</span>
+    <div><strong>El Tab es tu mejor atajo.</strong> Si escribís <code>cd Des</code> y presionás Tab, la terminal autocompleta a <code>cd Desktop</code> automáticamente. Si hay varias opciones que empiezan igual, presioná Tab dos veces para verlas todas. Usalo siempre — evita errores de tipeo.</div>
+  </div>
+
+  <div class="ib amber">
+    <span class="ico">⚠️</span>
+    <div><strong>Los errores de terminal son normales.</strong> Si dice 'command not found' o 'No such file or directory', no rompiste nada. Significa que escribiste mal el comando o que no estás en la carpeta correcta. Usá <code>pwd</code> para verificar dónde estás y <code>ls</code> para ver qué hay ahí.</div>
+  </div>
+
+  <h4 class="sub">Práctica: navegá con la terminal</h4>
+  <div class="practice-steps">
+    <div class="ps"><div class="ps-num">1</div><div class="ps-txt"><strong>Abrí la terminal</strong></div></div>
+    <div class="ps"><div class="ps-num">2</div><div class="ps-txt"><strong>Escribí <code>pwd</code> y presioná Enter</strong><small>Fijate en qué carpeta estás</small></div></div>
+    <div class="ps"><div class="ps-num">3</div><div class="ps-txt"><strong>Escribí <code>ls</code> (o <code>dir</code> en Windows) y presioná Enter</strong><small>Ve los archivos y carpetas</small></div></div>
+    <div class="ps"><div class="ps-num">4</div><div class="ps-txt"><strong>Escribí <code>cd Desktop</code> y presioná Enter</strong><small>Entra al escritorio</small></div></div>
+    <div class="ps"><div class="ps-num">5</div><div class="ps-txt"><strong>Escribí <code>mkdir curso-backend</code> y presioná Enter</strong><small>Crea una carpeta nueva</small></div></div>
+    <div class="ps"><div class="ps-num">6</div><div class="ps-txt"><strong>Escribí <code>cd curso-backend</code> y presioná Enter</strong><small>Entra a esa carpeta</small></div></div>
+    <div class="ps"><div class="ps-num">7</div><div class="ps-txt"><strong>Escribí <code>pwd</code> de nuevo</strong><small>Confirmá que estás en la carpeta nueva</small></div></div>
+  </div>
+</div>
+
+<!-- 3. NODE.JS -->
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">03</span>Instalar Node.js</h2>
+  <div class="ib blue">
+    <span class="ico">⚙️</span>
+    <div><strong>¿Qué es Node.js?</strong><br>JavaScript nació para correr dentro del navegador (Chrome, Firefox). Node.js es un programa que permite ejecutar JavaScript <strong>FUERA del navegador</strong>, directamente en tu computadora o en un servidor. Es el motor que vamos a usar para construir el backend.<br><em style="color:var(--fg3)">Sin Node.js, JavaScript solo puede ejecutarse dentro de una página web. Con Node.js, puede ejecutarse en cualquier lugar — incluso en servidores en la nube.</em></div>
+  </div>
+  <p class="body">Node.js tiene dos versiones disponibles: <strong>LTS</strong> (Long Term Support) y <strong>Current</strong>. Siempre instalá la versión <strong>LTS</strong> — es la estable, probada y recomendada para producción. La 'Current' tiene las últimas novedades pero puede tener bugs.</p>
+
+  <div style="margin-top:16px">
+    <div class="os-tabs">
+      <div class="os-tab active" onclick="showOS('win')">Windows</div>
+      <div class="os-tab" onclick="showOS('mac')">macOS</div>
+      <div class="os-tab" onclick="showOS('linux')">Linux</div>
+    </div>
+    <div class="os-content active" id="os-win">
+      <div class="pasos">
+        <div class="paso"><div class="paso-num">1</div><div class="paso-body"><strong>Abrí el navegador y entrá a nodejs.org</strong></div></div>
+        <div class="paso"><div class="paso-num">2</div><div class="paso-body"><strong>Hacé clic en el botón verde que dice LTS</strong><small>Va a descargar un archivo .msi</small></div></div>
+        <div class="paso"><div class="paso-num">3</div><div class="paso-body"><strong>Ejecutá el instalador .msi</strong><small>Doble clic en el archivo descargado</small></div></div>
+        <div class="paso"><div class="paso-num">4</div><div class="paso-body"><strong>Seguí el asistente: Next, Next, Install</strong><small>No cambies ninguna opción — dejá todo por defecto</small></div></div>
+        <div class="paso"><div class="paso-num">5</div><div class="paso-body"><strong>Si aparece 'Automatically install necessary tools', tildalo</strong></div></div>
+        <div class="paso"><div class="paso-num">6</div><div class="paso-body"><strong>Esperá que termine y hacé clic en Finish</strong></div></div>
+        <div class="paso"><div class="paso-num">7</div><div class="paso-body"><strong>MUY IMPORTANTE: cerrá la terminal si la tenías abierta</strong><small>Abrí una terminal NUEVA después de instalar</small></div></div>
+        <div class="paso"><div class="paso-num">8</div><div class="paso-body"><strong>En la terminal nueva, escribí: <code>node --version</code></strong><small>Debe mostrar un número como v20.x.x</small></div></div>
+      </div>
+    </div>
+    <div class="os-content" id="os-mac">
+      <div class="pasos">
+        <div class="paso"><div class="paso-num">1</div><div class="paso-body"><strong>Entrá a nodejs.org y hacé clic en LTS</strong><small>Descarga un archivo .pkg</small></div></div>
+        <div class="paso"><div class="paso-num">2</div><div class="paso-body"><strong>Ejecutá el .pkg descargado</strong><small>Doble clic en el archivo</small></div></div>
+        <div class="paso"><div class="paso-num">3</div><div class="paso-body"><strong>Seguí el asistente de instalación</strong><small>Puede pedir tu password de administrador</small></div></div>
+        <div class="paso"><div class="paso-num">4</div><div class="paso-body"><strong>Abrí la Terminal y escribí: <code>node --version</code></strong></div></div>
+      </div>
+    </div>
+    <div class="os-content" id="os-linux">
+      <div class="pasos">
+        <div class="paso"><div class="paso-num">1</div><div class="paso-body"><strong>Abrí la terminal (Ctrl + Alt + T)</strong></div></div>
+        <div class="paso"><div class="paso-num">2</div><div class="paso-body"><strong>Ejecutá los siguientes comandos uno por uno</strong><small>Esperá que cada uno termine antes de escribir el siguiente</small></div></div>
+        <div class="paso"><div class="paso-num">3</div><div class="paso-body"><strong>Verificar: <code>node --version</code></strong></div></div>
+      </div>
+      <div class="cb" style="margin:0;border-radius:0"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">Terminal — Ubuntu/Debian</span></div>
+      <pre>curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt-get install -y nodejs</pre></div>
+    </div>
+  </div>
+
+  <h4 class="sub" style="margin-top:20px">Verificación final — funciona en cualquier sistema</h4>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">Terminal nueva</span></div>
+  <pre>node --version   # Debe mostrar algo como: v20.15.0
+npm --version    # Debe mostrar algo como: 10.7.0</pre></div>
+
+  <div class="ib amber">
+    <span class="ico">⚠️</span>
+    <div><strong>Si dice 'node' is not recognized...</strong> Esto pasa en Windows cuando la terminal no sabe dónde está Node. Solución: cerrá todas las ventanas de terminal y abrí una nueva. Si sigue sin funcionar, reiniciá la computadora. En casos raros puede ser un problema con la variable PATH del sistema — avisale al profe para resolverlo juntos.</div>
+  </div>
+</div>
+
+<!-- 4. VS CODE -->
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">04</span>Instalar Visual Studio Code</h2>
+  <div class="ib blue">
+    <span class="ico">🖊️</span>
+    <div><strong>¿Qué es VS Code?</strong><br>VS Code (Visual Studio Code) es un editor de texto especialmente diseñado para escribir código. A diferencia del Bloc de Notas o Word, VS Code entiende el código: lo colorea, detecta errores mientras escribís y tiene autocomplete. Es gratuito, de código abierto, y es el editor más usado del mundo para JavaScript y Node.js.</div>
+  </div>
+
+  <div class="pasos" style="margin-top:14px">
+    <div class="paso"><div class="paso-num">1</div><div class="paso-body"><strong>Entrá a code.visualstudio.com</strong></div></div>
+    <div class="paso"><div class="paso-num">2</div><div class="paso-body"><strong>Hacé clic en Download for Windows / Mac / Linux</strong><small>El sitio detecta tu sistema operativo automáticamente</small></div></div>
+    <div class="paso"><div class="paso-num">3</div><div class="paso-body"><strong>Instalá el archivo descargado</strong><small>En Windows: ejecutar el .exe. En Mac: arrastrar a Aplicaciones.</small></div></div>
+    <div class="paso"><div class="paso-num">4</div><div class="paso-body"><strong>Abrí VS Code</strong></div></div>
+    <div class="paso"><div class="paso-num">5</div><div class="paso-body"><strong>Abrí la terminal integrada de VS Code</strong><small>Ctrl + tilde (`) — la tecla arriba del Tab. Es la terminal que vas a usar de ahora en adelante.</small></div></div>
+  </div>
+
+  <h4 class="sub" style="margin-top:20px">Extensiones indispensables de VS Code</h4>
+  <p class="body">Para instalar una extensión: hacé clic en el icono de cuatro cuadrados en la barra lateral izquierda (o Ctrl+Shift+X), buscá el nombre y hacé clic en Instalar.</p>
+
+  <div class="ext-grid">
+    <div class="ext-card">
+      <div><div class="ext-name">Prettier - Code formatter</div><div class="ext-desc">Formatea tu código automáticamente al guardar (Ctrl+S). Corrige la indentación, las comillas y el espaciado. Tu código siempre va a verse prolijo sin esfuerzo.</div></div>
+      <div class="ext-id">esbenp.prettier-vscode</div>
+    </div>
+    <div class="ext-card">
+      <div><div class="ext-name">ESLint</div><div class="ext-desc">Subraya los errores en el código mientras escribís, antes de ejecutarlo. Como el corrector ortográfico pero para código JavaScript.</div></div>
+      <div class="ext-id">dbaeumer.vscode-eslint</div>
+    </div>
+    <div class="ext-card">
+      <div><div class="ext-name">SQLTools</div><div class="ext-desc">Permite conectarte a la base de datos directamente desde VS Code y ejecutar queries SQL sin salir del editor. Lo vamos a usar cuando lleguemos al bloque de PostgreSQL. Instalalo ahora para tenerlo listo.</div></div>
+      <div class="ext-id">mtxr.sqltools</div>
+    </div>
+    <div class="ext-card">
+      <div><div class="ext-name">SQLTools PostgreSQL Driver</div><div class="ext-desc">El driver que SQLTools necesita para conectarse específicamente a PostgreSQL. Instalarlo junto con SQLTools.</div></div>
+      <div class="ext-id">mtxr.sqltools-driver-pg</div>
+    </div>
+    <div class="ext-card">
+      <div><div class="ext-name">GitLens</div><div class="ext-desc">Muestra quién modificó cada línea de código y cuándo. Muy útil cuando trabajás en equipo.</div></div>
+      <div class="ext-id">eamodio.gitlens</div>
+    </div>
+    <div class="ext-card">
+      <div><div class="ext-name">Node.js Extension Pack</div><div class="ext-desc">Un paquete que incluye varias extensiones útiles para desarrollar con Node.js.</div></div>
+      <div class="ext-id">waderyan.nodejs-extension-pack</div>
+    </div>
+  </div>
+
+  <div class="ib green">
+    <span class="ico">💡</span>
+    <div><strong>Configurar Prettier para que formatee al guardar:</strong> Archivo → Preferencias → Configuración. En el buscador escribí: <code>format on save</code> y tildá la casilla que aparece. A partir de ahora, cada vez que guardes con Ctrl+S, Prettier va a ordenar el código automáticamente.</div>
+  </div>
+</div>
+
+<!-- 4b. POSTMAN -->
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">04b</span>Instalar Postman</h2>
+  <div class="ib blue">
+    <span class="ico">📬</span>
+    <div><strong>¿Qué es Postman?</strong><br>Postman es una aplicación que te permite enviar requests HTTP a cualquier API y ver la respuesta, sin necesidad de escribir código ni abrir el navegador. Es la herramienta estándar de la industria para testear y documentar APIs.<br><em style="color:var(--fg3)">Básicamente: cuando construyas un endpoint en el curso, vas a usar Postman para probarlo — mandás un GET, POST, PUT o DELETE y ves exactamente qué devuelve el servidor.</em></div>
+  </div>
+
+  <p class="body">No lo usamos todavía — empieza a ser útil a partir del Bloque 4 cuando creemos los primeros servidores. Pero lo instalamos ahora para tenerlo listo.</p>
+
+  <div class="pasos">
+    <div class="paso"><div class="paso-num">1</div><div class="paso-body"><strong>Entrá a postman.com</strong><small>Hacé clic en el botón "Download the App" — no uses la versión web</small></div></div>
+    <div class="paso"><div class="paso-num">2</div><div class="paso-body"><strong>Descargá el instalador para tu sistema operativo</strong><small>Windows (.exe), Mac (.dmg) o Linux (.tar.gz)</small></div></div>
+    <div class="paso"><div class="paso-num">3</div><div class="paso-body"><strong>Instalá y abrí Postman</strong><small>En Windows: ejecutar el .exe. En Mac: arrastrar a Aplicaciones.</small></div></div>
+    <div class="paso"><div class="paso-num">4</div><div class="paso-body"><strong>Creá una cuenta gratuita o saltá ese paso</strong><small>Podés usar Postman sin cuenta — hacé clic en "Skip and go to the app"</small></div></div>
+    <div class="paso"><div class="paso-num">5</div><div class="paso-body"><strong>Cerrá Postman por ahora</strong><small>Está instalado y listo. Lo vamos a usar a partir del Bloque 4.</small></div></div>
+  </div>
+
+  <div class="ib amber">
+    <span class="ico">💡</span>
+    <div><strong>¿Para qué lo vamos a usar exactamente?</strong><br>
+    Cuando en el Bloque 4 creemos el primer servidor con Node.js, vas a abrir Postman, escribir la URL del servidor (<code>http://localhost:3000/api/usuarios</code>), elegir el método (GET, POST, etc.), y hacer clic en Send. El servidor responde y Postman te muestra el JSON de respuesta, el código de estado (200, 404, etc.) y el tiempo que tardó.<br><br>
+    Es exactamente lo que hacías con DevTools en YouTube en la Clase 1 — pero esta vez el servidor lo construís vos.</div>
+  </div>
+</div>
+
+<!-- 5. NPM -->
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">05</span>npm: el Gestor de Paquetes</h2>
+  <div class="ib amber">
+    <span class="ico">📦</span>
+    <div><strong>¿Qué es npm?</strong><br>npm (Node Package Manager) es una herramienta que viene instalada junto con Node.js. Sirve para descargar e instalar librerías (llamadas 'paquetes') que otros programadores publican para que todos puedan usarlas.<br><em style="color:var(--fg3)">Es como una tienda de ingredientes para cocinar: vos no necesitás hacer la harina desde cero. Vas a la tienda (npm) y la descargás con un comando.</em></div>
+  </div>
+
+  <h4 class="sub">Comandos npm que vas a usar siempre</h4>
+  <table class="ce">
+    <tbody>
+      <tr><td>npm init -y</td><td>Crea un proyecto nuevo con configuración por defecto. Genera package.json automáticamente.</td></tr>
+      <tr><td>npm install express</td><td>Descarga e instala el paquete 'express'. Podés reemplazar 'express' por cualquier nombre.</td></tr>
+      <tr><td>npm install</td><td>Instala todos los paquetes listados en package.json. Se usa cuando clonás un proyecto de GitHub.</td></tr>
+      <tr><td>npm install -g nodemon</td><td>Instala nodemon de forma global en tu computadora (no solo en el proyecto). La -g significa global.</td></tr>
+      <tr><td>npm uninstall express</td><td>Desinstala el paquete 'express'.</td></tr>
+      <tr><td>npm run dev</td><td>Ejecuta el script llamado 'dev' del package.json.</td></tr>
+      <tr><td>npm list</td><td>Lista todos los paquetes instalados en el proyecto.</td></tr>
+    </tbody>
+  </table>
+
+  <h4 class="sub">El archivo package.json explicado línea por línea</h4>
+  <p class="body">Cuando ejecutás <code>npm init -y</code> se crea este archivo automáticamente. Es el 'DNI' de tu proyecto — guarda toda la información importante.</p>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">package.json</span></div>
+  <pre>{
+  "name": "mi-backend",       ← Nombre del proyecto (sin espacios ni mayúsculas)
+  "version": "1.0.0",         ← Versión actual del proyecto
+  "description": "Mi API",    ← Descripción opcional
+  "main": "index.js",         ← Archivo principal — por donde arranca el proyecto
+  "scripts": {                ← Comandos personalizados que podés ejecutar con npm run
+    "start": "node index.js", ← npm start  →  ejecuta node index.js
+    "dev":   "nodemon index.js" ← npm run dev  →  ejecuta con nodemon
+  },
+  "dependencies": {           ← Lista de paquetes instalados
+    "express": "^4.18.2"      ← Express v4.18.2 o superior compatible
+  }
+}</pre></div>
+
+  <div class="ib red">
+    <span class="ico">🚫</span>
+    <div><strong>REGLA DE ORO: <code>node_modules</code> NUNCA se sube a GitHub.</strong> Cuando instalás un paquete con npm, se crea una carpeta llamada <code>node_modules</code> que puede pesar cientos de megas. Se agrega al archivo <code>.gitignore</code> y punto. Cuando alguien clona tu proyecto, solo ejecuta <code>npm install</code> y todo se reinstala solo.</div>
+  </div>
+
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">.gitignore</span></div>
+  <pre># Crear un archivo .gitignore en la raíz del proyecto con este contenido:
+node_modules/
+.env</pre></div>
+</div>
+
+<!-- 6. PRIMER ARCHIVO JS -->
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">06</span>Tu Primer Archivo JavaScript con Node.js</h2>
+  <p class="body">Ahora vamos a crear el primer proyecto, escribir código JavaScript real y ejecutarlo con Node.js. Seguí estos pasos en la terminal de VS Code:</p>
+
+  <div class="pasos">
+    <div class="paso"><div class="paso-num">1</div><div class="paso-body"><strong>Abrí la terminal de VS Code</strong><small>Ctrl + tilde (`)</small></div></div>
+    <div class="paso"><div class="paso-num">2</div><div class="paso-body"><strong>Entrá a la carpeta que creaste antes</strong><small><code>cd Desktop/curso-backend</code></small></div></div>
+    <div class="paso"><div class="paso-num">3</div><div class="paso-body"><strong>Creá una carpeta para el proyecto y entrá</strong><small><code>mkdir clase3</code> y después <code>cd clase3</code></small></div></div>
+    <div class="paso"><div class="paso-num">4</div><div class="paso-body"><strong>Inicializá el proyecto npm</strong><small><code>npm init -y</code></small></div></div>
+    <div class="paso"><div class="paso-num">5</div><div class="paso-body"><strong>Abrí la carpeta en VS Code</strong><small><code>code .</code> (con el punto — significa 'abrir esta carpeta')</small></div></div>
+    <div class="paso"><div class="paso-num">6</div><div class="paso-body"><strong>Creá un archivo nuevo en VS Code</strong><small>Clic en el ícono de archivo nuevo o Ctrl+N, guardá como <code>index.js</code></small></div></div>
+  </div>
+
+  <div class="ib blue" style="margin-top:16px">
+    <span class="ico">📝</span>
+    <div><strong>¿Qué es console.log?</strong><br>
+    <code>console.log()</code> es la forma más básica de mostrar información en la terminal. Todo lo que pongas dentro de los paréntesis aparece impreso en pantalla. Es la herramienta principal para ver qué está pasando en tu código — si una variable tiene el valor correcto, si una función se ejecutó, etc.<br><em style="color:var(--fg3)">Es como el 'imprimir' o 'print' de otros lenguajes. En Python es <code>print()</code>, en JavaScript es <code>console.log()</code>.</em></div>
+  </div>
+
+  <h4 class="sub">Tipos de datos que podés mostrar con console.log</h4>
+  <table class="ce">
+    <tbody>
+      <tr><td>console.log('Hola mundo');</td><td>Texto (string) — siempre entre comillas</td></tr>
+      <tr><td>console.log(42);</td><td>Número entero — sin comillas</td></tr>
+      <tr><td>console.log(3.14);</td><td>Número decimal</td></tr>
+      <tr><td>console.log(true);</td><td>Booleano: true o false</td></tr>
+      <tr><td>console.log('Hola', 'mundo', 123);</td><td>Varios valores separados por coma</td></tr>
+      <tr><td>const nombre = 'Ana';</td><td>Guardamos un valor en una variable</td></tr>
+      <tr><td>console.log(nombre);</td><td>Mostramos la variable — imprime: Ana</td></tr>
+      <tr><td>console.log("Hola, " + nombre);</td><td>Concatenamos texto con + — imprime: Hola, Ana</td></tr>
+      <tr><td>console.log(`Hola, ${nombre}!`);</td><td>Template literal con `` — más fácil de leer</td></tr>
+    </tbody>
+  </table>
+
+  <div class="ib amber">
+    <span class="ico">💡</span>
+    <div><strong>Las comillas simples, dobles y el backtick:</strong> En JavaScript podés usar comillas simples (<code>'texto'</code>), dobles (<code>"texto"</code>) o backtick (<code>`texto`</code>). Las tres funcionan igual para texto simple. La diferencia del backtick es que permite insertar variables adentro con <code>${variable}</code>. En este curso usaremos comillas simples para texto y backtick cuando necesitemos variables.</div>
+  </div>
+
+  <h4 class="sub">Escribí este código en tu archivo index.js</h4>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">index.js</span></div>
+  <pre>// Las dos barras son comentarios — Node.js los ignora
+// Sirven para explicar el código
+
+// Variables simples
+const nombre = 'tu nombre acá';
+const edad = 25;
+const curso = 'Backend desde Cero';
+
+// Mostrar en pantalla
+console.log('Hola, ' + nombre + '!');
+console.log(`Tengo ${edad} años`);
+console.log(`Estoy aprendiendo: ${curso}`);
+
+// Operaciones matemáticas
+console.log('Suma:', 10 + 5);
+console.log('Resta:', 10 - 5);
+console.log('Mult:', 10 * 5);
+console.log('División:', 10 / 5);
+
+// Node.js tiene módulos propios
+// 'require' sirve para importar módulos
+const os = require('os');
+console.log('--- Info del sistema ---');
+console.log('Sistema operativo:', os.platform());
+console.log('CPUs disponibles:', os.cpus().length);
+console.log('RAM libre:', Math.round(os.freemem() / 1024 / 1024), 'MB');</pre></div>
+
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">Terminal — ejecutar</span></div>
+  <pre>node index.js</pre></div>
+
+  <div class="ib green">
+    <span class="ico">✓</span>
+    <div><strong>Qué debería aparecer:</strong> Hola, [tu nombre]! / Tengo 25 años / Estoy aprendiendo: Backend desde Cero / Suma: 15 / Resta: 5 / Mult: 50 / División: 2 / --- Info del sistema --- / Sistema operativo: linux (o win32 o darwin) / CPUs disponibles: 4 / RAM libre: 2048 MB</div>
+  </div>
+
+  <div class="ib blue" style="margin-top:8px">
+    <span class="ico">❓</span>
+    <div><strong>¿Qué es require()?</strong> <code>require()</code> es la forma de importar módulos en Node.js. Un módulo es un conjunto de funciones ya escritas que podés usar en tu código. <code>'os'</code> es un módulo que viene incluido con Node.js. En las próximas clases vamos a usar require para importar Express: <code>const express = require('express')</code> — uno de los comandos más usados del curso.</div>
+  </div>
+</div>
+
+<!-- 7. NODEMON -->
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">07</span>Nodemon: Recarga Automática</h2>
+  <p class="body">Cada vez que cambiás el código, tenés que hacer Ctrl+C para detener Node y después volver a escribir <code>node index.js</code> para ver los cambios. Si hacés esto 50 veces por hora, se vuelve muy molesto. <strong>Nodemon resuelve esto</strong>: monitorea los archivos y cuando detecta un cambio, reinicia el servidor automáticamente.</p>
+
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">Terminal — instalación global (una sola vez)</span></div>
+  <pre>npm install -g nodemon</pre></div>
+
+  <div class="ib blue">
+    <span class="ico">❓</span>
+    <div><strong>¿Qué significa -g (global)?</strong> Cuando instalás un paquete con <code>-g</code>, se instala en tu computadora completa, no solo en el proyecto actual. Así podés usar nodemon en cualquier proyecto sin tener que instalarlo cada vez.</div>
+  </div>
+
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">Terminal — cómo usarlo</span></div>
+  <pre># En vez de ejecutar:
+node index.js
+
+# Ejecutá:
+nodemon index.js
+
+# Vas a ver algo como:
+# [nodemon] 3.0.1
+# [nodemon] to restart at any time, enter 'rs'
+# [nodemon] watching path(s): *.*
+# [nodemon] starting 'node index.js'
+# Hola, Hernán!
+# ...
+# [nodemon] clean exit - waiting for changes before restart</pre></div>
+
+  <h4 class="sub">Agregar nodemon al package.json como script</h4>
+  <p class="body">La forma profesional es definirlo como un script en el package.json:</p>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">package.json</span></div>
+  <pre>{
+  "scripts": {
+    "start": "node index.js",
+    "dev":   "nodemon index.js"
+  }
+}
+
+# Ahora podés ejecutar el servidor de desarrollo con:
+npm run dev
+
+# Y para producción:
+npm start</pre></div>
+
+  <div class="ib green">
+    <span class="ico">🔥</span>
+    <div><strong>Probalo:</strong> con nodemon corriendo, cambiá cualquier línea de tu index.js (por ejemplo el valor de la variable nombre) y guardá con Ctrl+S. Vas a ver cómo nodemon detecta el cambio y muestra el nuevo resultado en la terminal automáticamente, sin que hagas nada.</div>
+  </div>
+</div>
+
+<!-- 8. EJERCICIO -->
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">08</span>Ejercicio Práctico</h2>
+  <p class="body">Creá un archivo nuevo llamado <code>explorar.js</code> en tu proyecto. Este ejercicio usa módulos nativos de Node.js para explorar tu sistema. Ejecutalo con: <code>nodemon explorar.js</code></p>
+
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">explorar.js</span></div>
+  <pre>// Importamos dos módulos que vienen con Node.js
+// No necesitan instalarse con npm — ya están incluidos
+const os   = require('os');    // Información del sistema operativo
+const path = require('path');  // Manejo de rutas de archivos
+
+// === INFORMACIÓN DEL SISTEMA ===
+console.log('=== Sistema ===');
+console.log('OS:', os.platform());          // linux, win32, darwin
+console.log('Arquitectura:', os.arch());    // x64, arm64
+console.log('CPUs:', os.cpus().length);
+console.log('RAM total:', Math.round(os.totalmem() / 1024 / 1024 / 1024), 'GB');
+console.log('RAM libre:', Math.round(os.freemem() / 1024 / 1024), 'MB');
+console.log('Usuario:', os.userInfo().username);
+
+// === RUTAS DE ARCHIVOS ===
+console.log('');
+console.log('=== Rutas ===');
+console.log('Carpeta actual:', __dirname);  // dónde está este archivo
+console.log('Archivo actual:', __filename); // ruta completa de este archivo
+
+// path.join combina partes de una ruta de forma correcta
+// en cualquier sistema operativo (usa / en Mac/Linux, \ en Windows)
+const ruta = path.join(__dirname, 'datos', 'usuarios.json');
+console.log('Ruta de ejemplo:', ruta);
+
+// === FECHA Y HORA ===
+console.log('');
+console.log('=== Fecha y Hora ===');
+const ahora = new Date();
+console.log('Fecha:', ahora.toLocaleDateString('es-AR'));
+console.log('Hora:', ahora.toLocaleTimeString('es-AR'));
+console.log('Timestamp:', ahora.getTime()); // milisegundos desde 1970</pre></div>
+
+  <div class="ib amber">
+    <span class="ico">🎯</span>
+    <div>
+      <strong>Desafíos adicionales:</strong><br>
+      • Agregá una variable con tu nombre y mostrala con un console.log que diga 'Hola, [nombre]!'<br>
+      • Agregá una variable con el año actual y calculá cuántos años faltan para el 2030<br>
+      • Investigá: ¿qué hace <code>process.version</code> en Node.js? Agregá un console.log para verlo<br>
+      • Investigá: ¿qué hace <code>process.argv</code>? Ejecutá: <code>node explorar.js hola mundo</code> y mirá qué aparece
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">09</span>Mini Quiz</h2>
+  <div class="quiz-wrap" id="quiz">
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 01</span>¿Para qué sirve Node.js?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Para diseñar la pantalla de una app</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Para ejecutar JavaScript fuera del navegador, en el servidor</button>
+      </div><div class="quiz-feedback" id="fb0"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 02</span>¿Qué comando muestra en qué carpeta estás parado?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>ls</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>pwd</button>
+      </div><div class="quiz-feedback" id="fb1"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 03</span>¿Qué versión de Node.js hay que instalar?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Current (la más nueva)</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>LTS (Long Term Support)</button>
+      </div><div class="quiz-feedback" id="fb2"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 04</span>¿Para qué sirve console.log()?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Para guardar datos en la base de datos</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Para mostrar información en la terminal y ver qué está pasando en el código</button>
+      </div><div class="quiz-feedback" id="fb3"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 05</span>¿Qué comando crea un proyecto npm con configuración por defecto?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>npm start</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>npm init -y</button>
+      </div><div class="quiz-feedback" id="fb4"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 06</span>¿Para qué sirve nodemon?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Para instalar librerías de Node.js</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Para reiniciar el servidor automáticamente cuando el código cambia</button>
+      </div><div class="quiz-feedback" id="fb5"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 07</span>¿Por qué la carpeta node_modules no se sube a GitHub?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Porque es secreta y tiene datos privados</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Porque pesa mucho y se puede regenerar con npm install</button>
+      </div><div class="quiz-feedback" id="fb6"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 08</span>¿Qué hace el comando <code>cd ..</code> en la terminal?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Cierra la terminal</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Sube un nivel — va a la carpeta anterior</button>
+      </div><div class="quiz-feedback" id="fb7"></div>
+    </div>
+
+  </div>
+  <div class="quiz-score" id="quizScore">
+    <div class="quiz-score-num" id="scoreNum">0/8</div>
+    <div>
+      <div style="font-size:14px;color:var(--fg2)" id="scoreLabel"></div>
+      <button onclick="resetQuiz()" style="margin-top:8px;font-size:13px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;text-decoration:underline">↺ Reintentar</button>
+    </div>
+  </div>
+</div>
+
+<div class="tarea section">
+  <h3>📚 Tarea para la Próxima Clase</h3>
+  <ol>
+    <li>Verificar que tenés Node.js instalado: ejecutá <code>node --version</code> y <code>npm --version</code> en la terminal.</li>
+    <li>Completar el ejercicio <code>explorar.js</code> y los tres desafíos adicionales.</li>
+    <li>Instalar nodemon globalmente: <code>npm install -g nodemon</code>.</li>
+    <li>Practicar los comandos de terminal: navegá entre carpetas, creá carpetas con mkdir, listá archivos con ls/dir.</li>
+    <li>Investigar: ¿qué es una variable de entorno y un archivo .env? La próxima clase vamos a usarlos para guardar datos sensibles como passwords.</li>
+  </ol>
+</div>
+
+<div class="footer">
+  <div class="footer-brand">CapOL × Apoc Automation</div>
+  <div class="footer-right">Clase 03 · Backend desde Cero · 2025</div>
+</div>
+</div>
+
+<script>
+const html=document.documentElement;
+const MOON=`<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+const SUN=`<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+const icon=document.getElementById('themeIcon');
+function applyTheme(t){html.dataset.theme=t;icon.innerHTML=t==='dark'?SUN:MOON;localStorage.setItem('theme',t);}
+document.getElementById('themeBtn').addEventListener('click',()=>applyTheme(html.dataset.theme==='dark'?'light':'dark'));
+applyTheme(localStorage.getItem('theme')||'dark');
+
+const fill=document.getElementById('progress-fill');
+window.addEventListener('scroll',()=>{const h=document.documentElement;fill.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+
+function showOS(os){
+  document.querySelectorAll('.os-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.os-content').forEach(c=>c.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('os-'+os).classList.add('active');
+}
+
+const CORRECT=[1,1,1,1,1,1,1,1];
+const EXPLAIN=[
+  'Node.js permite ejecutar JavaScript en el servidor, fuera del navegador. Sin Node.js, JS solo corre en el navegador.',
+  'pwd (Print Working Directory) muestra la carpeta donde estás. ls lista el contenido de la carpeta.',
+  'Siempre LTS — es la estable. Current tiene novedades pero puede tener bugs.',
+  'console.log() imprime en la terminal. Es la herramienta principal para debuggear el código.',
+  'npm init -y crea el proyecto y genera el package.json automáticamente con configuración por defecto.',
+  'Nodemon detecta cambios en el código y reinicia Node automáticamente. Sin nodemon tendrías que hacer Ctrl+C cada vez.',
+  'node_modules pesa cientos de megas y se regenera con npm install. Nunca se sube a GitHub.',
+  'cd .. sube un nivel — va a la carpeta anterior. cd sin puntos entra a una carpeta.',
+];
+let answers=new Array(8).fill(null),done=new Array(8).fill(false);
+window.answer=function(btn,sel,qi){
+  if(done[qi])return; done[qi]=true; answers[qi]=sel;
+  btn.closest('.quiz-opts').querySelectorAll('.quiz-opt-btn').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===CORRECT[qi])b.classList.add('correct');
+    else if(i===sel)b.classList.add('wrong');
+  });
+  const fb=document.getElementById('fb'+qi);
+  fb.classList.add('show');
+  if(sel===CORRECT[qi]){fb.classList.add('ok');fb.innerHTML='✓ Correcto. '+EXPLAIN[qi];}
+  else{fb.classList.add('no');fb.innerHTML='✗ Incorrecto. '+EXPLAIN[qi];}
+  if(done.every(Boolean))showScore();
+};
+function showScore(){
+  const correct=answers.filter((a,i)=>a===CORRECT[i]).length;
+  const sc=document.getElementById('quizScore'); sc.classList.add('show');
+  document.getElementById('scoreNum').textContent=correct+'/8';
+  const pct=Math.round(correct/8*100);
+  document.getElementById('scoreLabel').textContent=pct===100?'🎉 Perfecto. Estás listo para la clase 4.':pct>=75?'💪 Muy bien. Repasá los que erraste.':pct>=50?'📚 Pasable. Vale la pena releer la clase.':'🔄 Repasá el material y volvé a intentarlo.';
+}
+window.resetQuiz=function(){
+  answers=new Array(8).fill(null);done=new Array(8).fill(false);
+  document.querySelectorAll('.quiz-opt-btn').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong');});
+  document.querySelectorAll('.quiz-feedback').forEach(fb=>{fb.classList.remove('show','ok','no');fb.innerHTML='';});
+  document.getElementById('quizScore').classList.remove('show');
+};
+</script>
+</body>
+</html>
