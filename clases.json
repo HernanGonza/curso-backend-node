@@ -23,7 +23,7 @@
     "bloque": "Bloque 1 · Introducción",
     "archivo": "clases/clase3.html",
     "duracion": "60 min",
-    "temas": ["Terminal", "Node.js", "VS Code", "npm", "nodemon"],
+    "temas": ["Terminal", "Node.js", "VS Code", "Postman", "npm", "nodemon"],
     "disponible": true
   },
   {
