@@ -33,7 +33,7 @@
     "archivo": "clases/clase4.html",
     "duracion": "60 min",
     "temas": ["const/let", "String", "Number", "Boolean", "typeof"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 5,
