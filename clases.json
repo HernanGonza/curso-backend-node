@@ -42,7 +42,7 @@
     "archivo": "clases/clase5.html",
     "duracion": "60 min",
     "temas": ["if/else", "Ternario", "Switch", "Truthy/Falsy"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 6,
