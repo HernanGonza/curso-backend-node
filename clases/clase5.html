@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 5 — Condicionales · CapOL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#00c896;--danger:#ff4757;--warn:#ffa502;--purple:#a29bfe;--blue-tag:#74b9ff}
+[data-theme="dark"]{--bg:#0f0f11;--bg2:#16161a;--bg3:#1c1c21;--border:#2a2a32;--border2:#35353f;--fg:#e2e2ec;--fg2:#a0a0b0;--fg3:#606070;--card-bg:#16161a;--code-bg:#0a0a0d;--code-fg:#b8d0c8;--shadow:0 4px 24px rgba(0,0,0,.5)}
+[data-theme="light"]{--bg:#f5f5f0;--bg2:#ffffff;--bg3:#ebebeb;--border:#d8d8d0;--border2:#c5c5bc;--fg:#1a1a24;--fg2:#505060;--fg3:#909098;--card-bg:#ffffff;--code-bg:#1a1a24;--code-fg:#c8e0d8;--shadow:0 4px 24px rgba(0,0,0,.1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;line-height:1.75;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+.page{max-width:800px;margin:0 auto;padding:0 24px 120px}
+#topbar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:17px;text-decoration:none;color:var(--fg)}
+.brand-dot{width:30px;height:30px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#000;font-size:13px;font-weight:800;font-family:'IBM Plex Mono',monospace}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fg2);transition:all .2s}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+.powered{font-size:11px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+.back-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s}
+.back-btn:hover{color:var(--accent)}
+@media(max-width:600px){.powered{display:none}}
+#progress-bar{position:fixed;top:56px;left:0;right:0;height:2px;background:var(--border);z-index:99}
+#progress-fill{height:100%;background:var(--accent);width:0%;transition:width .1s}
+.hero{padding:64px 0 40px;border-bottom:1px solid var(--border);margin-bottom:48px}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.hero-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--accent)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(32px,6vw,52px);font-weight:700;line-height:1.1;color:var(--fg);margin-bottom:18px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-desc{font-size:16px;color:var(--fg2);max-width:560px;line-height:1.7;margin-bottom:28px}
+.hero-meta{display:flex;gap:20px;flex-wrap:wrap}
+.hero-chip{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--fg2);font-family:'IBM Plex Mono',monospace}
+.hero-chip svg{color:var(--accent)}
+.objetivos{background:color-mix(in srgb,var(--accent) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);border-radius:12px;padding:24px 28px;margin-bottom:48px}
+.objetivos-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.objetivos ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.objetivos li{display:flex;gap:10px;font-size:14.5px}
+.objetivos li::before{content:'▸';color:var(--accent);flex-shrink:0;margin-top:2px}
+.section{margin-bottom:52px}
+.sec-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--fg);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:2px 8px;border-radius:5px}
+p.body{font-size:15px;line-height:1.8;color:var(--fg2);margin-bottom:12px}
+h4.sub{font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;color:var(--fg);margin:18px 0 8px}
+/* code blocks */
+.cb{background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:12px 0}
+.cb-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border2);background:color-mix(in srgb,#000 20%,var(--code-bg))}
+.cb-dots{display:flex;gap:5px}
+.cb-dots span{width:10px;height:10px;border-radius:50%}
+.cb-dots .r{background:#ff5f56}.cb-dots .y{background:#ffbd2e}.cb-dots .g{background:#27c93f}
+.cb-lang{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#555}
+.cb pre{padding:16px 18px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--code-fg);white-space:pre}
+/* code-explained */
+.ce{width:100%;border-collapse:collapse;background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:10px 0}
+.ce tr{border-top:1px solid #1e1e28}
+.ce tr:first-child{border-top:none}
+.ce td{padding:5px 14px;font-size:13px;vertical-align:top}
+.ce td:first-child{font-family:'IBM Plex Mono',monospace;color:var(--code-fg);width:52%;white-space:pre}
+.ce td:last-child{color:var(--fg3);font-size:12px;padding-left:18px;border-left:1px solid #1e1e28}
+.ce tr:hover td{background:#0f0f14}
+[data-theme="light"] .ce tr:hover td{background:#f0f0e8}
+code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix(in srgb,var(--blue-tag) 10%,var(--bg3));color:var(--blue-tag);padding:1px 6px;border-radius:4px}
+/* info boxes */
+.ib{border-radius:10px;padding:14px 18px;margin:12px 0;display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.65}
+.ib .ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.ib.green{background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 28%,transparent)}
+.ib.amber{background:color-mix(in srgb,var(--warn) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--warn) 28%,transparent)}
+.ib.red{background:color-mix(in srgb,var(--danger) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--danger) 28%,transparent)}
+.ib.blue{background:color-mix(in srgb,var(--blue-tag) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 28%,transparent)}
+/* falsy grid */
+.falsy-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.falsy-card{background:var(--code-bg);border:1px solid color-mix(in srgb,var(--danger) 30%,transparent);border-radius:8px;padding:12px 14px;text-align:center}
+.falsy-val{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:var(--danger);margin-bottom:4px}
+.falsy-desc{font-size:11px;color:var(--fg3)}
+@media(max-width:500px){.falsy-grid{grid-template-columns:repeat(2,1fr)}}
+/* patron cards */
+.patron{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px}
+.patron-header{padding:12px 18px;background:var(--bg3);border-bottom:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.08em}
+.patron-body{padding:0}
+/* ejercicio terminal */
+.ejercicio{background:color-mix(in srgb,#000 30%,var(--bg2));border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin:16px 0}
+[data-theme="light"] .ejercicio{background:#f0f0ea}
+.ej-header{padding:10px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;background:var(--code-bg)}
+.ej-title{font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;color:var(--fg)}
+.ej-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--fg3)}
+textarea.editor{width:100%;background:var(--code-bg);color:#b8d0c8;border:none;outline:none;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;padding:16px 18px;resize:vertical;min-height:200px;tab-size:2}
+.run-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:var(--accent);color:#000;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;transition:background .15s}
+.run-btn:hover{background:color-mix(in srgb,var(--accent) 80%,#fff)}
+.terminal-out{font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:14px 18px;line-height:1.7;background:color-mix(in srgb,#000 50%,var(--code-bg));border-top:1px solid var(--border2);display:none}
+.terminal-out.show{display:block}
+.t-line{color:#a0c8a8}.t-ok{color:var(--accent)}.t-err{color:var(--danger)}.t-prompt{color:var(--fg3);margin-bottom:8px;font-size:11px}
+/* quiz */
+.quiz-wrap{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+.quiz-item{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.quiz-q{padding:14px 18px;border-bottom:1px solid var(--border);font-size:14.5px;font-weight:600;background:var(--bg2)}
+.quiz-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:4px}
+.quiz-opts{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.quiz-opt-btn{width:100%;text-align:left;padding:10px 16px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;color:var(--fg);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:10px;transition:all .15s}
+.quiz-opt-btn:hover:not(:disabled){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--bg3))}
+.opt-letter{width:22px;height:22px;border-radius:6px;background:var(--border2);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;color:var(--fg3)}
+.quiz-opt-btn:hover:not(:disabled) .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.correct{background:color-mix(in srgb,var(--accent) 12%,var(--bg3));border-color:var(--accent);color:var(--accent)}
+.quiz-opt-btn.correct .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.wrong{background:color-mix(in srgb,var(--danger) 10%,var(--bg3));border-color:var(--danger);color:var(--danger)}
+.quiz-opt-btn.wrong .opt-letter{background:var(--danger);color:#fff}
+.quiz-opt-btn:disabled{cursor:default}
+.quiz-feedback{padding:10px 18px 14px;font-size:13.5px;display:none}
+.quiz-feedback.show{display:flex;align-items:center;gap:8px}
+.quiz-feedback.ok{color:var(--accent)}.quiz-feedback.no{color:var(--danger)}
+.quiz-score{margin-top:20px;padding:18px 22px;background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:12px;display:none;align-items:center;gap:16px}
+.quiz-score.show{display:flex}
+.quiz-score-num{font-family:'Fraunces',serif;font-size:40px;font-weight:700;color:var(--accent);line-height:1}
+/* tarea */
+.tarea{background:color-mix(in srgb,var(--blue-tag) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 25%,transparent);border-radius:12px;padding:24px 28px}
+.tarea h3{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--blue-tag);margin-bottom:14px}
+.tarea ol{padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.footer{border-top:1px solid var(--border);padding:32px 0 0;margin-top:64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-brand{font-family:'Fraunces',serif;font-weight:700;font-size:15px}
+.footer-right{font-size:12px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <a href="../index.html" class="back-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Inicio</a>
+  <div class="brand" style="font-size:15px"><div class="brand-dot">B</div>Backend desde Cero</div>
+  <div class="topbar-right">
+    <span class="powered">CapOL × Apoc Automation</span>
+    <button class="theme-btn" id="themeBtn" title="Cambiar tema">
+      <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+
+<div class="page">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Clase 05 · Bloque 2: JavaScript</div>
+  <h1><em>Condicionales</em></h1>
+  <p class="hero-desc">Aprendé a que tu programa tome decisiones: if, else, ternario y switch aplicados a validaciones y permisos reales de backend.</p>
+  <div class="hero-meta">
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>60 minutos</span>
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Requiere Clase 4</span>
+  </div>
+</div>
+
+<!-- OBJETIVOS -->
+<div class="objetivos">
+  <div class="objetivos-title">Objetivos de la clase</div>
+  <ul>
+    <li>Entender qué es una condición y para qué sirve en un programa.</li>
+    <li>Aprender a usar if, else if y else.</li>
+    <li>Conocer el operador ternario para condiciones simples.</li>
+    <li>Usar switch para manejar múltiples casos.</li>
+    <li>Aplicar condicionales a situaciones reales de backend: validaciones, permisos, respuestas HTTP.</li>
+  </ul>
+</div>
+
+<!-- 1. QUE ES UNA CONDICION -->
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">01</span>¿Qué es una Condición?</h2>
+
+  <div class="ib blue">
+    <span class="ico">🤔</span>
+    <div><strong>Condición = una pregunta que el programa se hace a sí mismo.</strong><br>
+    Una condición es una expresión que el programa evalúa como verdadera (<code>true</code>) o falsa (<code>false</code>). Según el resultado, el programa ejecuta un bloque de código u otro. Sin condicionales, un programa solo puede hacer una cosa — siempre la misma.<br>
+    <em style="color:var(--fg3)">Ejemplo: si el email y la password son correctos, devuelve el token. Si no, devuelve un error 401. Eso es una condición.</em></div>
+  </div>
+
+  <h4 class="sub">Valores que JavaScript considera falsos (Falsy)</h4>
+  <p class="body">En JavaScript no solo <code>false</code> es falso. Hay otros valores que se comportan como <code>false</code> cuando se usan en una condición. Conocerlos evita bugs:</p>
+
+  <div class="falsy-grid">
+    <div class="falsy-card"><div class="falsy-val">false</div><div class="falsy-desc">el booleano false</div></div>
+    <div class="falsy-card"><div class="falsy-val">0</div><div class="falsy-desc">el número cero</div></div>
+    <div class="falsy-card"><div class="falsy-val">''</div><div class="falsy-desc">string vacío</div></div>
+    <div class="falsy-card"><div class="falsy-val">null</div><div class="falsy-desc">ausencia intencional de valor</div></div>
+    <div class="falsy-card"><div class="falsy-val">undefined</div><div class="falsy-desc">variable no inicializada</div></div>
+    <div class="falsy-card"><div class="falsy-val">NaN</div><div class="falsy-desc">Not a Number</div></div>
+  </div>
+
+  <div class="ib green">
+    <span class="ico">✓</span>
+    <div><strong>Truthy: todo lo demás es verdadero.</strong> Cualquier valor que no sea los 6 de arriba es considerado <code>true</code> en una condición. Por ejemplo: cualquier número distinto de 0, cualquier string no vacío, cualquier objeto o array. Esto es muy útil para verificar si una variable tiene valor: <code>if (usuario) { ... }</code></div>
+  </div>
+</div>
+
+<!-- 2. IF / ELSE -->
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">02</span>if / else if / else</h2>
+
+  <h4 class="sub">if — si pasa esto, hacé esto</h4>
+  <p class="body"><code>if</code> es la estructura condicional más básica. Si la condición entre paréntesis es verdadera, ejecuta el bloque entre llaves. Si es falsa, lo saltea.</p>
+
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">JavaScript</span></div>
+  <pre>const edad = 20;
+
+if (edad >= 18) {
+  console.log('Es mayor de edad');
+}
+// Como edad es 20, la condicion es true y se imprime el mensaje.
+
+// Si la condicion es falsa, nada se ejecuta:
+const otraEdad = 15;
+if (otraEdad >= 18) {
+  console.log('Este mensaje NO se imprime');
+}</pre></div>
+
+  <h4 class="sub">else — si no, hacé esto otro</h4>
+  <p class="body"><code>else</code> se agrega después del <code>if</code> y contiene el código que se ejecuta cuando la condición del <code>if</code> es falsa. Siempre va a ejecutarse UNO de los dos bloques, nunca los dos.</p>
+
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">JavaScript</span></div>
+  <pre>const edad = 15;
+
+if (edad >= 18) {
+  console.log('Puede entrar');
+} else {
+  console.log('No puede entrar, es menor de edad');
+}
+// Como edad es 15, se ejecuta el else.</pre></div>
+
+  <h4 class="sub">else if — si no, pero si esto otro...</h4>
+  <p class="body"><code>else if</code> agrega condiciones adicionales entre el <code>if</code> y el <code>else</code>. Se evalúan en orden: si la primera es false, se prueba la segunda, etc. Solo se ejecuta el primer bloque cuya condición sea true. Podés poner tantos <code>else if</code> como necesites.</p>
+
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">JavaScript</span></div>
+  <pre>const nota = 75;
+
+if (nota >= 90) {
+  console.log('Excelente');
+} else if (nota >= 70) {
+  console.log('Aprobado');   // &lt;-- este se ejecuta
+} else if (nota >= 50) {
+  console.log('Regular');
+} else {
+  console.log('Desaprobado');
+}</pre></div>
+
+  <h4 class="sub">Ejemplo real de backend: validación de login</h4>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">JavaScript</span></div>
+  <pre>const email    = 'hernan@gmail.com';
+const password = '123456';
+
+// Simulacion de datos que vendrian de la base de datos
+const emailEnDB    = 'hernan@gmail.com';
+const passwordEnDB = '123456';
+
+if (!email || !password) {
+  // !email es true si email es vacio, null o undefined
+  console.log('Error 400: email y password son obligatorios');
+} else if (email !== emailEnDB) {
+  console.log('Error 401: email o password incorrectos');
+} else if (password !== passwordEnDB) {
+  console.log('Error 401: email o password incorrectos');
+} else {
+  console.log('Login exitoso - generando token...');
+}</pre></div>
+
+  <div class="ib red">
+    <span class="ico">🔒</span>
+    <div><strong>¿Por qué el mismo mensaje para email y password incorrectos?</strong><br>Nunca le digas al usuario cuál de los dos falló. Si decís "email no existe", un atacante puede probar emails hasta encontrar uno válido. Siempre el mensaje genérico: <em>"email o password incorrectos"</em>.</div>
+  </div>
+</div>
+
+<!-- 3. TERNARIO -->
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">03</span>Operador Ternario</h2>
+
+  <div class="ib blue">
+    <span class="ico">⚡</span>
+    <div><strong>Operador ternario: condicion ? siTrue : siFalse</strong><br>El operador ternario es una forma corta de escribir un if/else simple en una sola línea. Es muy usado en JavaScript moderno.<br><em style="color:var(--fg3)">Estructura: condicion ? valorSiTrue : valorSiFalse</em></div>
+  </div>
+
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">JavaScript</span></div>
+  <pre>// Con if/else:
+let mensaje;
+if (edad >= 18) {
+  mensaje = 'Mayor de edad';
+} else {
+  mensaje = 'Menor de edad';
+}
+
+// Con operador ternario (equivalente, mas corto):
+const msg = edad >= 18 ? 'Mayor' : 'Menor';  // una sola linea</pre></div>
+
+  <h4 class="sub">Ejemplos de uso real en backend</h4>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">JavaScript</span></div>
+  <pre>// Mensaje de bienvenida segun rol
+const rol    = 'admin';
+const saludo = rol === 'admin' ? 'Bienvenido administrador' : 'Bienvenido usuario';
+
+// Descuento segun si es socio
+const esSocio   = true;
+const descuento = esSocio ? 0.20 : 0.05;           // 20% o 5%
+const precioFinal = 1000 * (1 - descuento);
+console.log(`Precio: $${precioFinal}`);             // $800
+
+// Codigo HTTP de respuesta
+const encontrado  = false;
+const statusCode  = encontrado ? 200 : 404;
+console.log(`Status: ${statusCode}`);               // 404</pre></div>
+
+  <div class="ib amber">
+    <span class="ico">💡</span>
+    <div><strong>Cuándo usar ternario y cuándo usar if/else:</strong><br>
+    <strong>Ternario:</strong> cuando la condición es simple y el resultado es un valor (no ejecutás código complejo).<br>
+    <strong>if/else:</strong> cuando necesitás ejecutar varias líneas de código en cada rama, o cuando la condición tiene múltiples casos (else if). Si el ternario queda muy largo y difícil de leer, usá if/else.</div>
+  </div>
+</div>
+
+<!-- 4. SWITCH -->
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">04</span>Switch: Múltiples Casos</h2>
+
+  <div class="ib blue">
+    <span class="ico">🔀</span>
+    <div><strong>Switch: cuando hay muchos if/else if seguidos.</strong><br>Cuando necesitás comparar una variable contra muchos valores posibles, <code>switch</code> es más limpio que una cadena larga de else if. Evalúa la variable una vez y salta directamente al caso que coincide. Cada caso termina con <code>break</code> para evitar que siga ejecutando el siguiente.</div>
+  </div>
+
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">JavaScript</span></div>
+  <pre>const metodoHTTP = 'POST';
+
+switch (metodoHTTP) {
+  case 'GET':
+    console.log('Leyendo datos');
+    break;
+  case 'POST':
+    console.log('Creando datos');   // &lt;-- este se ejecuta
+    break;
+  case 'PUT':
+    console.log('Actualizando datos');
+    break;
+  case 'DELETE':
+    console.log('Eliminando datos');
+    break;
+  default:
+    console.log('Metodo no reconocido');
+    break;
+}</pre></div>
+
+  <div class="ib red">
+    <span class="ico">⚠️</span>
+    <div><strong>No olvidés el break.</strong> Si no ponés <code>break</code> al final de un case, el código "cae" al siguiente case y lo ejecuta también. Esto se llama <em>fallthrough</em> y es un error muy común. Siempre poné <code>break</code> al final de cada case, excepto cuando quieras agrupar casos a propósito.</div>
+  </div>
+
+  <h4 class="sub">Agrupar casos — cuando varios casos hacen lo mismo</h4>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><span class="cb-lang">JavaScript</span></div>
+  <pre>const dia = 'sabado';
+
+switch (dia) {
+  case 'lunes':
+  case 'martes':
+  case 'miercoles':
+  case 'jueves':
+  case 'viernes':
+    console.log('Dia laborable');
+    break;
+  case 'sabado':
+  case 'domingo':
+    console.log('Fin de semana');   // &lt;-- este se ejecuta
+    break;
+  default:
+    console.log('Dia invalido');
+}</pre></div>
+</div>
+
+<!-- 5. CONDICIONALES EN EL BACKEND REAL -->
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">05</span>Condicionales en el Backend Real</h2>
+  <p class="body">En backend, los condicionales aparecen constantemente para validar datos, verificar permisos y devolver la respuesta correcta. Estos son los patrones más comunes que vas a usar en el curso:</p>
+
+  <div class="patron">
+    <div class="patron-header">Patrón 1 — Validación de campos obligatorios</div>
+    <div class="patron-body">
+      <div class="cb" style="margin:0;border-radius:0;border:none"><pre>// Siempre validar que los datos lleguen antes de usarlos
+function procesarRegistro(nombre, email, password) {
+  if (!nombre) {
+    return 'Error: el nombre es obligatorio';
+  }
+  if (!email || !email.includes('@')) {
+    return 'Error: el email no es valido';
+  }
+  if (!password || password.length < 6) {
+    return 'Error: la password debe tener al menos 6 caracteres';
+  }
+  return 'Datos validos - procesando registro...';
+}
+
+console.log(procesarRegistro('Juan', 'juan@mail.com', '123456'));
+console.log(procesarRegistro('', 'juan@mail.com', '123'));</pre></div>
+    </div>
+  </div>
+
+  <div class="patron">
+    <div class="patron-header">Patrón 2 — Verificación de permisos</div>
+    <div class="patron-body">
+      <div class="cb" style="margin:0;border-radius:0;border:none"><pre>function verificarAcceso(usuario, recurso) {
+  if (!usuario) {
+    return { status: 401, mensaje: 'No autenticado' };
+  }
+  if (!usuario.activo) {
+    return { status: 403, mensaje: 'Cuenta suspendida' };
+  }
+  if (recurso === 'admin' && !usuario.esAdmin) {
+    return { status: 403, mensaje: 'No tenes permiso para esta seccion' };
+  }
+  return { status: 200, mensaje: 'Acceso permitido' };
+}
+
+const usuario1 = { nombre: 'Maria', activo: true, esAdmin: false };
+console.log(verificarAcceso(usuario1, 'admin'));    // { status: 403, ... }
+console.log(verificarAcceso(usuario1, 'perfil'));   // { status: 200, ... }</pre></div>
+    </div>
+  </div>
+
+  <div class="patron">
+    <div class="patron-header">Patrón 3 — Respuesta según código HTTP</div>
+    <div class="patron-body">
+      <div class="cb" style="margin:0;border-radius:0;border:none"><pre>function manejarRespuesta(statusCode, datos) {
+  if (statusCode === 200) {
+    console.log('Exito:', datos);
+  } else if (statusCode === 404) {
+    console.log('No encontrado');
+  } else if (statusCode === 401) {
+    console.log('No autenticado - redirigir a login');
+  } else if (statusCode >= 500) {
+    console.log('Error del servidor - reintentar mas tarde');
+  } else {
+    console.log('Respuesta inesperada:', statusCode);
+  }
+}</pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. EJERCICIO -->
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">06</span>Ejercicio Práctico</h2>
+  <p class="body">Creá un archivo <code>condicionales.js</code> y resolvé los 4 ejercicios. Podés probarlos acá abajo también.</p>
+
+  <div class="ejercicio">
+    <div class="ej-header">
+      <span class="ej-title">⌨ condicionales.js — ejercicios 1 a 4</span>
+      <span class="ej-badge">JS · navegador</span>
+    </div>
+    <textarea class="editor" id="ed1" spellcheck="false">// === EJERCICIO 1: Clasificador de edad ===
+// Dado una edad, imprimir:
+// 0-12: 'Nino' | 13-17: 'Adolescente' | 18-64: 'Adulto' | 65+: 'Adulto mayor'
+const edad = 45;
+
+if (edad <= 12) {
+  console.log('Nino');
+} else if (edad <= 17) {
+  console.log('Adolescente');
+} else if (edad <= 64) {
+  console.log('Adulto');        // este se ejecuta
+} else {
+  console.log('Adulto mayor');
+}
+
+// === EJERCICIO 2: Validador de password ===
+// Valida si tiene al menos 8 caracteres y no esta vacia
+const password = 'abc123';
+
+if (!password) {
+  console.log('Error: la password no puede estar vacia');
+} else if (password.length < 8) {
+  console.log('Error: la password debe tener al menos 8 caracteres');  // este
+} else {
+  console.log('Password aceptada');
+}
+
+// === EJERCICIO 3: Calculadora de envio ===
+// hasta 1 kg: $500 | hasta 5 kg: $900 | hasta 10 kg: $1500 | mas de 10 kg: $2500
+const peso = 3.5;
+const costoEnvio = peso <= 1  ? 500
+                 : peso <= 5  ? 900
+                 : peso <= 10 ? 1500
+                 : 2500;
+console.log('Costo de envio: $' + costoEnvio);  // $900
+
+// === EJERCICIO 4: Sistema de permisos con switch ===
+// admin: puede leer, escribir y eliminar
+// editor: puede leer y escribir
+// viewer: solo puede leer
+const rol = 'editor';
+
+switch (rol) {
+  case 'admin':
+    console.log('Puede leer, escribir y eliminar');
+    break;
+  case 'editor':
+    console.log('Puede leer y escribir');   // este se ejecuta
+    break;
+  case 'viewer':
+    console.log('Solo puede leer');
+    break;
+  default:
+    console.log('Rol desconocido');
+}</textarea>
+    <button class="run-btn" onclick="runCode('ed1','out1')">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3 2l11 6-11 6V2z"/></svg>
+      Ejecutar código
+    </button>
+    <div class="terminal-out" id="out1"></div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">07</span>Mini Quiz</h2>
+
+  <div class="quiz-wrap" id="quiz">
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 01</span>¿Qué hace el bloque <code>else</code> en un if/else?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Ejecuta código solo si la condición del if también es verdadera</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Ejecuta código cuando la condición del if es falsa</button>
+      </div><div class="quiz-feedback" id="fb0"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 02</span>¿Cuáles de estos valores son considerados falsy en JavaScript?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this,0,0)"><span class="opt-letter">A</span>0, '', null, undefined, false, NaN</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,0)"><span class="opt-letter">B</span>Solo false y null</button>
+      </div><div class="quiz-feedback" id="fb1"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 03</span>¿Qué hace el operador ternario <code>condicion ? a : b</code>?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Ejecuta la condición dos veces</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Devuelve 'a' si la condición es true, y 'b' si es false</button>
+      </div><div class="quiz-feedback" id="fb2"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 04</span>¿Para qué sirve el <code>break</code> en un switch?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Para salir del programa completamente</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Para detener la ejecución del switch y evitar que pase al siguiente caso</button>
+      </div><div class="quiz-feedback" id="fb3"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 05</span>¿Por qué es mala práctica decirle al usuario si el email o la password fue lo incorrecto?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Porque es más fácil escribir un mensaje genérico</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Porque un atacante podría usar esa información para encontrar emails válidos</button>
+      </div><div class="quiz-feedback" id="fb4"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 06</span>¿Qué imprime este código?<br><code style="font-size:12px">const x = 10; if (x &gt; 5) { console.log('A'); } else { console.log('B'); }</code></div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>B</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>A</button>
+      </div><div class="quiz-feedback" id="fb5"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 07</span>¿Cuándo conviene usar switch en vez de if/else if?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this,0,1)"><span class="opt-letter">A</span>Siempre, el switch es mejor que if</button>
+        <button class="quiz-opt-btn" onclick="answer(this,1,1)"><span class="opt-letter">B</span>Cuando se compara una variable contra muchos valores posibles</button>
+      </div><div class="quiz-feedback" id="fb6"></div>
+    </div>
+
+  </div>
+
+  <div class="quiz-score" id="quizScore">
+    <div class="quiz-score-num" id="scoreNum">0/7</div>
+    <div>
+      <div style="font-size:14px;color:var(--fg2)" id="scoreLabel"></div>
+      <button onclick="resetQuiz()" style="margin-top:8px;font-size:13px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;text-decoration:underline">↺ Reintentar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TAREA -->
+<div class="tarea section">
+  <h3>📚 Tarea para la Próxima Clase</h3>
+  <ol>
+    <li>Terminar los 4 ejercicios de <code>condicionales.js</code>.</li>
+    <li>Ampliar el ejercicio 4 (sistema de permisos) para que también valide si el usuario está activo (<code>activo: true/false</code>) antes de verificar el rol.</li>
+    <li>Investigar: ¿qué es un bucle <code>for</code> en programación? La próxima clase vamos a repetir acciones muchas veces con bucles.</li>
+    <li>Pensar: en tu app idea, ¿qué validaciones necesitaría el backend? Escribilas como comentarios en un archivo.</li>
+  </ol>
+</div>
+
+<div class="footer">
+  <div class="footer-brand">CapOL × Apoc Automation</div>
+  <div class="footer-right">Clase 05 · Backend desde Cero · 2025</div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+const html=document.documentElement;
+const MOON=`<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+const SUN=`<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+const icon=document.getElementById('themeIcon');
+function applyTheme(t){html.dataset.theme=t;icon.innerHTML=t==='dark'?SUN:MOON;localStorage.setItem('theme',t);}
+document.getElementById('themeBtn').addEventListener('click',()=>applyTheme(html.dataset.theme==='dark'?'light':'dark'));
+applyTheme(localStorage.getItem('theme')||'dark');
+
+const fill=document.getElementById('progress-fill');
+window.addEventListener('scroll',()=>{const h=document.documentElement;fill.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+window.runCode=function(edId,outId){
+  const code=document.getElementById(edId).value;
+  const out=document.getElementById(outId);
+  out.classList.add('show');
+  const lines=[];
+  const orig=console.log;
+  console.log=(...a)=>lines.push(a.map(x=>x===null?'null':x===undefined?'undefined':typeof x==='object'?JSON.stringify(x,null,2):String(x)).join(' '));
+  let h='<div class="t-prompt">▶ OUTPUT</div>';
+  try{
+    eval(code);
+    h+=lines.length?lines.map(l=>`<div class="t-line">${esc(l)}</div>`).join(''):'<div class="t-ok">✓ Sin output</div>';
+  }catch(e){h+=`<div class="t-err">✗ Error: ${esc(e.message)}</div>`;}
+  out.innerHTML=h;
+  console.log=orig;
+};
+
+const CORRECT=[1,0,1,1,1,1,1];
+const EXPLAIN=[
+  'else ejecuta su bloque cuando la condición del if es false. Si la condición es true, else se saltea.',
+  'Los 6 valores falsy son: false, 0, "" (string vacío), null, undefined y NaN. Todo lo demás es truthy.',
+  'El ternario evalúa la condición: si es true devuelve el primer valor, si es false devuelve el segundo.',
+  'Sin break, el código "cae" al siguiente case y lo ejecuta también — se llama fallthrough. Siempre poné break.',
+  'Por seguridad: si dijera cuál falló, un atacante podría probar emails hasta encontrar uno válido en el sistema.',
+  'x es 10, y 10 > 5 es true, por eso se ejecuta el bloque del if y se imprime "A".',
+  'Switch es ideal cuando comparás la misma variable contra muchos valores. Para condiciones complejas o rangos, usá if/else.',
+];
+let answers=new Array(7).fill(null),done=new Array(7).fill(false);
+window.answer=function(btn,sel,qi){
+  if(done[qi])return; done[qi]=true; answers[qi]=sel;
+  btn.closest('.quiz-opts').querySelectorAll('.quiz-opt-btn').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===CORRECT[qi])b.classList.add('correct');
+    else if(i===sel)b.classList.add('wrong');
+  });
+  const fb=document.getElementById('fb'+qi);
+  fb.classList.add('show');
+  if(sel===CORRECT[qi]){fb.classList.add('ok');fb.innerHTML='✓ Correcto. '+EXPLAIN[qi];}
+  else{fb.classList.add('no');fb.innerHTML='✗ Incorrecto. '+EXPLAIN[qi];}
+  if(done.every(Boolean))showScore();
+};
+function showScore(){
+  const correct=answers.filter((a,i)=>a===CORRECT[i]).length;
+  const sc=document.getElementById('quizScore'); sc.classList.add('show');
+  document.getElementById('scoreNum').textContent=correct+'/7';
+  const pct=Math.round(correct/7*100);
+  document.getElementById('scoreLabel').textContent=
+    pct===100?'🎉 Perfecto. Estás listo para la clase 6.':
+    pct>=75?'💪 Muy bien. Repasá los que erraste.':
+    pct>=50?'📚 Pasable. Vale la pena releer la clase.':
+    '🔄 Repasá el material y volvé a intentarlo.';
+}
+window.resetQuiz=function(){
+  answers=new Array(7).fill(null);done=new Array(7).fill(false);
+  document.querySelectorAll('.quiz-opt-btn').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong');});
+  document.querySelectorAll('.quiz-feedback').forEach(fb=>{fb.classList.remove('show','ok','no');fb.innerHTML='';});
+  document.getElementById('quizScore').classList.remove('show');
+};
+</script>
+</body>
+</html>
