@@ -631,45 +631,82 @@ window.runCode=function(edId,outId){
   console.log=orig;
 };
 
-const CORRECT=[1,0,1,1,1,1,1];
-const EXPLAIN=[
-  'else ejecuta su bloque cuando la condición del if es false. Si la condición es true, else se saltea.',
-  'Los 6 valores falsy son: false, 0, "" (string vacío), null, undefined y NaN. Todo lo demás es truthy.',
-  'El ternario evalúa la condición: si es true devuelve el primer valor, si es false devuelve el segundo.',
-  'Sin break, el código "cae" al siguiente case y lo ejecuta también — se llama fallthrough. Siempre poné break.',
-  'Por seguridad: si dijera cuál falló, un atacante podría probar emails hasta encontrar uno válido en el sistema.',
-  'x es 10, y 10 > 5 es true, por eso se ejecuta el bloque del if y se imprime "A".',
-  'Switch es ideal cuando comparás la misma variable contra muchos valores. Para condiciones complejas o rangos, usá if/else.',
+const CORRECT=[1, 0, 1, 1, 1, 1, 1];
+const EXPLAIN = [
+  'else ejecuta cuando if es false.',
+  'Falsy: false, 0, "", null, undefined, NaN.',
+  'El ternario devuelve un valor según true/false.',
+  'break evita fallthrough en switch.',
+  'No revelar datos evita ataques de enumeración.',
+  '10 > 5 es true, por eso imprime A.',
+  'switch conviene para múltiples valores exactos.'
 ];
-let answers=new Array(7).fill(null),done=new Array(7).fill(false);
-window.answer=function(btn,sel,qi){
-  if(done[qi])return; done[qi]=true; answers[qi]=sel;
-  btn.closest('.quiz-opts').querySelectorAll('.quiz-opt-btn').forEach((b,i)=>{
-    b.disabled=true;
-    if(i===CORRECT[qi])b.classList.add('correct');
-    else if(i===sel)b.classList.add('wrong');
+
+let score = 0;
+let answered = 0;
+
+function answer(btn, optionIndex, questionIndex) {
+  const opts = btn.closest('.quiz-opts').querySelectorAll('.quiz-opt-btn');
+  const feedback = document.getElementById('fb' + questionIndex);
+
+  // evitar doble click
+  if (opts[0].disabled) return;
+
+  opts.forEach((b, i) => {
+    b.disabled = true;
+
+    if (i === CORRECT[questionIndex]) {
+      b.classList.add('correct');
+    }
+
+    if (i === optionIndex && optionIndex !== CORRECT[questionIndex]) {
+      b.classList.add('wrong');
+    }
   });
-  const fb=document.getElementById('fb'+qi);
-  fb.classList.add('show');
-  if(sel===CORRECT[qi]){fb.classList.add('ok');fb.innerHTML='✓ Correcto. '+EXPLAIN[qi];}
-  else{fb.classList.add('no');fb.innerHTML='✗ Incorrecto. '+EXPLAIN[qi];}
-  if(done.every(Boolean))showScore();
-};
-function showScore(){
-  const correct=answers.filter((a,i)=>a===CORRECT[i]).length;
-  const sc=document.getElementById('quizScore'); sc.classList.add('show');
-  document.getElementById('scoreNum').textContent=correct+'/7';
-  const pct=Math.round(correct/7*100);
-  document.getElementById('scoreLabel').textContent=
-    pct===100?'🎉 Perfecto. Estás listo para la clase 6.':
-    pct>=75?'💪 Muy bien. Repasá los que erraste.':
-    pct>=50?'📚 Pasable. Vale la pena releer la clase.':
-    '🔄 Repasá el material y volvé a intentarlo.';
+
+  const isCorrect = optionIndex === CORRECT[questionIndex];
+
+  feedback.classList.add('show');
+  feedback.classList.add(isCorrect ? 'ok' : 'no');
+  feedback.innerHTML = (isCorrect ? '✓ Correcto. ' : '✗ Incorrecto. ') + EXPLAIN[questionIndex];
+
+  if (isCorrect) score++;
+
+  answered++;
+
+  if (answered === CORRECT.length) showScore();
 }
-window.resetQuiz=function(){
-  answers=new Array(7).fill(null);done=new Array(7).fill(false);
-  document.querySelectorAll('.quiz-opt-btn').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong');});
-  document.querySelectorAll('.quiz-feedback').forEach(fb=>{fb.classList.remove('show','ok','no');fb.innerHTML='';});
+
+function showScore() {
+  const sc = document.getElementById('quizScore');
+  sc.classList.add('show');
+
+  document.getElementById('scoreNum').textContent = `${score}/7`;
+
+  const pct = Math.round((score / 7) * 100);
+
+  document.getElementById('scoreLabel').textContent =
+    pct === 100 ? '🎉 Perfecto. Estás listo.' :
+    pct >= 75 ? '💪 Muy bien. Repasá algunos conceptos.' :
+    pct >= 50 ? '📚 Regular. Conviene repasar la clase.' :
+    '🔄 Volvé a leer la clase y reintentá.';
+
+}
+
+window.resetQuiz = function () {
+  score = 0;
+  answered = 0;
+
+  document.querySelectorAll('.quiz-opt-btn').forEach(b => {
+    b.disabled = false;
+    b.classList.remove('correct', 'wrong');
+  });
+
+  document.querySelectorAll('.quiz-feedback').forEach(fb => {
+    fb.classList.remove('show', 'ok', 'no');
+    fb.innerHTML = '';
+  });
+
   document.getElementById('quizScore').classList.remove('show');
 };
 </script>
