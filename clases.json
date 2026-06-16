@@ -51,7 +51,7 @@
     "archivo": "clases/clase6.html",
     "duracion": "60 min",
     "temas": ["for", "while", "for...of", "break/continue"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 7,
