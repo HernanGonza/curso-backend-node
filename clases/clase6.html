@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 6 — Bucles · CapOL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#00c896;--danger:#ff4757;--warn:#ffa502;--purple:#a29bfe;--blue-tag:#74b9ff}
+[data-theme="dark"]{--bg:#0f0f11;--bg2:#16161a;--bg3:#1c1c21;--border:#2a2a32;--border2:#35353f;--fg:#e2e2ec;--fg2:#a0a0b0;--fg3:#606070;--card-bg:#16161a;--code-bg:#0a0a0d;--code-fg:#b8d0c8}
+[data-theme="light"]{--bg:#f5f5f0;--bg2:#ffffff;--bg3:#ebebeb;--border:#d8d8d0;--border2:#c5c5bc;--fg:#1a1a24;--fg2:#505060;--fg3:#909098;--card-bg:#ffffff;--code-bg:#1a1a24;--code-fg:#c8e0d8}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;line-height:1.75;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+.page{max-width:800px;margin:0 auto;padding:0 24px 120px}
+#topbar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:17px;text-decoration:none;color:var(--fg)}
+.brand-dot{width:30px;height:30px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#000;font-size:13px;font-weight:800;font-family:'IBM Plex Mono',monospace}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fg2);transition:all .2s}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+.powered{font-size:11px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+.back-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s}
+.back-btn:hover{color:var(--accent)}
+@media(max-width:600px){.powered{display:none}}
+#progress-bar{position:fixed;top:56px;left:0;right:0;height:2px;background:var(--border);z-index:99}
+#progress-fill{height:100%;background:var(--accent);width:0%;transition:width .1s}
+.hero{padding:64px 0 40px;border-bottom:1px solid var(--border);margin-bottom:48px}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.hero-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--accent)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(32px,6vw,52px);font-weight:700;line-height:1.1;color:var(--fg);margin-bottom:18px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-desc{font-size:16px;color:var(--fg2);max-width:560px;line-height:1.7;margin-bottom:28px}
+.hero-meta{display:flex;gap:20px;flex-wrap:wrap}
+.hero-chip{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--fg2);font-family:'IBM Plex Mono',monospace}
+.objetivos{background:color-mix(in srgb,var(--accent) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);border-radius:12px;padding:24px 28px;margin-bottom:48px}
+.objetivos-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.objetivos ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.objetivos li{display:flex;gap:10px;font-size:14.5px}
+.objetivos li::before{content:'▸';color:var(--accent);flex-shrink:0;margin-top:2px}
+.section{margin-bottom:52px}
+.sec-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--fg);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:2px 8px;border-radius:5px}
+p.body{font-size:15px;line-height:1.8;color:var(--fg2);margin-bottom:12px}
+h4.sub{font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;color:var(--fg);margin:18px 0 8px}
+.cb{background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:12px 0}
+.cb-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border2);background:color-mix(in srgb,#000 20%,var(--code-bg))}
+.cb-dots{display:flex;gap:5px}
+.cb-dots span{width:10px;height:10px;border-radius:50%}
+.cb-dots .r{background:#ff5f56}.cb-dots .y{background:#ffbd2e}.cb-dots .g{background:#27c93f}
+.cb-lang{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#555}
+.cb pre{padding:16px 18px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--code-fg);white-space:pre}
+.ce{width:100%;border-collapse:collapse;background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:10px 0}
+.ce tr{border-top:1px solid #1e1e28}
+.ce tr:first-child{border-top:none}
+.ce td{padding:5px 14px;font-size:13px;vertical-align:top}
+.ce td:first-child{font-family:'IBM Plex Mono',monospace;color:var(--code-fg);width:52%;white-space:pre}
+.ce td:last-child{color:var(--fg3);font-size:12px;padding-left:18px;border-left:1px solid #1e1e28}
+.ce tr:hover td{background:#0f0f14}
+[data-theme="light"] .ce tr:hover td{background:#f0f0e8}
+code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix(in srgb,var(--blue-tag) 10%,var(--bg3));color:var(--blue-tag);padding:1px 6px;border-radius:4px}
+.ib{border-radius:10px;padding:14px 18px;margin:12px 0;display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.65}
+.ib .ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.ib.green{background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 28%,transparent)}
+.ib.amber{background:color-mix(in srgb,var(--warn) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--warn) 28%,transparent)}
+.ib.red{background:color-mix(in srgb,var(--danger) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--danger) 28%,transparent)}
+.ib.blue{background:color-mix(in srgb,var(--blue-tag) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 28%,transparent)}
+.ejercicio{background:color-mix(in srgb,#000 30%,var(--bg2));border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin:16px 0}
+[data-theme="light"] .ejercicio{background:#f0f0ea}
+.ej-header{padding:10px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;background:var(--code-bg)}
+.ej-title{font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;color:var(--fg)}
+.ej-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--fg3)}
+textarea.editor{width:100%;background:var(--code-bg);color:#b8d0c8;border:none;outline:none;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;padding:16px 18px;resize:vertical;min-height:200px;tab-size:2}
+.run-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:var(--accent);color:#000;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;transition:background .15s}
+.run-btn:hover{background:color-mix(in srgb,var(--accent) 80%,#fff)}
+.terminal-out{font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:14px 18px;line-height:1.7;background:color-mix(in srgb,#000 50%,var(--code-bg));border-top:1px solid var(--border2);display:none}
+.terminal-out.show{display:block}
+.t-line{color:#a0c8a8}.t-ok{color:var(--accent)}.t-err{color:var(--danger)}.t-prompt{color:var(--fg3);margin-bottom:8px;font-size:11px}
+.quiz-wrap{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+.quiz-item{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.quiz-q{padding:14px 18px;border-bottom:1px solid var(--border);font-size:14.5px;font-weight:600;background:var(--bg2)}
+.quiz-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:4px}
+.quiz-opts{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.quiz-opt-btn{width:100%;text-align:left;padding:10px 16px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;color:var(--fg);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:10px;transition:all .15s}
+.quiz-opt-btn:hover:not(:disabled){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--bg3))}
+.quiz-opt-btn:disabled{cursor:not-allowed;opacity:.7}
+.quiz-opt-btn.correct{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 15%,var(--bg3));color:var(--accent)}
+.quiz-opt-btn.wrong{border-color:var(--danger);background:color-mix(in srgb,var(--danger) 15%,var(--bg3));color:var(--danger)}
+.quiz-feedback{font-size:13px;margin-top:10px;padding:10px 16px;border-radius:8px;display:none;line-height:1.6}
+.quiz-feedback.show{display:block}
+.quiz-feedback.ok{background:color-mix(in srgb,var(--accent) 15%,var(--bg2));color:var(--accent);border-left:3px solid var(--accent)}
+.quiz-feedback.no{background:color-mix(in srgb,var(--danger) 15%,var(--bg2));color:var(--danger);border-left:3px solid var(--danger)}
+.quiz-score{margin-top:32px;padding:24px 28px;background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1.5px solid color-mix(in srgb,var(--accent) 35%,transparent);border-radius:12px;display:none;align-items:center;gap:20px}
+.quiz-score.show{display:flex}
+.quiz-score-num{font-family:'Fraunces',serif;font-size:42px;font-weight:700;color:var(--accent)}
+.tarea{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:28px;margin-top:48px}
+.tarea h3{font-family:'Fraunces',serif;font-size:18px;margin-bottom:16px;color:var(--fg)}
+.tarea ol{margin-left:20px;display:flex;flex-direction:column;gap:10px}
+.tarea li{color:var(--fg2);font-size:14px;line-height:1.6}
+.footer{margin-top:60px;padding:32px 0;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+.footer-brand{font-weight:600;color:var(--fg2)}
+.footer-right{text-align:right}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <a href="/" class="brand"><div class="brand-dot">c</div> CapOL</a>
+  <a href="/clases" class="back-btn">← Volver</a>
+  <span class="powered">Backend desde Cero</span>
+  <div class="topbar-right">
+    <button id="themeBtn" class="theme-btn" title="Cambiar tema">
+      <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<div id="progress-bar"><div id="progress-fill"></div></div>
+
+<div class="page">
+
+<div class="hero">
+  <div class="hero-eyebrow">Clase 06 · Bloque 2</div>
+  <h1><em>Bucles</em></h1>
+  <p class="hero-desc">Repetí acciones automáticamente: for, while, do...while, for...of, for...in. Controla con break y continue. Procesa datos en el backend como un profesional.</p>
+  <div class="hero-meta">
+    <span class="hero-chip">⏱️ 60 minutos</span>
+    <span class="hero-chip">🎯 Intermedio</span>
+  </div>
+</div>
+
+<div class="objetivos">
+  <div class="objetivos-title">Objetivos de la clase</div>
+  <ul>
+    <li>Entender qué es un bucle y para qué sirve.</li>
+    <li>Dominar el bucle for clásico.</li>
+    <li>Aprender while y do...while.</li>
+    <li>Conocer for...of y for...in para recorrer arrays y objetos.</li>
+    <li>Usar break y continue para controlar el flujo del bucle.</li>
+    <li>Aplicar bucles a situaciones reales de backend.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">1</span> Qué es un Bucle?</h2>
+  <div class="ib green">
+    <div class="ico">🔁</div>
+    <div><strong>Bucle = repetir un bloque de código varias veces</strong><br>Un bucle ejecuta el mismo bloque de código repetidamente hasta que una condición deja de cumplirse. Sin bucles, para procesar 1000 usuarios tendrías que copiar el mismo código 1000 veces.</div>
+  </div>
+  <p class="body"><strong>Ejemplo real:</strong> Recibís una lista de 500 pedidos y necesitas calcular el total de cada uno. Un bucle lo hace automáticamente sin repetir código.</p>
+  <h4 class="sub">Por qué son fundamentales en el backend:</h4>
+  <ul style="margin-left:20px;display:flex;flex-direction:column;gap:8px">
+    <li style="color:var(--fg2);font-size:14px">Recorrer todos los usuarios de la base de datos para enviar un email masivo.</li>
+    <li style="color:var(--fg2);font-size:14px">Procesar cada item de un carrito de compras para calcular el total.</li>
+    <li style="color:var(--fg2);font-size:14px">Validar cada campo de un formulario con muchos campos.</li>
+    <li style="color:var(--fg2);font-size:14px">Buscar un elemento específico dentro de una lista de resultados.</li>
+    <li style="color:var(--fg2);font-size:14px">Transformar datos: por ejemplo, ocultar la password de cada usuario antes de enviarlos.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">2</span> El Bucle for Clásico</h2>
+  <div class="ib blue">
+    <div class="ico">🔢</div>
+    <div><strong>for: repetir un número conocido de veces</strong><br>El for clásico es el bucle más común. Tiene tres partes separadas por punto y coma: la inicialización (dónde empieza), la condición (hasta cuándo sigue) y el incremento (cómo avanza).</div>
+  </div>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">JavaScript</div>
+    </div>
+    <pre>for (inicio; condicion; incremento) { codigo a repetir }
+
+for (let i = 0; i < 5; i++) {
+  console.log(i); // i empieza en 0, sigue mientras i < 5, suma 1 cada vez
+                  // imprime: 0, 1, 2, 3, 4
+}</pre>
+  </div>
+  <h4 class="sub">Desglose de cada parte:</h4>
+  <table class="ce">
+    <tr>
+      <td>let i = 0</td>
+      <td>Inicialización: crea la variable de control. i comienza en 0. Una sola vez, al principio.</td>
+    </tr>
+    <tr>
+      <td>i < 5</td>
+      <td>Condición: mientras sea true, el bucle sigue. Sigue mientras i sea menor que 5. Antes de cada iteración.</td>
+    </tr>
+    <tr>
+      <td>i++</td>
+      <td>Incremento: modifica la variable al final de cada vuelta. i++ es lo mismo que i = i + 1. Al final de cada iteración.</td>
+    </tr>
+  </table>
+  <h4 class="sub">Variaciones comunes del for:</h4>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">JavaScript</div>
+    </div>
+    <pre>for (let i = 0; i < 10; i++) {}          // contar de 0 a 9
+for (let i = 1; i <= 10; i++) {}         // contar de 1 a 10 (incluye el 10)
+for (let i = 10; i >= 0; i--) {}         // contar hacia atrás: 10, 9, 8...
+for (let i = 0; i < 100; i += 10) {}     // saltar de 10 en 10: 0, 10, 20...
+for (let i = 0; i < arr.length; i++) {}  // recorrer cada elemento de un array</pre>
+  </div>
+  <h4 class="sub">Ejemplo real: procesar una lista de pedidos</h4>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">JavaScript</div>
+    </div>
+    <pre>const pedidos = [1500, 2300, 800, 4200, 950];
+let totalVentas = 0;
+let cantidadGrandes = 0; // pedidos mayores a 1000
+
+for (let i = 0; i < pedidos.length; i++) {
+  const monto = pedidos[i];
+  totalVentas += monto;
+  if (monto > 1000) {
+    cantidadGrandes++;
+  }
+}
+
+console.log(`Total ventas: $${totalVentas}`);      // $9750
+console.log(`Pedidos grandes: ${cantidadGrandes}`); // 3</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">3</span> while y do...while</h2>
+  <div class="ib amber">
+    <div class="ico">⏳</div>
+    <div><strong>while: repetir mientras una condición sea verdadera</strong><br>while es más simple que for: solo tiene una condición. Se usa cuando NO sabes cuántas veces vas a repetir — solo sabes hasta cuándo. CUIDADO: si la condición nunca se vuelve false, el bucle es infinito.</div>
+  </div>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">JavaScript</div>
+    </div>
+    <pre>let intentos = 0;
+const maxIntentos = 3;
+let acerto = false;
+
+while (intentos < maxIntentos && !acerto) {
+  intentos++;
+  console.log(`Intento ${intentos} de ${maxIntentos}`);
+  
+  if (intentos === 3) {
+    acerto = true;
+    console.log('Acceso concedido!');
+  }
+}
+
+if (!acerto) {
+  console.log('Cuenta bloqueada por demasiados intentos fallidos');
+}</pre>
+  </div>
+
+  <div class="ib red" style="margin-top:20px">
+    <div class="ico">🔄</div>
+    <div><strong>do...while: ejecutar AL MENOS una vez</strong><br>La diferencia con while es que do...while ejecuta el bloque PRIMERO y verifica la condición DESPUÉS. Garantiza al menos una ejecución. Menos usado que while, pero útil cuando necesitas hacer algo al menos una vez.</div>
+  </div>
+
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">JavaScript</div>
+    </div>
+    <pre>let numero = 0;
+do {
+  console.log(`Numero: ${numero}`);
+  numero++;
+} while (numero < 3);
+
+// Imprime: 0, 1, 2
+// Aunque numero ya fuera 5 al empezar, se ejecutaría una vez igual</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">4</span> for...of y for...in</h2>
+  <div class="ib green">
+    <div class="ico">📍</div>
+    <div><strong>for...of: la forma moderna de recorrer arrays</strong><br>for...of es la forma más limpia de recorrer los VALORES de un array. En vez de manejar un índice (i), te da directamente cada elemento. Se usa mucho en JavaScript moderno.</div>
+  </div>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">JavaScript</div>
+    </div>
+    <pre>const frutas = ['manzana', 'banana', 'uva'];
+
+// Con for clásico:
+for (let i = 0; i < frutas.length; i++) {
+  console.log(frutas[i]); // frutas[0], frutas[1]...
+}
+
+// Con for...of (más limpio):
+for (const fruta of frutas) {
+  console.log(fruta); // directamente el valor
+}</pre>
+  </div>
+
+  <h4 class="sub">Ejemplo real con for...of:</h4>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">JavaScript</div>
+    </div>
+    <pre>const usuarios = [
+  { nombre: 'Ana', email: 'ana@mail.com', activo: true },
+  { nombre: 'Carlos', email: 'carlos@mail.com', activo: false },
+  { nombre: 'Lucia', email: 'lucia@mail.com', activo: true },
+];
+
+// Imprimir solo los usuarios activos
+for (const usuario of usuarios) {
+  if (usuario.activo) {
+    console.log(`Activo: ${usuario.nombre} - ${usuario.email}`);
+  }
+}
+
+// Imprime: Ana y Lucia (Carlos esta inactivo)</pre>
+  </div>
+
+  <div class="ib blue" style="margin-top:20px">
+    <div class="ico">🔑</div>
+    <div><strong>for...in: recorrer las CLAVES de un objeto</strong><br>for...in recorre las propiedades (claves) de un objeto. No se usa para arrays — para eso está for...of. Se usa para explorar objetos cuando no sabes sus claves de antemano.</div>
+  </div>
+
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">JavaScript</div>
+    </div>
+    <pre>const producto = {
+  nombre: 'Notebook',
+  precio: 150000,
+  categoria: 'Electronica',
+  stock: 5,
+};
+
+for (const clave in producto) {
+  console.log(`${clave}: ${producto[clave]}`);
+}
+
+// Imprime:
+// nombre: Notebook
+// precio: 150000
+// categoria: Electronica
+// stock: 5</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">5</span> break y continue</h2>
+  <div class="ib red">
+    <div class="ico">⛔</div>
+    <div><strong>break: salir del bucle antes de que termine</strong><br>break detiene el bucle inmediatamente, sin importar cuántas iteraciones falten. Se usa cuando encontraste lo que buscabas y no tiene sentido seguir iterando.</div>
+  </div>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">JavaScript</div>
+    </div>
+    <pre>const usuarios = ['ana@mail.com', 'carlos@mail.com', 'lucia@mail.com'];
+const buscar = 'carlos@mail.com';
+let encontrado = false;
+
+for (const email of usuarios) {
+  console.log(`Revisando: ${email}`);
+  if (email === buscar) {
+    encontrado = true;
+    break; // Encontramos al usuario, no tiene sentido seguir
+  }
+}
+
+console.log(encontrado ? 'Usuario encontrado' : 'No existe');
+// Solo revisa los dos primeros - al encontrar 'carlos' se detiene</pre>
+  </div>
+
+  <div class="ib amber" style="margin-top:20px">
+    <div class="ico">⏭️</div>
+    <div><strong>continue: saltear esta iteración y pasar a la siguiente</strong><br>continue no detiene el bucle — solo saltea el resto del código de la iteración actual y pasa a la siguiente. Útil para filtrar elementos que no queres procesar.</div>
+  </div>
+
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">JavaScript</div>
+    </div>
+    <pre>const numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// Imprimir solo los numeros pares
+for (const n of numeros) {
+  if (n % 2 !== 0) {
+    continue; // Si es impar, saltear - ir al siguiente
+  }
+  console.log(n); // Solo llega aca si es par
+}
+
+// Imprime: 2, 4, 6, 8, 10</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">6</span> Bucles Anidados</h2>
+  <p class="body">Podes poner un bucle adentro de otro. Por cada iteración del bucle exterior, el bucle interior se ejecuta completo. Se usan para procesar datos bidimensionales o comparar listas.</p>
+  <div class="ib red">
+    <div class="ico">⚠️</div>
+    <div><strong>Cuidado con el rendimiento:</strong> Dos bucles anidados de N elementos generan N×N operaciones. Con 1000 elementos son 1.000.000 de operaciones — puede ser lento.</div>
+  </div>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">JavaScript</div>
+    </div>
+    <pre>// Tabla de multiplicar del 1 al 3
+for (let i = 1; i <= 3; i++) {
+  for (let j = 1; j <= 3; j++) {
+    console.log(`${i} x ${j} = ${i * j}`);
+  }
+}
+// 1x1=1, 1x2=2, 1x3=3, 2x1=2, 2x2=4...
+
+// Ejemplo real: verificar si hay pedidos duplicados
+const pedidos = [101, 202, 101, 303];
+for (let i = 0; i < pedidos.length; i++) {
+  for (let j = i + 1; j < pedidos.length; j++) {
+    if (pedidos[i] === pedidos[j]) {
+      console.log(`Pedido duplicado encontrado: ${pedidos[i]}`);
+    }
+  }
+}
+// Encuentra que 101 esta duplicado</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">7</span> Ejercicio Práctico</h2>
+  <p class="body">Crea un archivo <code>bucles.js</code> y resuelve los siguientes ejercicios:</p>
+
+  <div class="ejercicio">
+    <div class="ej-header">
+      <div class="ej-title">Ejercicio 1: Contador (FizzBuzz)</div>
+      <div class="ej-badge">BUCLES BÁSICOS</div>
+    </div>
+    <div style="padding:16px 18px;border-bottom:1px solid var(--border2);background:var(--bg3)">
+      <p style="font-size:13px;color:var(--fg2);margin:0">Imprimir números del 1 al 20. Números múltiplos de 3: 'Fizz'. Múltiplos de 5: 'Buzz'. Múltiplos de 3 Y 5: 'FizzBuzz'.</p>
+    </div>
+    <textarea class="editor" id="ex1">// Ejemplo: 1, 2, Fizz, 4, Buzz, Fizz, 7, 8, Fizz, Buzz, ...
+for (let i = 1; i <= 20; i++) {
+  if (i % 3 === 0 && i % 5 === 0) {
+    console.log('FizzBuzz');
+  } else if (i % 3 === 0) {
+    console.log('Fizz');
+  } else if (i % 5 === 0) {
+    console.log('Buzz');
+  } else {
+    console.log(i);
+  }
+}</textarea>
+    <button class="run-btn" onclick="runCode('ex1', 'out1')">▶ Ejecutar</button>
+    <div class="terminal-out" id="out1"></div>
+  </div>
+
+  <div class="ejercicio">
+    <div class="ej-header">
+      <div class="ej-title">Ejercicio 2: Procesar usuarios</div>
+      <div class="ej-badge">FOR...OF</div>
+    </div>
+    <div style="padding:16px 18px;border-bottom:1px solid var(--border2);background:var(--bg3)">
+      <p style="font-size:13px;color:var(--fg2);margin:0;margin-bottom:8px">a) Activos y > 18 | b) Contar activos | c) Promedio edad</p>
+    </div>
+    <textarea class="editor" id="ex2">const usuarios = [
+  { nombre: 'Ana', edad: 15, activo: true },
+  { nombre: 'Bruno', edad: 22, activo: false },
+  { nombre: 'Carla', edad: 30, activo: true },
+  { nombre: 'Diego', edad: 17, activo: true },
+  { nombre: 'Elena', edad: 25, activo: true },
+];
+
+// a) Activos y mayores de 18
+console.log('=== Activos mayores de 18 ===');
+for (const usuario of usuarios) {
+  if (usuario.activo && usuario.edad > 18) {
+    console.log(usuario.nombre);
+  }
+}
+
+// b) Contar activos
+let contadorActivos = 0;
+for (const usuario of usuarios) {
+  if (usuario.activo) {
+    contadorActivos++;
+  }
+}
+console.log(`Activos: ${contadorActivos}`);
+
+// c) Promedio de edad
+let sumaEdad = 0;
+for (const usuario of usuarios) {
+  sumaEdad += usuario.edad;
+}
+console.log(`Promedio edad: ${(sumaEdad / usuarios.length).toFixed(2)}`);</textarea>
+    <button class="run-btn" onclick="runCode('ex2', 'out2')">▶ Ejecutar</button>
+    <div class="terminal-out" id="out2"></div>
+  </div>
+
+  <div class="ejercicio">
+    <div class="ej-header">
+      <div class="ej-title">Ejercicio 3: Búsqueda con break</div>
+      <div class="ej-badge">BREAK</div>
+    </div>
+    <div style="padding:16px 18px;border-bottom:1px solid var(--border2);background:var(--bg3)">
+      <p style="font-size:13px;color:var(--fg2);margin:0">Buscar producto id === 3. Mostrar nombre y precio, o 'No encontrado'.</p>
+    </div>
+    <textarea class="editor" id="ex3">const productos = [
+  { id: 1, nombre: 'Teclado', precio: 5000 },
+  { id: 2, nombre: 'Mouse', precio: 2000 },
+  { id: 3, nombre: 'Monitor', precio: 45000 },
+  { id: 4, nombre: 'Webcam', precio: 8000 },
+];
+
+let encontrado = false;
+for (const producto of productos) {
+  if (producto.id === 3) {
+    console.log(`${producto.nombre}: $${producto.precio}`);
+    encontrado = true;
+    break;
+  }
+}
+
+if (!encontrado) {
+  console.log('No encontrado');
+}</textarea>
+    <button class="run-btn" onclick="runCode('ex3', 'out3')">▶ Ejecutar</button>
+    <div class="terminal-out" id="out3"></div>
+  </div>
+
+  <div class="ejercicio">
+    <div class="ej-header">
+      <div class="ej-title">Ejercicio 4: Transformación</div>
+      <div class="ej-badge">FOR...OF + PUSH</div>
+    </div>
+    <div style="padding:16px 18px;border-bottom:1px solid var(--border2);background:var(--bg3)">
+      <p style="font-size:13px;color:var(--fg2);margin:0">Crear array 'nombresProductos' con solo los nombres. Esperado: ['Teclado', 'Mouse', 'Monitor', 'Webcam']</p>
+    </div>
+    <textarea class="editor" id="ex4">const productos = [
+  { id: 1, nombre: 'Teclado', precio: 5000 },
+  { id: 2, nombre: 'Mouse', precio: 2000 },
+  { id: 3, nombre: 'Monitor', precio: 45000 },
+  { id: 4, nombre: 'Webcam', precio: 8000 },
+];
+
+const nombresProductos = [];
+
+for (const producto of productos) {
+  nombresProductos.push(producto.nombre);
+}
+
+console.log(nombresProductos);</textarea>
+    <button class="run-btn" onclick="runCode('ex4', 'out4')">▶ Ejecutar</button>
+    <div class="terminal-out" id="out4"></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">🎯</span> Mini Quiz — Clase 6</h2>
+  <div class="quiz-wrap">
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 1</span> ¿Cuántas veces se ejecuta este bucle? <code>for (let i = 0; i < 5; i++)</code></div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this, 0, 0)"><span>○</span> 4 veces</button>
+        <button class="quiz-opt-btn" onclick="answer(this, 1, 0)"><span>○</span> 5 veces (i toma valores 0, 1, 2, 3, 4)</button>
+      </div>
+      <div class="quiz-feedback" id="fb0"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 2</span> ¿Qué diferencia hay entre <code>for...of</code> y <code>for...in</code>?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this, 0, 1)"><span>○</span> Son exactamente iguales</button>
+        <button class="quiz-opt-btn" onclick="answer(this, 1, 1)"><span>○</span> for...of recorre valores; for...in recorre claves</button>
+      </div>
+      <div class="quiz-feedback" id="fb1"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 3</span> ¿Qué hace <code>break</code> dentro de un bucle?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this, 0, 2)"><span>○</span> Pausa el bucle por un momento</button>
+        <button class="quiz-opt-btn" onclick="answer(this, 1, 2)"><span>○</span> Detiene el bucle inmediatamente y sale de él</button>
+      </div>
+      <div class="quiz-feedback" id="fb2"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 4</span> ¿Qué hace <code>continue</code> dentro de un bucle?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this, 0, 3)"><span>○</span> Detiene el bucle completamente</button>
+        <button class="quiz-opt-btn" onclick="answer(this, 1, 3)"><span>○</span> Saltea el resto de la iteración actual y pasa a la siguiente</button>
+      </div>
+      <div class="quiz-feedback" id="fb3"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 5</span> ¿Qué imprime? <code>for (let i = 1; i <= 3; i++) { console.log(i); }</code></div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this, 0, 4)"><span>○</span> 0, 1, 2</button>
+        <button class="quiz-opt-btn" onclick="answer(this, 1, 4)"><span>○</span> 1, 2, 3</button>
+      </div>
+      <div class="quiz-feedback" id="fb4"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 6</span> ¿Cuándo usar <code>while</code> en vez de <code>for</code>?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this, 0, 5)"><span>○</span> Cuando el código tiene errores</button>
+        <button class="quiz-opt-btn" onclick="answer(this, 1, 5)"><span>○</span> Cuando no sabes cuántas veces va a repetirse</button>
+      </div>
+      <div class="quiz-feedback" id="fb5"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 7</span> ¿Qué resultado da: <code>10 % 3</code>?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this, 0, 6)"><span>○</span> 3 (la división entera)</button>
+        <button class="quiz-opt-btn" onclick="answer(this, 1, 6)"><span>○</span> 1 (el resto de dividir 10 por 3)</button>
+      </div>
+      <div class="quiz-feedback" id="fb6"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 8</span> ¿Cómo recorrer valores de un array con <code>for...of</code>?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="answer(this, 0, 7)"><span>○</span> <code>for (const i in miArray) {}</code></button>
+        <button class="quiz-opt-btn" onclick="answer(this, 1, 7)"><span>○</span> <code>for (const elemento of miArray) {}</code></button>
+      </div>
+      <div class="quiz-feedback" id="fb7"></div>
+    </div>
+  </div>
+  <div class="quiz-score" id="quizScore">
+    <div class="quiz-score-num" id="scoreNum">0/8</div>
+    <div>
+      <div style="font-size:14px;color:var(--fg2)" id="scoreLabel"></div>
+      <button onclick="resetQuiz()" style="margin-top:8px;font-size:13px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;text-decoration:underline">↺ Reintentar</button>
+    </div>
+  </div>
+</div>
+
+<div class="tarea">
+  <h3>📚 Tarea para la Próxima Clase</h3>
+  <ol>
+    <li>Terminar los 4 ejercicios de <code>bucles.js</code>.</li>
+    <li>Resolver el clásico ejercicio FizzBuzz completo (números del 1 al 100).</li>
+    <li>En el ejercicio 2, agregar un ejercicio extra: encontrar el usuario con mayor edad usando un bucle.</li>
+    <li>Investigar: ¿qué es un Array en JavaScript y qué métodos tiene (map, filter, reduce)? La próxima clase los vamos a estudiar en profundidad.</li>
+  </ol>
+</div>
+
+<div class="footer">
+  <div class="footer-brand">CapOL × Apoc Automation</div>
+  <div class="footer-right">Clase 06 · Backend desde Cero · 2025</div>
+</div>
+
+</div>
+
+<script>
+const html=document.documentElement;
+const MOON=`<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+const SUN=`<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+const icon=document.getElementById('themeIcon');
+function applyTheme(t){html.dataset.theme=t;icon.innerHTML=t==='dark'?SUN:MOON;localStorage.setItem('theme',t);}
+document.getElementById('themeBtn').addEventListener('click',()=>applyTheme(html.dataset.theme==='dark'?'light':'dark'));
+applyTheme(localStorage.getItem('theme')||'dark');
+
+const fill=document.getElementById('progress-fill');
+window.addEventListener('scroll',()=>{const h=document.documentElement;fill.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+window.runCode=function(edId,outId){
+  const code=document.getElementById(edId).value;
+  const out=document.getElementById(outId);
+  out.classList.add('show');
+  const lines=[];
+  const orig=console.log;
+  console.log=(...a)=>lines.push(a.map(x=>x===null?'null':x===undefined?'undefined':typeof x==='object'?JSON.stringify(x,null,2):String(x)).join(' '));
+  let h='<div class="t-prompt">▶ OUTPUT</div>';
+  try{eval(code);h+=lines.length?lines.map(l=>`<div class="t-line">${esc(l)}</div>`).join(''):'<div class="t-ok">✓ Sin output</div>';}catch(e){h+=`<div class="t-err">✗ Error: ${esc(e.message)}</div>`;}
+  out.innerHTML=h;
+  console.log=orig;
+};
+
+const CORRECT=[1,1,1,1,1,1,1,1];
+const EXPLAIN=['5 veces: i vale 0, 1, 2, 3, 4. Al llegar a i=5 la condición es false.','for...of para arrays (valores), for...in para objetos (claves).','break sale inmediatamente. continue va a la siguiente iteración.','continue saltea solo esta iteración. break detiene todo el bucle.','i empieza en 1 (let i=1) y sigue mientras i<=3, por eso 1, 2, 3.','while se usa cuando no sabes cuántas veces: solo sabes la condición de parada.','% es módulo: el resto. 10 ÷ 3 = 3 resto 1, así que 10 % 3 = 1.','for...of accede a valores. for...in accede a claves/índices.'];
+let answers=new Array(8).fill(null),done=new Array(8).fill(false);
+window.answer=function(btn,sel,qi){
+  if(done[qi])return;done[qi]=true;answers[qi]=sel;
+  btn.closest('.quiz-opts').querySelectorAll('.quiz-opt-btn').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===CORRECT[qi])b.classList.add('correct');
+    else if(i===sel)b.classList.add('wrong');
+  });
+  const fb=document.getElementById('fb'+qi);
+  fb.classList.add('show');
+  if(sel===CORRECT[qi]){fb.classList.add('ok');fb.innerHTML='✓ Correcto. '+EXPLAIN[qi];}
+  else{fb.classList.add('no');fb.innerHTML='✗ Incorrecto. '+EXPLAIN[qi];}
+  if(done.every(Boolean))showScore();
+};
+function showScore(){
+  const correct=answers.filter((a,i)=>a===CORRECT[i]).length;
+  const sc=document.getElementById('quizScore');sc.classList.add('show');
+  document.getElementById('scoreNum').textContent=correct+'/8';
+  const pct=Math.round(correct/8*100);
+  document.getElementById('scoreLabel').textContent=
+    pct===100?'🎉 Perfecto. Bucles dominados.':
+    pct>=75?'💪 Muy bien. Repasá los que erraste.':
+    pct>=50?'📚 Pasable. Vale la pena releer la clase.':
+    '🔄 Repasá el material y volvé a intentarlo.';
+}
+window.resetQuiz=function(){
+  answers=new Array(8).fill(null);done=new Array(8).fill(false);
+  document.querySelectorAll('.quiz-opt-btn').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong');});
+  document.querySelectorAll('.quiz-feedback').forEach(fb=>{fb.classList.remove('show','ok','no');fb.innerHTML='';});
+  document.getElementById('quizScore').classList.remove('show');
+};
+</script>
+
+</body>
+</html>
