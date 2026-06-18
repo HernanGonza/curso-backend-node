@@ -60,7 +60,7 @@
     "archivo": "clases/clase7.html",
     "duracion": "60 min",
     "temas": ["Índices", "push/pop", "find", "splice/slice"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 8,
