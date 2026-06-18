@@ -265,9 +265,50 @@ console.log(nums);                // [10, 20, 30, 40, 50] - SIN cambio
   </pre></div>
 </div>
 
-<!-- 3. BUSCAR ELEMENTOS -->
+<!-- 4. RECORRER ARRAYS -->
 <div class="section">
-  <h2 class="sec-title"><span class="sec-num">04</span>Buscar Elementos en un Array</h2>
+  <h2 class="sec-title"><span class="sec-num">04</span>Recorrer Arrays</h2>
+  
+  <div class="ib blue"><span class="ico">🔄</span><div><strong>Tres formas principales: <code>for</code>, <code>for...of</code>, y acceso por índice.</strong></div></div>
+
+  <h4 class="sub">1. for clásico — usando índices:</h4>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>const frutas = ['manzana', 'banana', 'naranja'];
+
+// for clásico: (inicio; condición; incremento)
+for (let i = 0; i < frutas.length; i++) {
+  console.log(i, frutas[i]);
+}
+// Output:
+// 0 'manzana'
+// 1 'banana'
+// 2 'naranja'</pre></div>
+
+  <h4 class="sub">2. for...of — acceso directo a valores:</h4>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>const frutas = ['manzana', 'banana', 'naranja'];
+
+// for...of: itera sobre los VALORES (no índices)
+for (const fruta of frutas) {
+  console.log(fruta);
+}
+// Output:
+// 'manzana'
+// 'banana'
+// 'naranja'
+
+// Útil cuando no necesitas el índice</pre></div>
+
+  <h4 class="sub">3. Acceso directo por índice:</h4>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>const usuarios = ['Ana', 'Bruno', 'Carla'];
+
+// Acceder a elementos específicos por su índice
+console.log(usuarios[0]);              // 'Ana'
+console.log(usuarios[1]);              // 'Bruno'
+console.log(usuarios[usuarios.length - 1]); // 'Carla' (último)</pre></div>
+</div>
+
+<!-- 5. BUSCAR ELEMENTOS -->
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">05</span>Buscar Elementos en un Array</h2>
   <div class="ib green"><span class="ico">🔍</span><div><strong>Diferentes formas de buscar según lo que necesites.</strong></div></div>
   <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>// includes() - ¿existe el valor?
 const roles = ['admin', 'editor'];
@@ -296,7 +337,7 @@ console.log(usuarios.every(u => u.activo)); // false
 
 <!-- 4. OTROS METODOS -->
 <div class="section">
-  <h2 class="sec-title"><span class="sec-num">05</span>Otros Métodos Útiles</h2>
+  <h2 class="sec-title"><span class="sec-num">06</span>Otros Métodos Útiles</h2>
   <div class="ib blue"><span class="ico">⚙️</span><div><strong>join, reverse, sort, concat, flat, spread operator.</strong></div></div>
   <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>// join() - convierte a string
 const permisos = ['leer', 'escribir', 'borrar'];
@@ -321,7 +362,7 @@ console.log(unidos);  // [1, 2, 3, 4, 5, 6]
 
 <!-- 5. EJERCICIOS -->
 <div class="section">
-  <h2 class="sec-title"><span class="sec-num">06</span>Ejercicio Práctico</h2>
+  <h2 class="sec-title"><span class="sec-num">07</span>Ejercicio Práctico</h2>
   <p class="body">Resuelve los 4 ejercicios en <code>arrays.js</code>:</p>
   
   <div class="ejercicio">
@@ -364,10 +405,10 @@ console.log('Primeros 3 usuarios:', primeros3.length);</textarea>
   </div>
 </div>
 
-<!-- 6. EJERCICIOS 1 A 4 -->
+<!-- 7. EJERCICIOS 1 A 4 -->
 
 <div class="section">
-  <h2 class="sec-title"><span class="sec-num">07</span>Ejercicios 3 y 4</h2>
+  <h2 class="sec-title"><span class="sec-num">08</span>Ejercicios 3 y 4</h2>
   
   <div class="ejercicio">
     <div class="ej-header"><div class="ej-title">Ejercicio 3: Precios</div><div class="ej-badge">SORT/LOOP</div></div>
