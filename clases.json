@@ -69,7 +69,7 @@
     "archivo": "clases/clase8.html",
     "duracion": "60 min",
     "temas": ["Objetos", "JSON.stringify", "JSON.parse", "Destructuring"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 9,
