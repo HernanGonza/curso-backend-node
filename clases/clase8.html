@@ -1,11 +1,9 @@
-
-
 <!DOCTYPE html>
 <html lang="es" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Clase 8 — Objetos y JSON · CapOL</title>
+<title>Clase 8 — Objetos y JSON (Detallado) · CapOL</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght=0,9..144,300;0,9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -26,7 +24,6 @@ body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;line-
 .powered{font-size:11px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
 .back-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s}
 .back-btn:hover{color:var(--accent)}
-@media(max-width:600px){.powered{display:none}}
 #progress-bar{position:fixed;top:56px;left:0;right:0;height:2px;background:var(--border);z-index:99}
 #progress-fill{height:100%;background:var(--accent);width:0%;transition:width .1s}
 .hero{padding:64px 0 40px;border-bottom:1px solid var(--border);margin-bottom:48px}
@@ -47,8 +44,8 @@ body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;line-
 .sec-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--fg);margin-bottom:18px;display:flex;align-items:center;gap:12px}
 .sec-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:2px 8px;border-radius:5px}
 p.body{font-size:15px;line-height:1.8;color:var(--fg2);margin-bottom:12px}
-h4.sub{font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;color:var(--fg);margin:18px 0 8px}
-/* code blocks */
+h4.sub{font-family:'DM Sans',sans-serif;font-weight:600;font-size:15px;color:var(--fg);margin:24px 0 8px;display:flex;align-items:center;gap:8px}
+h4.sub::before{content:'●';font-size:8px;color:var(--accent)}
 .cb{background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:12px 0}
 .cb-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border2);background:color-mix(in srgb,#000 20%,var(--code-bg))}
 .cb-dots{display:flex;gap:5px}
@@ -56,24 +53,21 @@ h4.sub{font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;color:var
 .cb-dots .r{background:#ff5f56}.cb-dots .y{background:#ffbd2e}.cb-dots .g{background:#27c93f}
 .cb-lang{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#555}
 .cb pre{padding:16px 18px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--code-fg);white-space:pre}
-/* code-explained */
-.ce{width:100%;border-collapse:collapse;background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:10px 0}
+.ce{width:100%;border-collapse:collapse;background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:16px 0}
+.ce th{background:color-mix(in srgb,#000 20%,var(--code-bg));padding:10px 14px;font-size:13px;text-align:left;font-weight:600;border-bottom:1px solid var(--border2)}
 .ce tr{border-top:1px solid #1e1e28}
-.ce tr:first-child{border-top:none}
-.ce td{padding:8px 14px;font-size:13px;vertical-align:top}
-.ce td:first-child{font-family:'IBM Plex Mono',monospace;color:var(--code-fg);width:45%;white-space:pre}
-.ce td:last-child{color:var(--fg2);font-size:12.5px;padding-left:18px;border-left:1px solid #1e1e28}
+.ce td{padding:10px 14px;font-size:13px;vertical-align:top;line-height:1.6}
+.ce td:first-child{font-family:'IBM Plex Mono',monospace;color:var(--code-fg);width:40%}
+.ce td:last-child{color:var(--fg2);padding-left:18px;border-left:1px solid #1e1e28}
 .ce tr:hover td{background:#0f0f14}
 [data-theme="light"] .ce tr:hover td{background:#f0f0e8}
 code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix(in srgb,var(--blue-tag) 10%,var(--bg3));color:var(--blue-tag);padding:1px 6px;border-radius:4px}
-/* info boxes */
 .ib{border-radius:10px;padding:14px 18px;margin:12px 0;display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.65}
 .ib .ico{font-size:18px;flex-shrink:0;margin-top:1px}
 .ib.green{background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 28%,transparent)}
 .ib.amber{background:color-mix(in srgb,var(--warn) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--warn) 28%,transparent)}
 .ib.red{background:color-mix(in srgb,var(--danger) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--danger) 28%,transparent)}
 .ib.blue{background:color-mix(in srgb,var(--blue-tag) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 28%,transparent)}
-/* ejercicio terminal */
 .ejercicio{background:color-mix(in srgb,#000 30%,var(--bg2));border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin:16px 0}
 [data-theme="light"] .ejercicio{background:#f0f0ea}
 .ej-header{padding:10px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;background:var(--code-bg)}
@@ -85,7 +79,6 @@ textarea.editor{width:100%;background:var(--code-bg);color:#b8d0c8;border:none;o
 .terminal-out{font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:14px 18px;line-height:1.7;background:color-mix(in srgb,#000 50%,var(--code-bg));border-top:1px solid var(--border2);display:none}
 .terminal-out.show{display:block}
 .t-line{color:#a0c8a8}.t-ok{color:var(--accent)}.t-err{color:var(--danger)}.t-prompt{color:var(--fg3);margin-bottom:8px;font-size:11px}
-/* quiz */
 .quiz-wrap{display:flex;flex-direction:column;gap:16px;margin:20px 0}
 .quiz-item{border:1px solid var(--border);border-radius:12px;overflow:hidden}
 .quiz-q{padding:14px 18px;border-bottom:1px solid var(--border);font-size:14.5px;font-weight:600;background:var(--bg2)}
@@ -106,7 +99,6 @@ textarea.editor{width:100%;background:var(--code-bg);color:#b8d0c8;border:none;o
 .quiz-score{margin-top:20px;padding:18px 22px;background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:12px;display:none;align-items:center;gap:16px}
 .quiz-score.show{display:flex}
 .quiz-score-num{font-family:'Fraunces',serif;font-size:40px;font-weight:700;color:var(--accent);line-height:1}
-/* tarea */
 .tarea{background:color-mix(in srgb,var(--blue-tag) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 25%,transparent);border-radius:12px;padding:24px 28px}
 .tarea h3{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--blue-tag);margin-bottom:14px}
 .tarea ol{padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
@@ -135,7 +127,7 @@ textarea.editor{width:100%;background:var(--code-bg);color:#b8d0c8;border:none;o
 <div class="hero">
   <div class="hero-eyebrow">Clase 08 · Bloque 2: JavaScript</div>
   <h1><em>Objetos y JSON</em></h1>
-  <p class="hero-desc">Domina la estructura clave del desarrollo backend: creación y manipulación de objetos, datos anidados, métodos del sistema y transferencia mediante formato JSON.</p>
+  <p class="hero-desc">Domina la estructura clave del desarrollo backend: creación detallada y manipulación profunda de objetos, métodos del sistema, inmutabilidad y transferencia universal mediante formato JSON.</p>
   <div class="hero-meta">
     <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>60 minutos</span>
     <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Requiere Clase 7</span>
@@ -147,330 +139,308 @@ textarea.editor{width:100%;background:var(--code-bg);color:#b8d0c8;border:none;o
   <div class="objetivos-title">Objetivos de la clase</div>
   <ul>
     <li>Comprender las bases del paradigma de programación orientada a objetos (POO).</li>
-    <li>Entender qué es un objeto en JavaScript y cómo se crea.</li>
-    <li>Acceder, modificar y eliminar propiedades mediante notación de puntos y corchetes.</li>
-    <li>Trabajar de forma ágil con objetos anidados y colecciones complejas.</li>
-    <li>Conocer e implementar métodos útiles de <code>Object</code> (keys, values, entries, spread operator).</li>
-    <li>Entender qué es JSON y en qué se diferencia exactamente de un objeto de JavaScript.</li>
-    <li>Convertir datos bidireccionalmente usando <code>JSON.stringify</code> y <code>JSON.parse</code> bajo entornos seguros.</li>
-    <li>Aplicar objetos y JSON a situaciones reales de backend y transferencias HTTP.</li>
+    <li>Entender qué es un objeto en JavaScript y cómo se modela en memoria.</li>
+    <li>Manipular propiedades de forma atómica (Modificar, Agregar y Eliminar por separado).</li>
+    <li>Trabajar ágilmente con objetos anidados y colecciones de datos del mundo real.</li>
+    <li>Dominar individualmente los métodos estáticos <code>Object.keys()</code>, <code>Object.values()</code> y <code>Object.entries()</code>.</li>
+    <li>Entender el concepto de Inmutabilidad usando el <strong>Spread Operator</strong>.</li>
+    <li>Diferenciar un Objeto de JavaScript frente a un String JSON mediante reglas sintácticas estrictas.</li>
+    <li>Convertir datos bidireccionalmente y controlar errores de parseo con bloques <code>try/catch</code>.</li>
   </ul>
 </div>
 
 <!-- INTRODUCCIÓN AL PARADIGMA -->
 <div class="section">
-  <h2 class="sec-title"><span class="sec-num">00</span>Programación Orientada a Objetos (POO)</h2>
-  <p class="body">Antes de adentrarnos en la sintaxis de JavaScript, es clave comprender el plano conceptual. La <strong>Programación Orientada a Objetos</strong> es un paradigma de programación (un estilo o modelo de diseño de software) que organiza el código alrededor de "objetos" en lugar de funciones o lógica secuencial pura.</p>
-  <div class="ib blue"><span class="ico">🏛️</span><div><strong>Abstracción del mundo real:</strong> En la POO, buscamos modelar elementos del mundo real o de nuestro dominio de negocio en estructuras de código que combinan características y comportamientos bajo una sola entidad autónoma.</div></div>
-  <p class="body">Imagina un sistema de e-commerce: en lugar de tener variables sueltas para el nombre de un usuario, su contraseña y su estado de conexión por todo el script, conceptualizamos un objeto unificado <code>Usuario</code> que posee datos específicos y puede realizar acciones definidas.</p>
+  <h2 class="sec-title"><span class="sec-num">00</span>El Paradigma de Programación Orientada a Objetos (POO)</h2>
+  <p class="body">Antes de escribir código, es clave entender el diseño de software. La <strong>Programación Orientada a Objetos (POO)</strong> es un paradigma de programación; es decir, una forma o un modelo estructurado de pensar y resolver problemas informáticos organizando el código alrededor de "objetos" autogestionados en lugar de variables sueltas o funciones puramente secuenciales.</p>
+  
+  <div class="ib blue"><span class="ico">🏛️</span><div><strong>Abstracción de Datos:</strong> En el desarrollo de software, la POO nos permite tomar conceptos complejos de la realidad de un negocio (un usuario, una venta, una factura, un ticket de soporte) y modelarlos como entidades lógicas que empaquetan tanto sus características como sus comportamientos.</div></div>
+
+  <h4 class="sub">¿Qué es un Objeto en el concepto de la POO?</h4>
+  <p class="body">Conceptualmente, un **Objeto** es una instancia o entidad concreta que posee:</p>
+  <p class="body" style="padding-left:16px;">1. <strong>Estado (Atributos / Propiedades):</strong> Los datos o características que describen a ese objeto en un momento dado (por ejemplo, el precio de un producto, el nombre del cliente, si la cuenta está activa).</p>
+  <p class="body" style="padding-left:16px;">2. <strong>Comportamiento (Métodos / Acciones):</strong> Las operaciones o funciones que el objeto puede ejecutar (por ejemplo, calcular el IVA, actualizar stock, autenticarse).</p>
+  <p class="body">En entornos Backend como Node.js, este paradigma es fundamental. Cuando consultamos datos de una base de datos (como Supabase o PostgreSQL), cada registro se nos entrega mapeado exactamente con esta estructura conceptual.</p>
 </div>
 
-<!-- 1. QUE ES UN ARRAY -> QUE ES UN OBJETO -->
+<!-- 1. QUE ES UN OBJETO -->
 <div class="section">
   <h2 class="sec-title"><span class="sec-num">01</span>¿Qué es un Objeto en JavaScript?</h2>
-  <div class="ib green"><span class="ico">📋</span><div><strong>Objeto = un conjunto de propiedades clave: valor.</strong><br>Un objeto agrupa datos relacionados en una sola estructura. Cada dato tiene un nombre único llamado clave (o propiedad) y un valor asociado.</div></div>
-  <p class="body">A diferencia de los Arrays que utilizan índices numéricos ordenados de 0 en adelante, los objetos utilizan nombres descriptivos (strings) para indexar sus valores. En el desarrollo backend, casi todo se representa como un objeto: un usuario de la base de datos, un producto del catálogo, un pedido de compra o una respuesta HTTP.</p>
+  <p class="body">En JavaScript, un objeto literal es una de las estructuras de datos fundamentales. Se define como una colección o **conjunto de propiedades compuestas por pares de <code>clave: valor</code>** agrupadas dentro de llaves <code>{}</code>.</p>
+  
+  <div class="ib green"><span class="ico">📋</span><div><strong>Diferencia con los Arrays:</strong> Mientras que un Array indexa sus elementos mediante números correlativos ordenados automáticamente (0, 1, 2, etc.), un Objeto asocia cada valor a una <strong>clave textual semántica</strong> (un nombre descriptivo elegido por vos).</div></div>
 
   <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>const usuario = {
-  id: 1,                    // clave: valor -> número
-  nombre: "Ana García",     // clave: valor -> string
-  email: 'ana@mail.com',    // clave: valor -> string
-  edad: 28,                 // clave: valor -> número
-  esAdmin: false,           // clave: valor -> boolean
-  activo: true              // se crea con llaves {}
-};
+  id: 1,                    // clave: 'id', valor: 1 (Número)
+  nombre: "Ana García",     // clave: 'nombre', valor: "Ana García" (String)
+  email: 'ana@mail.com',    // clave: 'email', valor: 'ana@mail.com' (String)
+  esAdmin: false,           // clave: 'esAdmin', valor: false (Booleano)
+  activo: true              // Los pares se separan por comas
+};</pre></div>
 
-// Acceder a propiedades:
-console.log(usuario.nombre);     // "Ana García" (Notación de punto - la más común)
-console.log(usuario['email']);   // "ana@mail.com" (Notación de corchetes - útil si la clave es dinámica)
+  <h4 class="sub">Formas de Acceder a las Propiedades</h4>
+  <p class="body">Existen dos sintaxis estandarizadas para leer el valor interno de una clave:</p>
+  <p class="body" style="padding-left:16px;"><strong>1. Notación de Punto (<code>objeto.propiedad</code>):</strong> Es la más limpia, común y la que usarás el 90% del tiempo cuando conozcas el nombre exacto de la propiedad de antemano.</p>
+  <p class="body" style="padding-left:16px;"><strong>2. Notación de Corchetes (<code>objeto['propiedad']</code>):</strong> Es obligatoria si el nombre de la clave se encuentra guardado dentro de otra variable o si contiene caracteres especiales o espacios.</p>
 
-const clave = 'edad';
-console.log(usuario[clave]);     // 28 (Acceso dinámico con variable)
-console.log(usuario.telefono);   // undefined (La propiedad no existe)
-  </pre></div>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>console.log(usuario.nombre);     // "Ana García" (Notación de punto)
+console.log(usuario['email']);   // "ana@mail.com" (Notación de corchetes)
 
-  <h4 class="sub">Modificar, agregar y eliminar propiedades:</h4>
-  <p class="body">Los objetos en JavaScript son mutables. Puedes alterar su estructura fácilmente en tiempo de ejecución:</p>
-  
-  <table class="ce">
-    <tr>
-      <td>usuario.nombre = 'Ana López';</td>
-      <td>Modifica una propiedad existente dentro del objeto.</td>
-    </tr>
-    <tr>
-      <td>usuario.ciudad = 'Rosario';</td>
-      <td>Agrega una propiedad totalmente nueva si la clave no existía.</td>
-    </tr>
-    <tr>
-      <td>delete usuario.ciudad;</td>
-      <td>Elimina la propiedad por completo del objeto.</td>
-    </tr>
-    <tr>
-      <td>'email' in usuario;</td>
-      <td>Devuelve <code>true</code> o <code>false</code> para verificar si la propiedad existe en el objeto.</td>
-    </tr>
-  </table>
+// Acceso dinámico por variable:
+const propiedadABuscar = 'esAdmin';
+console.log(usuario[propiedadABuscar]); // false
+
+console.log(usuario.telefono);   // undefined (Intentar leer una clave inexistente no rompe el programa, devuelve undefined)
+</pre></div>
 </div>
 
-<!-- 2. OBJETOS ANIDADOS -->
+<!-- 2. MODIFICAR, AGREGAR, ELIMINAR -->
 <div class="section">
-  <h2 class="sec-title"><span class="sec-num">02</span>Objetos Anidados y Arrays de Objetos</h2>
-  <p class="body">Los objetos pueden contener otras estructuras complejas dentro de sí mismos, incluyendo sub-objetos y arrays. Esta composición jerárquica representa la forma más fiel y común de transferir datos reales en Node.js y APIs modernas.</p>
+  <h2 class="sec-title"><span class="sec-num">02</span>Operaciones Atómicas: Modificar, Agregar y Eliminar</h2>
+  <p class="body">Los objetos en JavaScript son estructuras dinámicas y mutables en memoria, lo que significa que podemos alterar sus datos y su forma en cualquier punto del flujo de ejecución del programa.</p>
+
+  <h4 class="sub">1. Modificar una Propiedad Existente</h4>
+  <p class="body">Si la clave ya existe dentro del objeto, simplemente usamos el operador de asignación (<code>=</code>) seguido del nuevo valor para sobreescribir el dato anterior.</p>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>const producto = { id: 10, nombre: 'Monitor', precio: 45000 };
+producto.precio = 48000; // Modifica el valor asociado a la clave 'precio'
+console.log(producto.precio); // 48000</pre></div>
+
+  <h4 class="sub">2. Agregar una Nueva Propiedad</h4>
+  <p class="body">Para expandir un objeto, basta con escribir una clave que **no exista previamente** y asignarle un valor. JavaScript la creará inmediatamente en la estructura interna.</p>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>producto.stock = 15; // Como 'stock' no existía, se acopla como propiedad nueva
+producto['marca'] = 'Logitech'; // También funciona con corchetes
+console.log(producto); // { id: 10, nombre: 'Monitor', precio: 48000, stock: 15, marca: 'Logitech' }</pre></div>
+
+  <h4 class="sub">3. Eliminar una Propiedad por Completo</h4>
+  <p class="body">Utilizamos la palabra clave nativa <code>delete</code> antes del acceso a la propiedad. Esto remueve físicamente tanto la clave como su valor asignado, haciendo que una consulta posterior a ella retorne <code>undefined</code>.</p>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>delete producto.marca; // Remueve la propiedad del mapa de memoria
+console.log(producto.marca); // undefined</pre></div>
+
+  <h4 class="sub">4. Verificar la Existencia de una Propiedad</h4>
+  <p class="body">Para saber a ciencia cierta si un objeto tiene una clave sin arriesgarnos a evaluar un <code>undefined</code> indirecto, empleamos el operador binario <code>in</code>.</p>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>console.log('stock' in producto); // true
+console.log('marca' in producto); // false</pre></div>
+</div>
+
+<!-- 3. OBJETOS ANIDADOS -->
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">03</span>Objetos Anidados y Colecciones Complejas</h2>
+  <p class="body">En escenarios reales de Backend, los datos no son planos. Un objeto puede contener sub-objetos u arrays que a su vez contienen más objetos. Esto permite mapear relaciones de datos complejas e intrincadas de manera orgánica.</p>
   
   <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>const pedido = {
-  id: 101,
-  fecha: '2024-03-15',
-  estado: 'pendiente',
-  cliente: {                    // Objeto dentro de objeto
-    nombre: 'Carlos',
+  id: 4501,
+  fecha: '2026-06-23',
+  cliente: {                    // Un objeto como valor de una propiedad
+    nombre: 'Carlos Quintana',
     email: 'carlos@mail.com'
   },
-  items: [                      // Array de objetos dentro de objeto
-    { producto: 'Teclado', cantidad: 1, precio: 5000 },
-    { producto: 'Mouse', cantidad: 2, precio: 2000 }
+  items: [                      // Un Array de objetos como valor
+    { articulo: 'Mouse Wireless', cant: 1, precio: 3500 },
+    { articulo: 'Pad XL', cant: 2, precio: 1500 }
   ]
 };
 
-// Acceder a datos anidados:
-console.log(pedido.cliente.nombre);   // 'Carlos'
-console.log(pedido.items[0].producto); // 'Teclado'
-console.log(pedido.items[1].precio);   // 2000
-
-// Calcular el total del pedido recorriendo el array interno:
-let total = 0;
-for (const item of pedido.items) {
-  total += item.cantidad * item.precio;
-}
-console.log('Total:', total); // 9000
-  </pre></div>
+// Acceso encadenado y preciso:
+console.log(pedido.cliente.nombre);   // "Carlos Quintana"
+console.log(pedido.items[0].articulo); // "Mouse Wireless"
+console.log(pedido.items[1].precio);   // 1500
+</pre></div>
 </div>
 
-<!-- 3. METODOS UTILES -->
+<!-- 4. METODOS DE OBJECT SEPARADOS -->
 <div class="section">
-  <h2 class="sec-title"><span class="sec-num">03</span>Métodos Útiles de Object</h2>
-  <div class="ib amber"><span class="ico">⚙️</span><div><strong>La clase global Object nos provee de herramientas para extraer datos o clonar estructuras sin mutar los originales de forma directa.</strong></div></div>
+  <h2 class="sec-title"><span class="sec-num">04</span>Métodos Estáticos de la Clase Object</h2>
+  <p class="body">JavaScript provee una serie de herramientas globales a través del constructor nativo <code>Object</code> que nos permiten transformar objetos en arrays para manipularlos o inspeccionarlos con facilidad.</p>
   
-  <table class="ce">
-    <tr>
-      <td>Object.keys(obj)</td>
-      <td>Devuelve un array con todas las <strong>claves</strong> (propiedades) del objeto.</td>
-    </tr>
-    <tr>
-      <td>Object.values(obj)</td>
-      <td>Devuelve un array con todos los <strong>valores</strong> del objeto.</td>
-    </tr>
-    <tr>
-      <td>Object.entries(obj)</td>
-      <td>Devuelve un array de pares bidimensionales <code>[clave, valor]</code>.</td>
-    </tr>
-    <tr>
-      <td>{ ...obj }</td>
-      <td>Copia un objeto de forma superficial usando el <strong>Spread Operator</strong> (muy común en backend).</td>
-    </tr>
-    <tr>
-      <td>{ ...obj, nueva: valor }</td>
-      <td>Copia el objeto original agregando o sobreescribiendo propiedades en una sola línea.</td>
-    </tr>
-  </table>
+  <h4 class="sub">Object.keys(objeto)</h4>
+  <p class="body">Extrae únicamente las **claves** (los nombres de las propiedades) del objeto y las unifica en un Array de Strings secuencial.</p>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>const auto = { marca: 'Toyota', modelo: 'Corolla', anio: 2022 };
+const claves = Object.keys(auto);
+console.log(claves); // ['marca', 'modelo', 'anio']</pre></div>
 
-  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>const producto = { nombre: 'Laptop', precio: 150000, stock: 5 };
+  <h4 class="sub">Object.values(objeto)</h4>
+  <p class="body">Extrae únicamente los **valores** asociados a cada propiedad y los agrupa ordenadamente en un nuevo Array.</p>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>const valores = Object.values(auto);
+console.log(valores); // ['Toyota', 'Corolla', 2022]</pre></div>
 
-console.log(Object.keys(producto));   // ['nombre', 'precio', 'stock']
-console.log(Object.values(producto)); // ['Laptop', 150000, 5]
-console.log(Object.entries(producto));// [['nombre', 'Laptop'], ['precio', 150000], ['stock', 5]]
+  <h4 class="sub">Object.entries(objeto)</h4>
+  <p class="body">Descompone el objeto por completo transformándolo en un Array bidimensional. Cada elemento interno es un sub-array de dos posiciones que representa la estructura <code>[clave, valor]</code>.</p>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>const entradas = Object.entries(auto);
+console.log(entradas); // [ ['marca', 'Toyota'], ['modelo', 'Corolla'], ['anio', 2022] ]
 
-// Spread Operator: Copiar y actualizar datos (Inmutabilidad)
-const productoActualizado = { ...producto, precio: 140000, stock: 10 };
-console.log(productoActualizado);     // { nombre: 'Laptop', precio: 140000, stock: 10 }
-console.log(producto.precio);         // 150000 (El objeto original se mantiene intacto!)
+// Es ideal para recorrer un objeto iterándolo con un bucle for...of:
+for (const [clave, valor] of Object.entries(auto)) {
+  console.log(`Propiedad: ${clave} -> Valor: ${valor}`);
+}</pre></div>
 
-// Recorrer las entradas de un objeto de forma elegante:
-for (const [clave, valor] of Object.entries(producto)) {
-  console.log(`${clave}: ${valor}`);
-}
-  </pre></div>
+  <h4 class="sub">Inmutabilidad con el Spread Operator (<code>{ ...objeto }</code>)</h4>
+  <p class="body">En el desarrollo profesional, **mutar objetos directamente está desaconsejado** ya que puede provocar efectos secundarios inesperados en el flujo de datos. Para trabajar de manera inmutable, clonamos las propiedades de un objeto antiguo en uno nuevo usando el *Spread Operator* (operador de propagación `...`).</p>
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>const autoOriginal = { marca: 'Ford', precio: 20000 };
+
+// Clonamos el objeto original y modificamos o agregamos propiedades en el acto:
+const autoActualizado = { ...autoOriginal, precio: 22000, color: 'Rojo' };
+
+console.log(autoActualizado); // { marca: 'Ford', precio: 22000, color: 'Rojo' }
+console.log(autoOriginal.precio); // 20000 (¡El objeto original permanece intacto e inalterado en memoria!)</pre></div>
 </div>
 
-<!-- 4. JSON: EL LENGUAJE DE LA WEB -->
+<!-- 5. JSON EXPLICADO Y TABLA -->
 <div class="section">
-  <h2 class="sec-title"><span class="sec-num">04</span>JSON: El Lenguaje de la Web</h2>
-  <p class="body"><strong>JSON</strong> significa <em>JavaScript Object Notation</em>. Es un <strong>formato de texto plano</strong> utilizado de forma universal para representar y transferir datos estructurados. Aunque su sintaxis es idéntica a la declaración de un objeto literal de JavaScript, es un formato completamente independiente del lenguaje.</p>
+  <h2 class="sec-title"><span class="sec-num">05</span>JSON: Intercambio Universal de Datos</h2>
+  <p class="body"><strong>JSON</strong> (<em>JavaScript Object Notation</em>) es un **formato estándar basado en texto plano** concebido exclusivamente para representar datos estructurados de forma legible. Aunque deriva directamente de la sintaxis literal de JavaScript, JSON es agnóstico: se procesa en Python, PHP, Java, etc.</p>
   
-  <div class="ib green"><span class="ico">🌐</span><div><strong>Estándar de Comunicación:</strong> Prácticamente el 100% de las comunicaciones de red entre un Frontend y un Backend o entre microservicios de APIs externas viajan empaquetados bajo el formato de strings JSON en el cuerpo (body) de las peticiones HTTP.</div></div>
+  <div class="ib amber"><span class="ico">⚠️</span><div><strong>Diferencia Operativa:</strong> Un objeto JavaScript es una estructura de datos viva que reside activa en la memoria RAM del entorno de ejecución. Un JSON es meramente una <strong>cadena de caracteres (un String)</strong> optimizada para viajar a través del cable en redes de internet (HTTP).</div></div>
 
-  <h4 class="sub">Principales diferencias entre un Objeto JS y JSON:</h4>
+  <h4 class="sub">Tabla Comparativa Estricta de Reglas Sintácticas</h4>
   <table class="ce">
-    <tr>
-      <td><strong>Objeto JavaScript</strong></td>
-      <td><strong>JSON (Formato de Texto)</strong></td>
-    </tr>
-    <tr>
-      <td>Las claves pueden declararse sin comillas.</td>
-      <td>Las claves <strong>SIEMPRE</strong> van estrictamente envueltas en comillas dobles.</td>
-    </tr>
-    <tr>
-      <td>Soporta comillas simples y dobles indistintamente.</td>
-      <td>Solo acepta comillas dobles tanto para claves como para strings.</td>
-    </tr>
-    <tr>
-      <td>Puede contener funciones y métodos ejecutables.</td>
-      <td>Solo admite datos puros: strings, numbers, booleans, null, arrays y objetos.</td>
-    </tr>
-    <tr>
-      <td>Vive activo en la memoria RAM como una estructura viva.</td>
-      <td>Es una cadena de caracteres plana lista para enviarse por la red.</td>
-    </tr>
+    <thead>
+      <tr>
+        <th>Regla Léxica</th>
+        <th>Objeto JavaScript Literal</th>
+        <th>Formato JSON (Texto)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Comillas en Claves</strong></td>
+        <td>Opcionales (Ej: <code>nombre: "Ana"</code>)</td>
+        <td><strong>SIEMPRE OBLIGATORIAS</strong> en comillas dobles (Ej: <code>"nombre": "Ana"</code>)</td>
+      </tr>
+      <tr>
+        <td><strong>Comillas en Strings</strong></td>
+        <td>Permite comillas simples <code>''</code>, dobles <code>""</code> o backticks <code>``</code></td>
+        <td><strong>ÚNICAMENTE</strong> comillas dobles <code>""</code></td>
+      </tr>
+      <tr>
+        <td><strong>Tipos de datos soportados</strong></td>
+        <td>Números, strings, booleanos, objetos, arrays, <strong>funciones y métodos ejecutables</strong>.</td>
+        <td>Datos estáticos puros: números, strings, booleanos, null, arrays y sub-objetos. <strong>No soporta funciones</strong>.</td>
+      </tr>
+      <tr>
+        <td><strong>Comas Finales</strong></td>
+        <td>Permite una coma tras el último elemento (Trailing comma).</td>
+        <td><strong>PROHIBIDAS</strong>. El último elemento del bloque no debe llevar coma, o fallará el parseo.</td>
+      </tr>
+    </tbody>
   </table>
 
-  <h4 class="sub">Conversión con JSON.stringify y JSON.parse:</h4>
-  <p class="body">JavaScript integra herramientas automáticas nativas para procesar estas transformaciones de forma instantánea:</p>
+  <h4 class="sub">Conversión Segura mediante JSON.stringify y JSON.parse</h4>
+  <p class="body">Para interactuar entre la red y nuestro código, el lenguaje expone dos métodos automáticos globales:</p>
+  <p class="body" style="padding-left:16px;"><strong>1. <code>JSON.stringify(objeto)</code>:</strong> Serializa un objeto convirtiéndolo en un String de texto listo para ser transmitido hacia el cliente o guardado en un archivo.</p>
+  <p class="body" style="padding-left:16px;"><strong>2. <code>JSON.parse(textoJSON)</code>:</strong> Toma un String JSON recibido de la web y lo reconstruye en un objeto operable en la memoria RAM.</p>
 
-  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>// 1. JSON.stringify: De Objeto JS -> a String JSON (Para ENVIAR datos)
-const usuarioObj = { id: 1, nombre: 'Ana', activo: true };
-const jsonString = JSON.stringify(usuarioObj);
-console.log(jsonString); // '{"id":1,"nombre":"Ana","activo":true}'
-console.log(typeof jsonString); // 'string'
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>const programador = { nombre: 'Enzo', lenguajes: ['JS', 'SQL'] };
 
-// Uso estético con indentación para archivos o logs (2 espacios):
-console.log(JSON.stringify(usuarioObj, null, 2));
+// De Objeto a String JSON
+const stringEnviado = JSON.stringify(programador);
+console.log(stringEnviado); // '{"nombre":"Enzo","lenguajes":["JS","SQL"]}'
+console.log(typeof stringEnviado); // "string"
 
-// 2. JSON.parse: De String JSON -> a Objeto JS (Para RECIBIR datos)
-const jsonRecibido = '{"id":1,"nombre":"Ana","activo":true}';
-const objetoParseado = JSON.parse(jsonRecibido);
-console.log(objetoParseado.nombre); // 'Ana'
-console.log(typeof objetoParseado); // 'object'
+// De String JSON a Objeto (Con Protección Operativa)
+const datosRecibidos = '{"nombre":"Enzo","lenguajes":["JS","SQL"]}';
 
-// BUENA PRÁCTICA: Proteger JSON.parse con bloques try/catch
-// Si el string externo viene corrupto o mal formado, romperá el servidor si no se controla.
 try {
-  const datosInseguros = JSON.parse('{"id": 5, "incompleto": }'); // Provocará error
+  const objetoJS = JSON.parse(datosRecibidos);
+  console.log(objetoJS.nombre); // "Enzo"
 } catch (error) {
-  console.log('JSON inválido detectado:', error.message);
-}
-  </pre></div>
+  // Si el JSON viene mal estructurado (ej: le falta una comilla), JSON.parse arroja una excepción fatal síncrona.
+  // En Node.js, si no capturás este error con try/catch, ¡el proceso entero del servidor se detiene de inmediato!
+  console.error("No se pudo procesar el JSON, la estructura venía corrupta:", error.message);
+}</pre></div>
 </div>
 
-<!-- 5. DESTRUCTURING -->
+<!-- 6. DESTRUCTURING -->
 <div class="section">
-  <h2 class="sec-title"><span class="sec-num">05</span>Destructuring: Extraer Datos Fácilmente</h2>
-  <p class="body">El <strong>Destructuring</strong> (desestructuración) es una sintaxis moderna introducida en ECMAScript 6 que permite extraer valores directamente desde objetos o arrays y guardarlos en variables individuales usando una sola línea limpia de código. Es extremadamente popular en Node.js.</p>
+  <h2 class="sec-title"><span class="sec-num">06</span>Destructuring (Desestructuración)</h2>
+  <p class="body">El <strong>Destructuring</strong> es una sintaxis abreviada introducida en las versiones modernas de JavaScript (ES6). Nos permite desempaquetar o "extraer" propiedades específicas directamente desde un objeto o array y guardarlas en variables independientes en una única línea de código limpia y auto-descriptiva.</p>
 
-  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>const persona = { id: 1, nombre: 'Ana', email: 'ana@mail.com', edad: 28 };
+  <div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">JavaScript</div></div><pre>const configServer = { ip: '127.0.0.1', puerto: 8080, dbName: 'produccion' };
 
-// Forma clásica (larga y repetitiva):
-// const nombre = persona.nombre;
-// const email = persona.email;
+// Sintaxis clásica (Larga, tediosa y repetitiva):
+// const ip = configServer.ip;
+// const puerto = configServer.puerto;
 
-// Con Destructuring de Objetos:
-const { nombre, email } = persona;
-console.log(nombre); // 'Ana'
-console.log(email);  // 'ana@mail.com'
+// Usando Destructuring de Objetos:
+const { ip, puerto, dbName } = configServer;
+console.log(ip);     // '127.0.0.1'
+console.log(puerto); // 8080
 
-// Configuración con valores por defecto (si la propiedad no existía):
-const { ciudad = 'Sin ciudad registrado' } = persona;
-console.log(ciudad); // 'Sin ciudad registrado'
-
-// Renombrar propiedades al vuelo al extraerlas:
-const { nombre: nombreCompleto } = persona;
-console.log(nombreCompleto); // 'Ana'
-
-// Destructuring de Arrays (se rige por posiciones en vez de claves):
-const numeros = [10, 20, 30, 40, 50];
-const [primero, segundo, ...resto] = numeros; // usando rest operator
-console.log(primero); // 10
-console.log(segundo); // 20
-console.log(resto);   // [30, 40, 50] (un array con los restantes)
-  </pre></div>
+// Truco avanzado: Definir valores por defecto por si la clave no existe en el objeto
+const { protocolo = 'http' } = configServer;
+console.log(protocolo); // 'http'
+</pre></div>
 </div>
 
-<!-- 6. EJERCICIOS INTERACTIVOS -->
+<!-- 7. EJERCICIOS INTERACTIVOS -->
 <div class="section">
-  <h2 class="sec-title"><span class="sec-num">06</span>Ejercicios Prácticos de Laboratorio</h2>
-  <p class="body">Pon a prueba los conceptos ejecutando y completando los códigos de simulación directamente en tu terminal virtual interactiva:</p>
+  <h2 class="sec-title"><span class="sec-num">07</span>Terminal Interactiva de Laboratorio</h2>
+  <p class="body">Practicá en tiempo real. Podés modificar los códigos en los editores de pantalla y presionar el botón para evaluar la salida exacta por consola:</p>
   
   <div class="ejercicio">
-    <div class="ej-header"><div class="ej-title">Ejercicio 1: Crear y Manipular un Objeto</div><div class="ej-badge">OBJECT.KEYS / OBJECT.VALUES</div></div>
-    <textarea class="editor" id="ex0">// === EJERCICIO 1: Manipulación de Productos ===
+    <div class="ej-header"><div class="ej-title">Ejercicio 1: Operaciones Atómicas y Métodos de Object</div><div class="ej-badge">MODIFICAR / AGREGAR / ELIMINAR / KEYS</div></div>
+    <textarea class="editor" id="ex0">// === EJERCICIO 1 ===
 const producto = {
-  id: 501,
-  nombre: 'Teclado Mecánico RGB',
-  precio: 12000,
-  categoria: 'Periféricos',
-  stock: 15
+  id: 101,
+  nombre: 'Teclado Mecánico',
+  precio: 15000,
+  stock: 20
 };
 
-// Modificar el precio aumentando un 10%
+// 1. Modificar el precio aplicándole un 10% de aumento
 producto.precio = producto.precio * 1.10;
 
-// Agregar una propiedad descuento con valor 0
-producto.descuento = 0;
+// 2. Agregar una propiedad nueva llamada 'envioGratis' inicializada en true
+producto.envioGratis = true;
 
-console.log('Objeto completo:', producto);
-console.log('Claves del objeto:', Object.keys(producto));
-console.log('Valores del objeto:', Object.values(producto));</textarea>
+// 3. Eliminar físicamente la propiedad 'id' usando delete
+delete producto.id;
+
+console.log('Objeto Resultante:', producto);
+console.log('Listado de Claves del objeto:', Object.keys(producto));
+console.log('Listado de Valores del objeto:', Object.values(producto));</textarea>
     <button class="run-btn" onclick="runCode('ex0','out0')"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3 2l11 6-11 6V2z"/></svg>Ejecutar código</button>
     <div class="terminal-out" id="out0"></div>
   </div>
 
   <div class="ejercicio">
-    <div class="ej-header"><div class="ej-title">Ejercicio 2: Cálculos con Objetos Anidados</div><div class="ej-badge">FOR...OF / ACUMULADORES</div></div>
-    <textarea class="editor" id="ex1">// === EJERCICIO 2: Procesar Factura Compleja ===
+    <div class="ej-header"><div class="ej-title">Ejercicio 2: Acumuladores sobre Datos Anidados</div><div class="ej-badge">FOR...OF / REDUCCIÓN DE DATOS</div></div>
+    <textarea class="editor" id="ex1">// === EJERCICIO 2 ===
 const factura = {
-  numero: 'F-001',
-  cliente: { nombre: 'Juan', cuit: '20-12345678-9' },
+  codigo: 'FAC-2026-99',
+  cliente: { nombre: 'Estudio Paralelo', localidad: 'Misiones' },
   items: [
-    { desc: 'Laptop', qty: 1, precio: 200000 },
-    { desc: 'Mouse', qty: 2, precio: 3000 },
-    { desc: 'Teclado', qty: 1, precio: 8000 }
+    { nombreItem: 'Licencia Servidor', qty: 1, precioUnitario: 80000 },
+    { nombreItem: 'Soporte Técnico API', qty: 3, precioUnitario: 15000 },
+    { nombreItem: 'Mantenimiento Base Datos', qty: 1, precioUnitario: 25000 }
   ]
 };
 
-// a) Mostrar el nombre del cliente
-console.log('Cliente:', factura.cliente.nombre);
+console.log('Nombre del Cliente:', factura.cliente.nombre);
 
-// b) Calcular el total de la factura (qty * precio de cada item)
-let totalFactura = 0;
-let itemMasCaro = factura.items[0];
-
+// Algoritmo para procesar el acumulado total
+let sumatorioTotal = 0;
 for (const item of factura.items) {
-  totalFactura += item.qty * item.precio;
-  
-  // c) Encontrar el item más caro
-  if (item.precio > itemMasCaro.precio) {
-    itemMasCaro = item;
-  }
+  sumatorioTotal += item.qty * item.precioUnitario;
 }
 
-console.log('Total calculado: $' + totalFactura);
-console.log('Item más caro de la lista:', itemMasCaro.desc, '($' + itemMasCaro.precio + ')');</textarea>
+console.log('Total Bruto Liquidado: $' + sumatorioTotal);</textarea>
     <button class="run-btn" onclick="runCode('ex1','out1')"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3 2l11 6-11 6V2z"/></svg>Ejecutar código</button>
     <div class="terminal-out" id="out1"></div>
   </div>
 
   <div class="ejercicio">
-    <div class="ej-header"><div class="ej-title">Ejercicio 3 y 4: Conversión JSON y Destructuring</div><div class="ej-badge">JSON.STRINGIFY / DESTRUCTURING</div></div>
-    <textarea class="editor" id="ex2">// === EJERCICIO 3 Y 4: Transferencia Segura e Inmutabilidad ===
-const config = {
-  host: 'localhost',
-  port: 3000,
-  db: 'mi_base',
-  debug: true
-};
+    <div class="ej-header"><div class="ej-title">Ejercicio 3 y 4: JSON Resiliente con Try/Catch</div><div class="ej-badge">JSON.PARSE / EXCEPCIONES</div></div>
+    <textarea class="editor" id="ex2">// === EJERCICIO 3 Y 4 ===
+const jsonMalaSintaxis = '{"usuario": "Marcos", "token": "abc", "activo": }'; // Error sintáctico al final
 
-// Destructuring para extraer datos individuales
-const { host, port, db, env = 'development' } = config;
-console.log('Configuración extraída -> Host:', host, '| Port:', port, '| DB:', db, '| Env:', env);
+console.log('Iniciando intento de parseo de datos externos...');
 
-// Convertir objeto de simulación a JSON string
-const jsonString = JSON.stringify(config);
-console.log('String serializado JSON:', jsonString);
-
-// Parsear de vuelta garantizando la lectura segura
 try {
-  const objetoParseado = JSON.parse(jsonString);
-  console.log('¿Lectura de puerto correcta?:', objetoParseado.port === 3000 ? 'SÍ' : 'NO');
-} catch (e) {
-  console.log('Error de parseo');
+  const datosParseados = JSON.parse(jsonMalaSintaxis);
+  console.log('Parseo exitoso. Usuario:', datosParseados.usuario);
+} catch (error) {
+  console.log('⚠️ Captura de Error en Bloque Catch evadiendo crash!');
+  console.log('Mensaje del motor de JS:', error.message);
 }</textarea>
     <button class="run-btn" onclick="runCode('ex2','out2')"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3 2l11 6-11 6V2z"/></svg>Ejecutar código</button>
     <div class="terminal-out" id="out2"></div>
@@ -479,7 +449,7 @@ try {
 
 <!-- QUIZ -->
 <div class="section">
-  <h2 class="sec-title"><span class="sec-num">07</span>Mini Quiz Evaluativo de la Clase</h2>
+  <h2 class="sec-title"><span class="sec-num">08</span>Mini Quiz Evaluativo Automatizado</h2>
   <div class="quiz-wrap" id="quiz">
 
     <div class="quiz-item">
@@ -561,10 +531,10 @@ try {
 <div class="tarea section">
   <h3>📚 Consignas y Tareas para la Próxima Clase</h3>
   <ol>
-    <li><strong>Finalización Práctica:</strong> Asegurar el guardado y correcto funcionamiento de los 4 ejercicios pautados en tu script local <code>objetivos.js</code> u <code>objetos.js</code>.</li>
-    <li><strong>Reto Especial Extra:</strong> Tomando el objeto complejo <code>factura</code> provisto en el Ejercicio 2 de esta clase, diseña un algoritmo automatizado para inyectar una propiedad calculada llamada <code>totalConIVA</code>, cuyo valor represente el sumatorio final del pedido incrementándole el margen impositivo del 21%.</li>
-    <li><strong>Investigación Preliminar 1:</strong> ¿A qué llamamos "función" en programación? ¿De qué maneras y bajo qué sintaxis variadas puede declararse una función en JavaScript?</li>
-    <li><strong>Investigación Preliminar 2:</strong> ¿A qué hacen referencia técnica exacta los conceptos de "parámetro de entrada" y "valor de retorno" en la ejecución de una rutina?</li>
+    <li><strong>Sincronización de Entorno:</strong> Consolidar y comprobar las funciones del archivo local <code>objetos.js</code> utilizando los ejemplos extendidos de la terminal interactiva.</li>
+    <li><strong>Reto Backend con IVA:</strong> Tomando la estructura compleja de <code>factura</code> provista en el Ejercicio 2, diseñá un algoritmo que recorra los ítems, calcule el total final e inyecte una propiedad nueva llamada <code>totalConIVA</code> calculándole el recargo impositivo del 21%.</li>
+    <li><strong>Investigación de Rutinas 1:</strong> ¿Qué es una "función" en programación? ¿Cuántas sintaxis variadas existen en JS moderno para declarar una función?</li>
+    <li><strong>Investigación de Rutinas 2:</strong> ¿A qué hacen referencia técnica exacta los conceptos de "parámetros de entrada" y "valor de retorno" de un bloque funcional?</li>
   </ol>
 </div>
 
