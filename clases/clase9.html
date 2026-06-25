@@ -147,24 +147,24 @@ textarea.editor{width:100%;background:var(--code-bg);color:#b8d0c8;border:none;o
 
 <div class="section">
   <h2 class="sec-title"><span class="sec-num">01</span>¿Qué es una Función?</h2>
-  <p class="body">Una función es un bloque de código que agrupa instrucciones bajo un nombre descriptivo. En lugar de repetir la misma lógica de programación varias veces a lo largo de un archivo, se escribe una sola vez dentro de una función y se la "invoca" o "llama" exactamente cuando se la necesita[cite: 5, 6].</p>
+  <p class="body">Una función es un bloque de código que agrupa instrucciones bajo un nombre descriptivo. En lugar de repetir la misma lógica de programación varias veces a lo largo de un archivo, se escribe una sola vez dentro de una función y se la "invoca" o "llama" exactamente cuando se la necesita.</p>
   
   <div class="ib blue">
     <span class="ico">💡</span>
     <div>
-      <strong>Lógica de Backend:</strong> En el desarrollo del lado del servidor, casi todo el procesamiento se compone de funciones: validar la estructura de un email, calcular los descuentos de un carrito, procesar pasarelas de pago cifradas o buscar registros dentro de una base de datos[cite: 7].
+      <strong>Lógica de Backend:</strong> En el desarrollo del lado del servidor, casi todo el procesamiento se compone de funciones: validar la estructura de un email, calcular los descuentos de un carrito, procesar pasarelas de pago cifradas o buscar registros dentro de una base de datos.
     </div>
   </div>
 
-  <p class="body"><strong>Analogía práctica:</strong> Una función se asemeja a una receta de cocina bien definida. La receta tiene un nombre único ('Arroz con leche'), recibe ciertos ingredientes (que actúan como parámetros) y produce un resultado final comestible (el valor de retorno). No importa cuántas veces ejecutes la receta: el orden lógico de los pasos internos siempre permanece constante[cite: 62, 63, 64].</p>
+  <p class="body"><strong>Analogía práctica:</strong> Una función se asemeja a una receta de cocina bien definida. La receta tiene un nombre único ('Arroz con leche'), recibe ciertos ingredientes (que actúan como parámetros) y produce un resultado final comestible (el valor de retorno). No importa cuántas veces ejecutes la receta: el orden lógico de los pasos internos siempre permanece constante.</p>
 </div>
 
 <div class="section">
   <h2 class="sec-title"><span class="sec-num">02</span>Declarar y Llamar Funciones</h2>
-  <p class="body">En JavaScript existen dos formas principales y nativas de estructurar una función en tu código fuente[cite: 66]:</p>
+  <p class="body">En JavaScript existen dos formas principales y nativas de estructurar una función en tu código fuente:</p>
 
   <h4 class="sub">Forma 1: Declaración de función (Function Declaration)</h4>
-  <p class="body">Es la sintaxis tradicional. Utiliza la palabra clave reservada, un nombre explícito, parámetros entre paréntesis y la apertura del bloque de ejecución[cite: 71].</p>
+  <p class="body">Es la sintaxis tradicional. Utiliza la palabra clave reservada, un nombre explícito, parámetros entre paréntesis y la apertura del bloque de ejecución.</p>
 
   <div class="cb">
     <div class="cb-header">
@@ -176,7 +176,7 @@ textarea.editor{width:100%;background:var(--code-bg);color:#b8d0c8;border:none;o
 }</pre>
   </div>
 
-  <p class="body">Para ejecutar las líneas dentro de la función, debemos realizar la llamada invocándola por su nombre seguido de paréntesis[cite: 11]:</p>
+  <p class="body">Para ejecutar las líneas dentro de la función, debemos realizar la llamada invocándola por su nombre seguido de paréntesis:</p>
 
   <div class="cb">
     <div class="cb-header">
@@ -188,7 +188,7 @@ saludar(); // Se puede llamar cuantas veces se quiera en el programa</pre>
   </div>
 
   <h4 class="sub">Forma 2: Expresión de función (Function Expression)</h4>
-  <p class="body">Consiste en definir una función anónima y asignarla directamente como valor dentro de una variable constante[cite: 13, 14].</p>
+  <p class="body">Consiste en definir una función anónima y asignarla directamente como valor dentro de una variable constante.</p>
 
   <div class="cb">
     <div class="cb-header">
@@ -213,11 +213,11 @@ saludarExpression(); // Se invoca exactamente igual utilizando el nombre de la c
     <tbody>
       <tr>
         <td><code>Function Declaration</code></td>
-        <td>Se puede utilizar e invocar líneas <strong>antes</strong> de su declaración física en el archivo. JavaScript las "eleva" al inicio de forma automática al compilar[cite: 15].</td>
+        <td>Se puede utilizar e invocar líneas <strong>antes</strong> de su declaración física en el archivo. JavaScript las "eleva" al inicio de forma automática al compilar.</td>
       </tr>
       <tr>
         <td><code>Function Expression</code></td>
-        <td><strong>No se puede</strong> invocar bajo ningún motivo antes de la línea exacta donde fue declarada, de lo contrario lanzará un error de inicialización runtime[cite: 16].</td>
+        <td><strong>No se puede</strong> invocar bajo ningún motivo antes de la línea exacta donde fue declarada, de lo contrario lanzará un error de inicialización runtime.</td>
       </tr>
     </tbody>
   </table>
@@ -225,17 +225,17 @@ saludarExpression(); // Se invoca exactamente igual utilizando el nombre de la c
   <div class="ib amber">
     <span class="ico">⚠️</span>
     <div>
-      <strong>Buenas prácticas:</strong> En la arquitectura real de backend, se prefiere usar las declaraciones de funciones tradicionales para procesos estructurados o globales, y las expresiones de funciones cuando se desea encapsular lógica local o asignarla dinámicamente[cite: 17].
+      <strong>Buenas prácticas:</strong> En la arquitectura real de backend, se prefiere usar las declaraciones de funciones tradicionales para procesos estructurados o globales, y las expresiones de funciones cuando se desea encapsular lógica local o asignarla dinámicamente.
     </div>
   </div>
 </div>
 
 <div class="section">
   <h2 class="sec-title"><span class="sec-num">03</span>Parámetros y Valor de Retorno</h2>
-  <p class="body">Para lograr que una función sea verdaderamente versátil y reutilizable, debe poder recibir datos del exterior y devolver resultados transformados procesados[cite: 18, 21].</p>
+  <p class="body">Para lograr que una función sea verdaderamente versátil y reutilizable, debe poder recibir datos del exterior y devolver resultados transformados procesados.</p>
 
   <h4 class="sub">Parámetros vs. Argumentos</h4>
-  <p class="body">El <strong>Parámetro</strong> es el nombre de la variable de entrada definido entre los paréntesis durante la construcción de la función[cite: 84]. El <strong>Argumento</strong> es el valor real y explícito que se le pasa al invocarla dinámicamente[cite: 84].</p>
+  <p class="body">El <strong>Parámetro</strong> es el nombre de la variable de entrada definido entre los paréntesis durante la construcción de la función. El <strong>Argumento</strong> es el valor real y explícito que se le pasa al invocarla dinámicamente.</p>
 
   <div class="cb">
     <div class="cb-header">
@@ -257,10 +257,10 @@ console.log(sumar(3.5, 1.5));   // Imprime: 5</pre>
   </div>
 
   <h4 class="sub">La importancia del control de retornos</h4>
-  <p class="body">La sentencia <code>return</code> interrumpe de forma inmediata el flujo de ejecución de la función actual[cite: 21]. Si una función ejecuta todo su cuerpo de código interno sin encontrarse explícitamente con ningún <code>return</code>, devolverá por defecto el valor especial <code>undefined</code>[cite: 21].</p>
+  <p class="body">La sentencia <code>return</code> interrumpe de forma inmediata el flujo de ejecución de la función actual. Si una función ejecuta todo su cuerpo de código interno sin encontrarse explícitamente con ningún <code>return</code>, devolverá por defecto el valor especial <code>undefined</code>.</p>
 
   <h4 class="sub">Parámetros con valores por defecto</h4>
-  <p class="body">Podemos asignar valores de respaldo directo en la firma de la función para evitar valores <code>undefined</code> si el programador olvida pasar un argumento válido[cite: 22].</p>
+  <p class="body">Podemos asignar valores de respaldo directo en la firma de la función para evitar valores <code>undefined</code> si el programador olvida pasar un argumento válido.</p>
 
   <div class="cb">
     <div class="cb-header">
@@ -279,7 +279,7 @@ console.log(saludarUsuario());                    // 'Hola, usuario!'</pre>
 
 <div class="section">
   <h2 class="sec-title"><span class="sec-num">04</span>Scope: El Alcance de las Variables</h2>
-  <p class="body">El <strong>Scope</strong> es la frontera lógica que determina desde qué partes exactas de tu archivo de código una variable en particular puede ser accedida o leída[cite: 24].</p>
+  <p class="body">El <strong>Scope</strong> es la frontera lógica que determina desde qué partes exactas de tu archivo de código una variable en particular puede ser accedida o leída.</p>
 
   <div class="ce">
     <table>
@@ -292,11 +292,11 @@ console.log(saludarUsuario());                    // 'Hola, usuario!'</pre>
       <tbody>
         <tr>
           <td><strong>Scope Global</strong></td>
-          <td>Variables declaradas en la raíz del archivo. Son visibles por cualquier función interna[cite: 27, 28].</td>
+          <td>Variables declaradas en la raíz del archivo. Son visibles por cualquier función interna.</td>
         </tr>
         <tr>
           <td><strong>Scope Local / Función</strong></td>
-          <td>Variables declaradas con <code>let</code> o <code>const</code> dentro de las llaves de una función. Solo existen allí dentro; fuera de la función son completamente invisibles en memoria[cite: 25].</td>
+          <td>Variables declaradas con <code>let</code> o <code>const</code> dentro de las llaves de una función. Solo existen allí dentro; fuera de la función son completamente invisibles en memoria.</td>
         </tr>
       </tbody>
     </table>
@@ -323,15 +323,15 @@ console.log(mensajeLocal);  // ERROR AUTOMÁTICO: mensajeLocal is not defined</p
   <div class="ib green">
     <span class="ico">🛡️</span>
     <div>
-      <strong>Ventaja de diseño:</strong> Esto garantiza un aislamiento total. Cada función administra de forma limpia su propio espacio conceptual de variables, evitando colisiones accidentales de datos con otras funciones externas[cite: 26].
+      <strong>Ventaja de diseño:</strong> Esto garantiza un aislamiento total. Cada función administra de forma limpia su propio espacio conceptual de variables, evitando colisiones accidentales de datos con otras funciones externas.
     </div>
   </div>
 </div>
 
 <div class="section">
   <h2 class="sec-title"><span class="sec-num">05</span>Funciones que Retornan Objetos y Retorno Temprano</h2>
-  <p class="body">En entornos de servidor, es un estándar absoluto que las funciones devuelvan estructuras compuestas de objetos para mapear éxitos, fallas y payloads de datos complejos[cite: 29].</p>
-  <p class="body">El patrón de <strong>Retorno Temprano (Early Return)</strong> consiste en evaluar las condiciones de error o validaciones fallidas primero, saliendo de la función de inmediato y dejando el flujo principal libre de bloques anidados <code>else</code>[cite: 21].</p>
+  <p class="body">En entornos de servidor, es un estándar absoluto que las funciones devuelvan estructuras compuestas de objetos para mapear éxitos, fallas y payloads de datos complejos.</p>
+  <p class="body">El patrón de <strong>Retorno Temprano (Early Return)</strong> consiste en evaluar las condiciones de error o validaciones fallidas primero, saliendo de la función de inmediato y dejando el flujo principal libre de bloques anidados <code>else</code>.</p>
 
   <div class="cb">
     <div class="cb-header">
@@ -360,7 +360,7 @@ console.log(mensajeLocal);  // ERROR AUTOMÁTICO: mensajeLocal is not defined</p
   </div>
 
   <h4 class="sub">Uso práctico y técnicas combinadas con Destructuring</h4>
-  <p class="body">Podemos capturar las respuestas modulares de nuestras funciones de forma elegante en el backend utilizando desestructuración directa de propiedades[cite: 31]:</p>
+  <p class="body">Podemos capturar las respuestas modulares de nuestras funciones de forma elegante en el backend utilizando desestructuración directa de propiedades:</p>
 
   <div class="cb">
     <div class="cb-header">
@@ -382,9 +382,9 @@ if (exito) {
 
 <div class="section">
   <h2 class="sec-title"><span class="sec-num">06</span>Funciones como Valores (Callbacks)</h2>
-  <p class="body">En JavaScript, las funciones gozan del estatus de "First-Class Citizens" (Ciudadanos de primera clase). Esto significa que son tratadas como cualquier otro tipo de valor del lenguaje: pueden guardarse en variables, pasarse como argumentos a otras funciones o ser retornadas por otra función[cite: 31].</p>
+  <p class="body">En JavaScript, las funciones gozan del estatus de "First-Class Citizens" (Ciudadanos de primera clase). Esto significa que son tratadas como cualquier otro tipo de valor del lenguaje: pueden guardarse en variables, pasarse como argumentos a otras funciones o ser retornadas por otra función.</p>
   
-  <p class="body">Una función que acepta a otra función como parámetro de entrada se conoce formalmente como <strong>Función de Orden Superior</strong>, mientras que la función enviada como argumento se denomina <strong>Callback</strong>[cite: 32, 33].</p>
+  <p class="body">Una función que acepta a otra función como parámetro de entrada se conoce formalmente como <strong>Función de Orden Superior</strong>, mientras que la función enviada como argumento se denomina <strong>Callback</strong>.</p>
 
   <div class="cb">
     <div class="cb-header">
@@ -405,7 +405,7 @@ ejecutarDosVeces(decirHola); // Imprime 'Hola!' dos veces en la terminal</pre>
   </div>
 
   <h4 class="sub">Procesamiento de arreglos mediante Callbacks dinámicos</h4>
-  <p class="body">Este patrón es la columna vertebral de métodos avanzados de iteración nativos de JavaScript y en el ecosistema asincrónico de Node.js[cite: 34].</p>
+  <p class="body">Este patrón es la columna vertebral de métodos avanzados de iteración nativos de JavaScript y en el ecosistema asincrónico de Node.js.</p>
 
   <div class="cb">
     <div class="cb-header">
