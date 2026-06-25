@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 9 — Funciones · CapOL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght=0,9..144,300;0,9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#00c896;--danger:#ff4757;--warn:#ffa502;--purple:#a29bfe;--blue-tag:#74b9ff}
+[data-theme="dark"]{--bg:#0f0f11;--bg2:#16161a;--bg3:#1c1c21;--border:#2a2a32;--border2:#35353f;--fg:#e2e2ec;--fg2:#a0a0b0;--fg3:#606070;--card-bg:#16161a;--code-bg:#0a0a0d;--code-fg:#b8d0c8;--shadow:0 4px 24px rgba(0,0,0,.5)}
+[data-theme="light"]{--bg:#f5f5f0;--bg2:#ffffff;--bg3:#ebebeb;--border:#d8d8d0;--border2:#c5c5bc;--fg:#1a1a24;--fg2:#505060;--fg3:#909098;--card-bg:#ffffff;--code-bg:#1a1a24;--code-fg:#c8e0d8;--shadow:0 4px 24px rgba(0,0,0,.1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;line-height:1.75;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+.page{max-width:800px;margin:0 auto;padding:0 24px 120px}
+#topbar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:15px;text-decoration:none;color:var(--fg)}
+.brand-dot{width:30px;height:30px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#000;font-size:13px;font-weight:800;font-family:'IBM Plex Mono',monospace}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fg2);transition:all .2s}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+.powered{font-size:11px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+.back-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s}
+.back-btn:hover{color:var(--accent)}
+#progress-bar{position:fixed;top:56px;left:0;right:0;height:2px;background:var(--border);z-index:99}
+#progress-fill{height:100%;background:var(--accent);width:0%;transition:width .1s}
+.hero{padding:64px 0 40px;border-bottom:1px solid var(--border);margin-bottom:48px}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.hero-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--accent)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(32px,6vw,52px);font-weight:700;line-height:1.1;color:var(--fg);margin-bottom:18px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-desc{font-size:16px;color:var(--fg2);max-width:560px;line-height:1.7;margin-bottom:28px}
+.hero-meta{display:flex;gap:20px;flex-wrap:wrap}
+.hero-chip{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--fg2);font-family:'IBM Plex Mono',monospace}
+.hero-chip svg{color:var(--accent)}
+.objetivos{background:color-mix(in srgb,var(--accent) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);border-radius:12px;padding:24px 28px;margin-bottom:48px}
+.objetivos-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.objetivos ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.objetivos li{display:flex;gap:10px;font-size:14.5px}
+.objetivos li::before{content:'▸';color:var(--accent);flex-shrink:0;margin-top:2px}
+.section{margin-bottom:52px}
+.sec-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--fg);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:2px 8px;border-radius:5px}
+p.body{font-size:15px;line-height:1.8;color:var(--fg2);margin-bottom:12px}
+h4.sub{font-family:'DM Sans',sans-serif;font-weight:600;font-size:15px;color:var(--fg);margin:24px 0 8px;display:flex;align-items:center;gap:8px}
+h4.sub::before{content:'●';font-size:8px;color:var(--accent)}
+.cb{background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:12px 0}
+.cb-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border2);background:color-mix(in srgb,#000 20%,var(--code-bg))}
+.cb-dots{display:flex;gap:5px}
+.cb-dots span{width:10px;height:10px;border-radius:50%}
+.cb-dots .r{background:#ff5f56}.cb-dots .y{background:#ffbd2e}.cb-dots .g{background:#27c93f}
+.cb-lang{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#555}
+.cb pre{padding:16px 18px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--code-fg);white-space:pre}
+.ce{width:100%;border-collapse:collapse;background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:16px 0}
+.ce th{background:color-mix(in srgb,#000 20%,var(--code-bg));padding:10px 14px;font-size:13px;text-align:left;font-weight:600;border-bottom:1px solid var(--border2)}
+.ce tr{border-top:1px solid #1e1e28}
+.ce td{padding:10px 14px;font-size:13px;vertical-align:top;line-height:1.6}
+.ce td:first-child{font-family:'IBM Plex Mono',monospace;color:var(--code-fg);width:40%}
+.ce td:last-child{color:var(--fg2);padding-left:18px;border-left:1px solid #1e1e28}
+.ce tr:hover td{background:#0f0f14}
+[data-theme="light"] .ce tr:hover td{background:#f0f0e8}
+code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix(in srgb,var(--blue-tag) 10%,var(--bg3));color:var(--blue-tag);padding:1px 6px;border-radius:4px}
+.ib{border-radius:10px;padding:14px 18px;margin:12px 0;display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.65}
+.ib .ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.ib.green{background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 28%,transparent)}
+.ib.amber{background:color-mix(in srgb,var(--warn) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--warn) 28%,transparent)}
+.ib.red{background:color-mix(in srgb,var(--danger) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--danger) 28%,transparent)}
+.ib.blue{background:color-mix(in srgb,var(--blue-tag) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 28%,transparent)}
+.ejercicio{background:color-mix(in srgb,#000 30%,var(--bg2));border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin:16px 0}
+[data-theme="light"] .ejercicio{background:#f0f0ea}
+.ej-header{padding:10px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;background:var(--code-bg)}
+.ej-title{font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;color:var(--fg)}
+.ej-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--fg3)}
+textarea.editor{width:100%;background:var(--code-bg);color:#b8d0c8;border:none;outline:none;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;padding:16px 18px;resize:vertical;min-height:220px;tab-size:2}
+.run-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:var(--accent);color:#000;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;transition:background .15s}
+.run-btn:hover{background:color-mix(in srgb,var(--accent) 80%,#fff)}
+.terminal-out{font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:14px 18px;line-height:1.7;background:color-mix(in srgb,#000 50%,var(--code-bg));border-top:1px solid var(--border2);display:none}
+.terminal-out.show{display:block}
+.t-line{color:#a0c8a8}.t-ok{color:var(--accent)}.t-err{color:var(--danger)}.t-prompt{color:var(--fg3);margin-bottom:8px;font-size:11px}
+.quiz-wrap{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+.quiz-item{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.quiz-q{padding:14px 18px;border-bottom:1px solid var(--border);font-size:14.5px;font-weight:600;background:var(--bg2)}
+.quiz-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:4px}
+.quiz-opts{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.quiz-opt-btn{width:100%;text-align:left;padding:10px 16px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;color:var(--fg);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:10px;transition:all .15s}
+.quiz-opt-btn:hover:not(:disabled){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--bg3))}
+.opt-letter{width:22px;height:22px;border-radius:6px;background:var(--border2);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;color:var(--fg3)}
+.quiz-opt-btn:hover:not(:disabled) .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.correct{background:color-mix(in srgb,var(--accent) 12%,var(--bg3));border-color:var(--accent);color:var(--accent)}
+.quiz-opt-btn.correct .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.wrong{background:color-mix(in srgb,var(--danger) 10%,var(--bg3));border-color:var(--danger);color:var(--danger)}
+.quiz-opt-btn.wrong .opt-letter{background:var(--danger);color:#fff}
+.quiz-opt-btn:disabled{cursor:default}
+.quiz-feedback{padding:10px 18px 14px;font-size:13.5px;display:none}
+.quiz-feedback.show{display:flex;align-items:center;gap:8px}
+.quiz-feedback.ok{color:var(--accent)}.quiz-feedback.no{color:var(--danger)}
+.quiz-score{margin-top:20px;padding:18px 22px;background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:12px;display:none;align-items:center;gap:16px}
+.quiz-score.show{display:flex}
+.quiz-score-num{font-family:'Fraunces',serif;font-size:40px;font-weight:700;color:var(--accent);line-height:1}
+.tarea{background:color-mix(in srgb,var(--blue-tag) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 25%,transparent);border-radius:12px;padding:24px 28px}
+.tarea h3{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--blue-tag);margin-bottom:14px}
+.tarea ol{padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.footer{border-top:1px solid var(--border);padding:32px 0 0;margin-top:64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-brand{font-family:'Fraunces',serif;font-weight:700;font-size:15px}
+.footer-right{font-size:12px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <a href="../index.html" class="back-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Inicio</a>
+  <div class="brand"><div class="brand-dot">B</div>Backend desde Cero</div>
+  <div class="topbar-right">
+    <span class="powered">CapOL × Apoc Automation</span>
+    <button class="theme-btn" id="themeBtn" title="Cambiar tema">
+      <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+
+<div class="page">
+
+<div class="hero">
+  <div class="hero-eyebrow">Clase 09 · Bloque 2: JavaScript</div>
+  <h1><em>Funciones en JavaScript</em></h1>
+  <p class="hero-desc">Domina el pilar central de la lógica backend: la declaración y expresión de funciones, el manejo preciso de parámetros y valores de retorno, el control de alcances (scope), patrones avanzados de validación y la arquitectura basada en callbacks.</p>
+  <div class="hero-meta">
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>60 minutos</span>
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Requires Clase 8</span>
+  </div>
+</div>
+
+<div class="objetivos">
+  <div class="objetivos-title">Objetivos de la clase</div>
+  <ul>
+    <li>Entender qué es una función y por qué son fundamentales en programación.</li>
+    <li>Declarar funciones utilizando declaración estándar (function declaration) y de expresión (function expression).</li>
+    <li>Diferenciar y dominar de forma exacta conceptos de parámetros, argumentos y valores de retorno.</li>
+    <li>Conocer en profundidad el Scope (alcance) léxico de las variables.</li>
+    <li>Aplicar el patrón de retorno temprano (early return) para optimizar validaciones limpias en backend.</li>
+    <li>Escribir funciones modulares, semánticas y completamente reutilizables orientadas a lógica de servidores.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">01</span>¿Qué es una Función?</h2>
+  <p class="body">Una función es un bloque de código que agrupa instrucciones bajo un nombre descriptivo. En lugar de repetir la misma lógica de programación varias veces a lo largo de un archivo, se escribe una sola vez dentro de una función y se la "invoca" o "llama" exactamente cuando se la necesita[cite: 5, 6].</p>
+  
+  <div class="ib blue">
+    <span class="ico">💡</span>
+    <div>
+      <strong>Lógica de Backend:</strong> En el desarrollo del lado del servidor, casi todo el procesamiento se compone de funciones: validar la estructura de un email, calcular los descuentos de un carrito, procesar pasarelas de pago cifradas o buscar registros dentro de una base de datos[cite: 7].
+    </div>
+  </div>
+
+  <p class="body"><strong>Analogía práctica:</strong> Una función se asemeja a una receta de cocina bien definida. La receta tiene un nombre único ('Arroz con leche'), recibe ciertos ingredientes (que actúan como parámetros) y produce un resultado final comestible (el valor de retorno). No importa cuántas veces ejecutes la receta: el orden lógico de los pasos internos siempre permanece constante[cite: 62, 63, 64].</p>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">02</span>Declarar y Llamar Funciones</h2>
+  <p class="body">En JavaScript existen dos formas principales y nativas de estructurar una función en tu código fuente[cite: 66]:</p>
+
+  <h4 class="sub">Forma 1: Declaración de función (Function Declaration)</h4>
+  <p class="body">Es la sintaxis tradicional. Utiliza la palabra clave reservada, un nombre explícito, parámetros entre paréntesis y la apertura del bloque de ejecución[cite: 71].</p>
+
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>function saludar() {
+  console.log('Hola!');
+}</pre>
+  </div>
+
+  <p class="body">Para ejecutar las líneas dentro de la función, debemos realizar la llamada invocándola por su nombre seguido de paréntesis[cite: 11]:</p>
+
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>saludar(); // Llama la función - ejecuta el código adentro
+saludar(); // Se puede llamar cuantas veces se quiera en el programa</pre>
+  </div>
+
+  <h4 class="sub">Forma 2: Expresión de función (Function Expression)</h4>
+  <p class="body">Consiste en definir una función anónima y asignarla directamente como valor dentro de una variable constante[cite: 13, 14].</p>
+
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>const saludarExpression = function() {
+  console.log('Hola desde expresión!');
+}; // Lleva punto y coma final porque técnicamente es una asignación de variable
+
+saludarExpression(); // Se invoca exactamente igual utilizando el nombre de la constante</pre>
+  </div>
+
+  <h4 class="sub">Diferencia clave en ejecución: Hoisting</h4>
+  <table class="ce">
+    <thead>
+      <tr>
+        <th>Tipo de Definición</th>
+        <th>Comportamiento en Motor de Ejecución (Hoisting)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Function Declaration</code></td>
+        <td>Se puede utilizar e invocar líneas <strong>antes</strong> de su declaración física en el archivo. JavaScript las "eleva" al inicio de forma automática al compilar[cite: 15].</td>
+      </tr>
+      <tr>
+        <td><code>Function Expression</code></td>
+        <td><strong>No se puede</strong> invocar bajo ningún motivo antes de la línea exacta donde fue declarada, de lo contrario lanzará un error de inicialización runtime[cite: 16].</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="ib amber">
+    <span class="ico">⚠️</span>
+    <div>
+      <strong>Buenas prácticas:</strong> En la arquitectura real de backend, se prefiere usar las declaraciones de funciones tradicionales para procesos estructurados o globales, y las expresiones de funciones cuando se desea encapsular lógica local o asignarla dinámicamente[cite: 17].
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">03</span>Parámetros y Valor de Retorno</h2>
+  <p class="body">Para lograr que una función sea verdaderamente versátil y reutilizable, debe poder recibir datos del exterior y devolver resultados transformados procesados[cite: 18, 21].</p>
+
+  <h4 class="sub">Parámetros vs. Argumentos</h4>
+  <p class="body">El <strong>Parámetro</strong> es el nombre de la variable de entrada definido entre los paréntesis durante la construcción de la función[cite: 84]. El <strong>Argumento</strong> es el valor real y explícito que se le pasa al invocarla dinámicamente[cite: 84].</p>
+
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>// 'a' y 'b' son parámetros (los ingredientes declarados)
+function sumar(a, b) {
+  return a + b; // La sentencia 'return' finaliza la ejecución y extrae el resultado
+}
+
+// 10 y 5 son los argumentos (los datos reales enviados)
+const resultado = sumar(10, 5);
+console.log(resultado); // Imprime: 15
+
+// Reutilización con diferentes conjuntos de argumentos:
+console.log(sumar(100, 200)); // Imprime: 300
+console.log(sumar(3.5, 1.5));   // Imprime: 5</pre>
+  </div>
+
+  <h4 class="sub">La importancia del control de retornos</h4>
+  <p class="body">La sentencia <code>return</code> interrumpe de forma inmediata el flujo de ejecución de la función actual[cite: 21]. Si una función ejecuta todo su cuerpo de código interno sin encontrarse explícitamente con ningún <code>return</code>, devolverá por defecto el valor especial <code>undefined</code>[cite: 21].</p>
+
+  <h4 class="sub">Parámetros con valores por defecto</h4>
+  <p class="body">Podemos asignar valores de respaldo directo en la firma de la función para evitar valores <code>undefined</code> si el programador olvida pasar un argumento válido[cite: 22].</p>
+
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>function saludarUsuario(nombre = 'usuario', saludo = 'Hola') {
+  return `${saludo}, ${nombre}!`;
+}
+
+console.log(saludarUsuario('Ana', 'Bienvenida')); // 'Bienvenida, Ana!'
+console.log(saludarUsuario('Carlos'));            // 'Hola, Carlos!'
+console.log(saludarUsuario());                    // 'Hola, usuario!'</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">04</span>Scope: El Alcance de las Variables</h2>
+  <p class="body">El <strong>Scope</strong> es la frontera lógica que determina desde qué partes exactas de tu archivo de código una variable en particular puede ser accedida o leída[cite: 24].</p>
+
+  <div class="ce">
+    <table>
+      <thead>
+        <tr>
+          <th>Ámbito (Scope)</th>
+          <th>Reglas de Visibilidad y Acceso</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Scope Global</strong></td>
+          <td>Variables declaradas en la raíz del archivo. Son visibles por cualquier función interna[cite: 27, 28].</td>
+        </tr>
+        <tr>
+          <td><strong>Scope Local / Función</strong></td>
+          <td>Variables declaradas con <code>let</code> o <code>const</code> dentro de las llaves de una función. Solo existen allí dentro; fuera de la función son completamente invisibles en memoria[cite: 25].</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>const mensajeGlobal = 'Soy global'; // Accesible en todo el archivo
+
+function miFuncion() {
+  const mensajeLocal = 'Soy local';
+  console.log(mensajeGlobal); // OK: Puede acceder a lo global desde dentro
+  console.log(mensajeLocal);  // OK: Existe en su propio scope interno
+}
+
+miFuncion();
+console.log(mensajeGlobal); // OK: Imprime 'Soy global'
+console.log(mensajeLocal);  // ERROR AUTOMÁTICO: mensajeLocal is not defined</pre>
+  </div>
+
+  <div class="ib green">
+    <span class="ico">🛡️</span>
+    <div>
+      <strong>Ventaja de diseño:</strong> Esto garantiza un aislamiento total. Cada función administra de forma limpia su propio espacio conceptual de variables, evitando colisiones accidentales de datos con otras funciones externas[cite: 26].
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">05</span>Funciones que Retornan Objetos y Retorno Temprano</h2>
+  <p class="body">En entornos de servidor, es un estándar absoluto que las funciones devuelvan estructuras compuestas de objetos para mapear éxitos, fallas y payloads de datos complejos[cite: 29].</p>
+  <p class="body">El patrón de <strong>Retorno Temprano (Early Return)</strong> consiste en evaluar las condiciones de error o validaciones fallidas primero, saliendo de la función de inmediato y dejando el flujo principal libre de bloques anidados <code>else</code>[cite: 21].</p>
+
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>function validarRegistro(nombre, email, password) {
+  // Validación 1: Nombre obligatorio
+  if (!nombre || nombre.trim() === '') {
+    return { exito: false, error: 'El nombre es obligatorio' };
+  }
+  
+  // Validación 2: Estructura básica de email
+  if (!email || !email.includes('@')) {
+    return { exito: false, error: 'Email inválido' };
+  }
+  
+  // Validación 3: Seguridad de contraseña
+  if (!password || password.length < 6) {
+    return { exito: false, error: 'La password debe tener al menos 6 caracteres' };
+  }
+  
+  // Si supera los filtros de error anteriores, se ejecuta el flujo exitoso directo
+  return { exito: true, mensaje: 'Datos válidos' };
+}</pre>
+  </div>
+
+  <h4 class="sub">Uso práctico y técnicas combinadas con Destructuring</h4>
+  <p class="body">Podemos capturar las respuestas modulares de nuestras funciones de forma elegante en el backend utilizando desestructuración directa de propiedades[cite: 31]:</p>
+
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>const respuesta = validarRegistro('Ana', 'ana@mail.com', 'segura123');
+console.log(respuesta); // { exito: true, mensaje: 'Datos válidos' }
+
+// Desestructuración limpia para flujos de control lógicos:
+const { exito, error, mensaje } = validarRegistro('', 'mail@error.com', '123');
+if (exito) {
+  console.log(mensaje);
+} else {
+  console.log('Error de procesamiento:', error); // Imprime: Error de procesamiento: El nombre es obligatorio
+}</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">06</span>Funciones como Valores (Callbacks)</h2>
+  <p class="body">En JavaScript, las funciones gozan del estatus de "First-Class Citizens" (Ciudadanos de primera clase). Esto significa que son tratadas como cualquier otro tipo de valor del lenguaje: pueden guardarse en variables, pasarse como argumentos a otras funciones o ser retornadas por otra función[cite: 31].</p>
+  
+  <p class="body">Una función que acepta a otra función como parámetro de entrada se conoce formalmente como <strong>Función de Orden Superior</strong>, mientras que la función enviada como argumento se denomina <strong>Callback</strong>[cite: 32, 33].</p>
+
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>// Función de Orden Superior que recibe un callback genérico
+function ejecutarDosVeces(callback) {
+  callback();
+  callback();
+}
+
+function decirHola() {
+  console.log('Hola!');
+}
+
+ejecutarDosVeces(decirHola); // Imprime 'Hola!' dos veces en la terminal</pre>
+  </div>
+
+  <h4 class="sub">Procesamiento de arreglos mediante Callbacks dinámicos</h4>
+  <p class="body">Este patrón es la columna vertebral de métodos avanzados de iteración nativos de JavaScript y en el ecosistema asincrónico de Node.js[cite: 34].</p>
+
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>function procesarUsuarios(usuarios, accion) {
+  for (const u of usuarios) {
+    accion(u); // Ejecuta el callback dinámico inyectado para cada elemento individual
+  }
+}
+
+const lista = [{ nombre: 'Ana' }, { nombre: 'Luis' }];
+
+// Pasando una expresión de función anónima como callback directo
+procesarUsuarios(lista, function(u) {
+  console.log(`Procesando en servidor: ${u.nombre}`);
+});</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">07</span>Consola Interactiva de Pruebas</h2>
+  <p class="body">Escribe, modifica y ejecuta lógica de funciones reales directamente en este entorno integrado para verificar los retornos del motor JavaScript.</p>
+
+  <div class="ejercicio">
+    <div class="ej-header">
+      <div class="ej-title">Entorno de Pruebas: Funciones en Acción</div>
+      <div class="ej-badge">sandbox.js</div>
+    </div>
+    <textarea class="editor" id="codeSandbox" spellcheck="false">// Declaración de entorno interactivo
+function calcularDescuento(precio, esSocio) {
+  if (precio <= 0) return 0;
+  const porcentaje = esSocio ? 0.20 : 0.05;
+  return precio * porcentaje;
+}
+
+const precioFinal = 1500;
+const descuentoOtorgado = calcularDescuento(precioFinal, true);
+
+console.log("Precio Inicial: $" + precioFinal);
+console.log("Descuento (Socio 20%): $" + descuentoOtorgado);
+console.log("Total Neto a pagar: $" + (precioFinal - descuentoOtorgado));
+</textarea>
+    <button class="run-btn" onclick="runSandbox()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Ejecutar Código
+    </button>
+    <div class="terminal-out" id="termOut"></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">08</span>Cuestionario de Autoevaluación</h2>
+  <p class="body">Verifica tus conocimientos teóricos antes de proceder con las tareas obligatorias de desarrollo de software.</p>
+
+  <div class="quiz-wrap">
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 1</span>
+        ¿Para qué sirve la sentencia return en una función?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,0)"><span class="opt-letter">A</span> Para imprimir un valor por la consola de la terminal.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,0)"><span class="opt-letter">B</span> Para terminar la ejecución de la función y devolver un valor específico al invocador.</button>
+      </div>
+      <div class="quiz-feedback" id="fb0"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 2</span>
+        ¿Qué es exactamente un parámetro en el contexto de JavaScript?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,1)"><span class="opt-letter">A</span> El valor real y concreto que se pasa al mandar a llamar la función (argumento).</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,1)"><span class="opt-letter">B</span> El nombre formal que se le da a los datos que recibe la función dentro de su declaración estructural.</button>
+      </div>
+      <div class="quiz-feedback" id="fb1"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 3</span>
+        Si una función ejecuta su bloque de instrucciones por completo pero no tiene ninguna sentencia return implícita, ¿qué devuelve?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,2)"><span class="opt-letter">A</span> El número 0.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,2)"><span class="opt-letter">B</span> El valor primitivo undefined de manera automática.</button>
+      </div>
+      <div class="quiz-feedback" id="fb2"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 4</span>
+        ¿Qué define el concepto de Scope en programación?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,3)"><span class="opt-letter">A</span> El nombre de pila único asignado a la función de orden superior.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,3)"><span class="opt-letter">B</span> El alcance o visibilidad de una variable, dictando desde qué partes de código es accesible.</button>
+      </div>
+      <div class="quiz-feedback" id="fb3"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 5</span>
+        ¿Qué es técnicamente un Callback en JavaScript?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,4)"><span class="opt-letter">A</span> El valor de retorno final recolectado de una función asíncrona.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,4)"><span class="opt-letter">B</span> Una función que se pasa directamente como un argumento de entrada a otra función.</button>
+      </div>
+      <div class="quiz-feedback" id="fb4"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 6</span>
+        ¿Cuál es la ventaja principal del patrón arquitectónico de Retorno Temprano (Early Return)?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,5)"><span class="opt-letter">A</span> Hace que la velocidad interna de ejecución del compilador sea mucho más lenta.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,5)"><span class="opt-letter">B</span> Permite salir de la función apenas se detecta una falla o validación incorrecta, manteniendo el código limpio y sin else anidados.</button>
+      </div>
+      <div class="quiz-feedback" id="fb5"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 7</span>
+        ¿Qué sucede si invocas una función pasando menos argumentos de los parámetros que fueron configurados originalmente?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,7)"><span class="opt-letter">A</span> El entorno de ejecución se detiene arrojando un error fatal inmanejable.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,7)"><span class="opt-letter">B</span> Los parámetros faltantes adoptan el valor undefined (o su valor por defecto si lo tuviesen).</button>
+      </div>
+      <div class="quiz-feedback" id="fb6"></div>
+    </div>
+  </div>
+
+  <div class="quiz-score" id="quizScore">
+    <div class="quiz-score-num" id="scoreNum">0/7</div>
+    <div id="scoreLabel">Desempeño del cuestionario</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="tarea">
+    <h3>Tarea para la Próxima Clase (Obligatoria)</h3>
+    <ol>
+      <li><strong>Terminar los ejercicios de práctica:</strong> Desarrollar y probar de forma completa las funciones correspondientes en el archivo local <code>funciones.js</code>.</li>
+      <li><strong>Ampliación del validador de accesos:</strong> Modificar y expandir la función lógica de backend <code>validarLogin(email, password)</code> de modo que reciba un tercer parámetro opcional llamado <code>confirmarPassword</code>, comprobando de manera estricta que ambos campos de contraseña coincidan exactamente.</li>
+      <li><strong>Investigación avanzada de sintaxis:</strong> Investigar en profundidad: ¿Qué es una función flecha (arrow function) en el estándar moderno de JavaScript? ¿Cómo cambia su sintaxis frente a las funciones clásicas?</li>
+      <li><strong>Reto Backend Extra:</strong> Tomando la función desarrollada para el cálculo del IVA, encapsular el retorno dentro de una factoría de formateo para que devuelva un string parseado con el formato monetario internacional final (ej. <code>$1.500,00</code>).</li>
+    </ol>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-brand">CapOL Escuela</div>
+  <div class="footer-right">Curso Backend desde Cero · Conectando Lógicas</div>
+</div>
+
+</div>
+
+<script>
+// Manejo de Temas Dinámicos (Light / Dark)
+const themeBtn = document.getElementById('themeBtn');
+themeBtn.addEventListener('click', () => {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  
+  // Modificar icono svg dinámicamente
+  if(newTheme === 'light') {
+    themeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+  } else {
+    themeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+  }
+});
+
+// Barra de progreso de lectura superior
+window.addEventListener('scroll', () => {
+  const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrolled = (winScroll / height) * 100;
+  document.getElementById('progress-fill').style.width = scrolled + '%';
+});
+
+// Simulación Segura de Consola / Sandbox
+function runSandbox() {
+  const code = document.getElementById('codeSandbox').value;
+  const terminal = document.getElementById('termOut');
+  terminal.classList.add('show');
+  terminal.innerHTML = `<div class="t-prompt">Compilando e interpretando entorno local js...</div>`;
+  
+  let outputLogs = [];
+  // Redireccionar console.log de forma controlada para la simulación web
+  const originalLog = console.log;
+  console.log = function(...args) {
+    outputLogs.push(args.join(' '));
+  };
+  
+  try {
+    // Evaluar el código del estudiante en contexto controlado
+    new Function(code)();
+    console.log = originalLog;
+    
+    let resultHTML = `<div class="t-prompt">➜ Salida del programa:</div>`;
+    outputLogs.forEach(line => {
+      resultHTML += `<div class="t-line"><span class="t-ok">✓</span> ${line}</div>`;
+    });
+    terminal.innerHTML = resultHTML;
+  } catch (err) {
+    console.log = originalLog;
+    terminal.innerHTML = `<div class="t-prompt">➜ Salida del programa:</div><div class="t-line var --danger"><span class="t-err">✗ Error de Sintaxis:</span> ${err.message}</div>`;
+  }
+}
+
+// Lógica de Estado de Cuestionario Interactivo de 7 Preguntas Completas
+const CORRECT = [1, 1, 1, 1, 1, 1, 1];
+const EXPLAIN = [
+  "El return saca el resultado de las operaciones y detiene inmediatamente el bloque de la función.",
+  "El parámetro es la variable teórica declarada; el argumento es la entidad real enviada.",
+  "Si JavaScript no encuentra un retorno explícito, el puntero devuelve undefined.",
+  "El scope delimita la vida útil y visibilidad física en memoria de tus identificadores.",
+  "Un callback es la inyección estructural de una función dentro de los parámetros de otra.",
+  "Evita sobrecargar el hilo secundario con ifs anidados complejos, filtrando fallas rápido.",
+  "El motor de JavaScript setea automáticamente como undefined a los parámetros ausentes."
+];
+
+let answers = new Array(7).fill(null);
+let done = new Array(7).fill(false);
+
+window.checkAnswer = function(btn, sel, qi) {
+  if (done[qi]) return;
+  done[qi] = true; 
+  answers[qi] = sel;
+  
+  btn.closest('.quiz-opts').querySelectorAll('.quiz-opt-btn').forEach((b, i) => {
+    b.disabled = true;
+    if (i === CORRECT[qi]) b.classList.add('correct');
+    else if (i === sel) b.classList.add('wrong');
+  });
+  
+  const fb = document.getElementById('fb' + qi);
+  fb.classList.add('show');
+  if (sel === CORRECT[qi]) {
+    fb.classList.add('ok');
+    fb.innerHTML = '✓ Correcto. ' + EXPLAIN[qi];
+  } else {
+    fb.classList.add('no');
+    fb.innerHTML = '✗ Incorrecto. ' + EXPLAIN[qi];
+  }
+  
+  if (done.every(Boolean)) showScore();
+};
+
+function showScore() {
+  const correct = answers.filter((a, i) => a === CORRECT[i]).length;
+  const sc = document.getElementById('quizScore'); 
+  sc.classList.add('show');
+  document.getElementById('scoreNum').textContent = correct + '/7';
+  const pct = Math.round(correct / 7 * 100);
+  
+  document.getElementById('scoreLabel').textContent =
+    pct === 100 ? '🎉 Perfecto. Funciones y scopes totalmente dominados en backend.' :
+    pct >= 75 ? '💪 Excelente nivel. Estructuras asimiladas firmemente.' :
+    pct >= 50 ? '📚 Pasable. Te sugerimos revisar las diferencias léxicas de scopes y callbacks.' :
+    '🔄 Te recomendamos releer los bloques interactivos y reintentar el cuestionario.';
+}
+</script>
+</body>
+</html>
