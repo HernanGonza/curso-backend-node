@@ -78,7 +78,7 @@
     "archivo": "clases/clase9.html",
     "duracion": "60 min",
     "temas": ["Declaración", "Parámetros", "Return", "Scope", "Callbacks"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 10,
