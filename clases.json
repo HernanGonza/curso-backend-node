@@ -87,7 +87,7 @@
     "archivo": "clases/clase10.html",
     "duracion": "60 min",
     "temas": ["Arrow functions", "Return implícito", "Shorthand"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 11,
