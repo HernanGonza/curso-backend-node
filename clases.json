@@ -96,7 +96,7 @@
     "archivo": "clases/clase11.html",
     "duracion": "60 min",
     "temas": ["map()", "filter()", "reduce()", "Encadenamiento"],
-    "disponible": true
+    "disponible": false
   },
   {
     "id": 12,
