@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 12 — Asincronía · CapOL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#00c896;--danger:#ff4757;--warn:#ffa502;--purple:#a29bfe;--blue-tag:#74b9ff}
+[data-theme="dark"]{--bg:#0f0f11;--bg2:#16161a;--bg3:#1c1c21;--border:#2a2a32;--border2:#35353f;--fg:#e2e2ec;--fg2:#a0a0b0;--fg3:#606070;--card-bg:#16161a;--code-bg:#0a0a0d;--code-fg:#b8d0c8;--shadow:0 4px 24px rgba(0,0,0,.5)}
+[data-theme="light"]{--bg:#f5f5f0;--bg2:#ffffff;--bg3:#ebebeb;--border:#d8d8d0;--border2:#c5c5bc;--fg:#1a1a24;--fg2:#505060;--fg3:#909098;--card-bg:#ffffff;--code-bg:#1a1a24;--code-fg:#c8e0d8;--shadow:0 4px 24px rgba(0,0,0,.1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;line-height:1.75;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+.page{max-width:800px;margin:0 auto;padding:0 24px 120px}
+#topbar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:15px;text-decoration:none;color:var(--fg)}
+.brand-dot{width:30px;height:30px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#000;font-size:13px;font-weight:800;font-family:'IBM Plex Mono',monospace}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fg2);transition:all .2s}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+.powered{font-size:11px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+.back-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s}
+.back-btn:hover{color:var(--accent)}
+#progress-bar{position:fixed;top:56px;left:0;right:0;height:2px;background:var(--border);z-index:99}
+#progress-fill{height:100%;background:var(--accent);width:0%;transition:width .1s}
+.hero{padding:64px 0 40px;border-bottom:1px solid var(--border);margin-bottom:48px}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.hero-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--accent)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(32px,6vw,52px);font-weight:700;line-height:1.1;color:var(--fg);margin-bottom:18px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-desc{font-size:16px;color:var(--fg2);max-width:560px;line-height:1.7;margin-bottom:28px}
+.hero-meta{display:flex;gap:20px;flex-wrap:wrap}
+.hero-chip{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--fg2);font-family:'IBM Plex Mono',monospace}
+.hero-chip svg{color:var(--accent)}
+.objetivos{background:color-mix(in srgb,var(--accent) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);border-radius:12px;padding:24px 28px;margin-bottom:48px}
+.objetivos-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.objetivos ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.objetivos li{display:flex;gap:10px;font-size:14.5px}
+.objetivos li::before{content:'▸';color:var(--accent);flex-shrink:0;margin-top:2px}
+.section{margin-bottom:52px}
+.sec-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--fg);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:2px 8px;border-radius:5px}
+p.body{font-size:15px;line-height:1.8;color:var(--fg2);margin-bottom:12px}
+h4.sub{font-family:'DM Sans',sans-serif;font-weight:600;font-size:15px;color:var(--fg);margin:24px 0 8px;display:flex;align-items:center;gap:8px}
+h4.sub::before{content:'●';font-size:8px;color:var(--accent)}
+.cb{background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:12px 0}
+.cb-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border2);background:color-mix(in srgb,#000 20%,var(--code-bg))}
+.cb-dots{display:flex;gap:5px}
+.cb-dots span{width:10px;height:10px;border-radius:50%}
+.cb-dots .r{background:#ff5f56}.cb-dots .y{background:#ffbd2e}.cb-dots .g{background:#27c93f}
+.cb-lang{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#555}
+.cb pre{padding:16px 18px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--code-fg);white-space:pre}
+.ce{width:100%;border-collapse:collapse;background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:16px 0}
+.ce th{background:color-mix(in srgb,#000 20%,var(--code-bg));padding:10px 14px;font-size:13px;text-align:left;font-weight:600;border-bottom:1px solid var(--border2)}
+.ce tr{border-top:1px solid #1e1e28}
+.ce td{padding:10px 14px;font-size:13px;vertical-align:top;line-height:1.6}
+.ce td:first-child{font-family:'IBM Plex Mono',monospace;color:var(--code-fg);width:30%}
+.ce td:last-child{color:var(--fg2);padding-left:18px;border-left:1px solid #1e1e28}
+.ce tr:hover td{background:#0f0f14}
+[data-theme="light"] .ce tr:hover td{background:#f0f0e8}
+code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix(in srgb,var(--blue-tag) 10%,var(--bg3));color:var(--blue-tag);padding:1px 6px;border-radius:4px}
+.ib{border-radius:10px;padding:14px 18px;margin:12px 0;display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.65}
+.ib .ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.ib.green{background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 28%,transparent)}
+.ib.amber{background:color-mix(in srgb,var(--warn) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--warn) 28%,transparent)}
+.ib.red{background:color-mix(in srgb,var(--danger) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--danger) 28%,transparent)}
+.ib.blue{background:color-mix(in srgb,var(--blue-tag) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 28%,transparent)}
+.ejercicio{background:color-mix(in srgb,#000 30%,var(--bg2));border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin:16px 0}
+[data-theme="light"] .ejercicio{background:#f0f0ea}
+.ej-header{padding:10px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;background:var(--code-bg)}
+.ej-title{font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;color:var(--fg)}
+.ej-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--fg3)}
+textarea.editor{width:100%;background:var(--code-bg);color:#b8d0c8;border:none;outline:none;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;padding:16px 18px;resize:vertical;min-height:240px;tab-size:2}
+.run-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:var(--accent);color:#000;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;transition:background .15s}
+.run-btn:hover{background:color-mix(in srgb,var(--accent) 80%,#fff)}
+.terminal-out{font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:14px 18px;line-height:1.7;background:color-mix(in srgb,#000 50%,var(--code-bg));border-top:1px solid var(--border2);display:none}
+.terminal-out.show{display:block}
+.t-line{color:#a0c8a8}.t-ok{color:var(--accent)}.t-err{color:var(--danger)}.t-prompt{color:var(--fg3);margin-bottom:8px;font-size:11px}
+.quiz-wrap{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+.quiz-item{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.quiz-q{padding:14px 18px;border-bottom:1px solid var(--border);font-size:14.5px;font-weight:600;background:var(--bg2)}
+.quiz-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:4px}
+.quiz-opts{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.quiz-opt-btn{width:100%;text-align:left;padding:10px 16px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;color:var(--fg);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:10px;transition:all .15s}
+.quiz-opt-btn:hover:not(:disabled){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--bg3))}
+.opt-letter{width:22px;height:22px;border-radius:6px;background:var(--border2);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;color:var(--fg3)}
+.quiz-opt-btn:hover:not(:disabled) .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.correct{background:color-mix(in srgb,var(--accent) 12%,var(--bg3));border-color:var(--accent);color:var(--accent)}
+.quiz-opt-btn.correct .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.wrong{background:color-mix(in srgb,var(--danger) 10%,var(--bg3));border-color:var(--danger);color:var(--danger)}
+.quiz-opt-btn.wrong .opt-letter{background:var(--danger);color:#fff}
+.quiz-opt-btn:disabled{cursor:default}
+.quiz-feedback{padding:10px 18px 14px;font-size:13.5px;display:none}
+.quiz-feedback.show{display:flex;align-items:center;gap:8px}
+.quiz-feedback.ok{color:var(--accent)}.quiz-feedback.no{color:var(--danger)}
+.quiz-score{margin-top:20px;padding:18px 22px;background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:12px;display:none;align-items:center;gap:16px}
+.quiz-score.show{display:flex}
+.quiz-score-num{font-family:'Fraunces',serif;font-size:40px;font-weight:700;color:var(--accent);line-height:1}
+.tarea{background:color-mix(in srgb,var(--blue-tag) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 25%,transparent);border-radius:12px;padding:24px 28px}
+.tarea h3{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--blue-tag);margin-bottom:14px}
+.tarea ol{padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.footer{border-top:1px solid var(--border);padding:32px 0 0;margin-top:64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-brand{font-family:'Fraunces',serif;font-weight:700;font-size:15px}
+.footer-right{font-size:12px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <a href="../index.html" class="back-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Inicio</a>
+  <div class="brand"><div class="brand-dot">B</div>Backend desde Cero</div>
+  <div class="topbar-right">
+    <span class="powered">CapOL × Apoc Automation</span>
+    <button class="theme-btn" id="themeBtn" title="Cambiar tema">
+      <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+
+<div class="page">
+
+<div class="hero">
+  <div class="hero-eyebrow">Clase 12 · Bloque 3: Asincronía</div>
+  <h1><em>Asincronía en JavaScript</em></h1>
+  <p class="hero-desc">Entendé el mecanismo más importante de Node.js: por qué el código puede "esperar sin bloquear", cómo funciona el Event Loop, y cómo los callbacks asíncronos son la base de toda la arquitectura de servidores modernos.</p>
+  <div class="hero-meta">
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>60 minutos</span>
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Requiere Clase 11</span>
+  </div>
+</div>
+
+<div class="objetivos">
+  <div class="objetivos-title">Objetivos de la clase</div>
+  <ul>
+    <li>Comprender la diferencia fundamental entre código síncrono y asíncrono.</li>
+    <li>Entender qué es el Event Loop y por qué hace a Node.js tan eficiente.</li>
+    <li>Saber por qué Node.js es no-bloqueante y qué ventajas tiene para el backend.</li>
+    <li>Usar callbacks asíncronos con <code>setTimeout</code> y <code>setInterval</code>.</li>
+    <li>Reconocer el problema del Callback Hell y por qué hay que evitarlo.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">01</span>¿Qué es la Asincronía?</h2>
+  <p class="body">En programación, <strong>síncrono</strong> significa que cada línea de código espera a que la anterior termine para ejecutarse. El código avanza paso a paso, en orden, como una cola de supermercado donde cada cliente espera al anterior.</p>
+  <p class="body"><strong>Asíncrono</strong>, en cambio, significa que ciertas operaciones pueden iniciarse y dejarse "en segundo plano" mientras el programa continúa ejecutando otras cosas. Cuando la operación termina, se avisa al programa mediante una función de retorno llamada <strong>callback</strong>.</p>
+  <div class="ib blue">
+    <span class="ico">🍕</span>
+    <div><strong>Analogía real:</strong> Pedís una pizza por teléfono. Podés hacer otras cosas mientras la preparan. Cuando llega, el timbre (callback) te avisa. No te quedás parado mirando la puerta durante 40 minutos.</div>
+  </div>
+  <p class="body">En el backend, las operaciones más lentas son: leer/escribir archivos en disco, consultar una base de datos, hacer requests a otras APIs, y esperar respuestas de red. Si el servidor se bloqueara esperando cada operación, solo podría atender una solicitud a la vez. La asincronía permite atender miles de solicitudes simultáneas.</p>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">02</span>Síncrono vs. Asíncrono — La Diferencia Concreta</h2>
+  <h4 class="sub">Código Síncrono — se ejecuta en orden estricto</h4>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>console.log('Línea 1: inicio');
+console.log('Línea 2: proceso');
+console.log('Línea 3: fin');
+
+// Output siempre en este orden:
+// Línea 1: inicio
+// Línea 2: proceso
+// Línea 3: fin</pre>
+  </div>
+  <h4 class="sub">Código Asíncrono — el orden de ejecución sorprende</h4>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>console.log('1: antes del timeout');
+
+setTimeout(function() {
+  console.log('2: dentro del timeout (0ms)');
+}, 0); // ← aunque sea 0ms, se ejecuta después
+
+console.log('3: después del setTimeout');
+
+// Output real:
+// 1: antes del timeout
+// 3: después del setTimeout     ← ¡primero!
+// 2: dentro del timeout          ← después, aunque sean 0ms</pre>
+  </div>
+  <div class="ib amber">
+    <span class="ico">⚠️</span>
+    <div><strong>Concepto clave:</strong> El número de milisegundos en setTimeout no es un delay exacto. Es el tiempo mínimo que espera antes de encolar el callback. El Event Loop decide cuándo ejecutarlo.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">03</span>El Event Loop — El Corazón de Node.js</h2>
+  <p class="body">El <strong>Event Loop</strong> (bucle de eventos) es el mecanismo que permite a Node.js ejecutar código asíncrono sin bloquear el hilo principal. Funciona con una arquitectura de un solo hilo (<em>single-threaded</em>) pero maneja miles de operaciones concurrentes.</p>
+  <table class="ce">
+    <thead><tr><th>Componente</th><th>Qué hace</th></tr></thead>
+    <tbody>
+      <tr><td>Call Stack</td><td>La pila de ejecución. Aquí se ejecutan las funciones síncronas, una por vez, en orden LIFO (última en entrar, primera en salir).</td></tr>
+      <tr><td>Node APIs</td><td>Manejan operaciones asíncronas: timers (setTimeout), I/O (leer archivos, red). Trabajan en segundo plano fuera del stack.</td></tr>
+      <tr><td>Callback Queue</td><td>Cola donde esperan los callbacks listos para ejecutarse, una vez que el stack esté vacío.</td></tr>
+      <tr><td>Event Loop</td><td>El vigilante. Cuando el Call Stack está vacío, toma el primer callback de la Queue y lo mueve al Stack.</td></tr>
+    </tbody>
+  </table>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>console.log('A');  // 1. Va al Stack → se ejecuta → sale
+
+setTimeout(() => {
+  console.log('B'); // 3. Event Loop lo mueve cuando el Stack está vacío
+}, 1000);           // 2. Va a Node APIs → espera 1000ms → va a la Queue
+
+console.log('C');  // 1. Va al Stack → se ejecuta → sale
+
+// Output: A → C → B</pre>
+  </div>
+  <div class="ib blue">
+    <span class="ico">💡</span>
+    <div><strong>Por qué importa:</strong> El Event Loop es la razón por la que Node.js puede manejar miles de solicitudes simultáneas con un solo hilo. Mientras espera la respuesta de una base de datos, atiende otras solicitudes.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">04</span>¿Por qué Node.js es No-Bloqueante?</h2>
+  <p class="body">En lenguajes como PHP o Java tradicional, cuando el servidor consulta la base de datos, el hilo queda <strong>bloqueado</strong>: no puede hacer nada más hasta recibir la respuesta. Para atender múltiples usuarios simultáneos, se crean múltiples hilos, lo cual consume mucha memoria.</p>
+  <p class="body">Node.js usa un modelo <strong>no-bloqueante</strong>: en lugar de esperar, registra un callback y continúa atendiendo otras solicitudes. Cuando la base de datos responde, el Event Loop ejecuta el callback.</p>
+  <table class="ce">
+    <thead><tr><th>Modelo Bloqueante</th><th>Modelo No-Bloqueante (Node.js)</th></tr></thead>
+    <tbody>
+      <tr><td>1 usuario = 1 hilo bloqueado</td><td>1 hilo atiende miles de usuarios</td></tr>
+      <tr><td>Alto consumo de memoria</td><td>Bajo consumo de memoria</td></tr>
+      <tr><td>Escalabilidad costosa</td><td>Escalabilidad muy eficiente</td></tr>
+      <tr><td>Ideal para CPU intensivo</td><td>Ideal para I/O intensivo (APIs, bases de datos)</td></tr>
+    </tbody>
+  </table>
+  <div class="ib green">
+    <span class="ico">✅</span>
+    <div><strong>Conclusión práctica:</strong> Node.js es ideal para APIs REST, servicios en tiempo real, y aplicaciones que hacen muchas operaciones de red o disco. No es la mejor opción para tareas que requieren mucho cómputo (procesamiento de video, cálculos matemáticos pesados).</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">05</span>Callbacks Asíncronos: setTimeout y setInterval</h2>
+  <p class="body">Un <strong>callback asíncrono</strong> es una función que se ejecuta después de que ocurre un evento o pasa un tiempo determinado.</p>
+
+  <h4 class="sub">setTimeout — ejecutar una vez después de un delay</h4>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>// Sintaxis: setTimeout(callback, milisegundos)
+setTimeout(() => {
+  console.log('Respuesta simulada del servidor');
+}, 1500);
+
+console.log('Esto se imprime primero, aunque venga después en el código');</pre>
+  </div>
+
+  <h4 class="sub">setInterval — ejecutar repetidamente cada N milisegundos</h4>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>let contador = 0;
+
+const intervalo = setInterval(() => {
+  contador++;
+  console.log(`Tick #${contador}`);
+
+  if (contador >= 3) {
+    clearInterval(intervalo); // Detiene el intervalo
+    console.log('Intervalo detenido');
+  }
+}, 1000);
+// Output: Tick #1 ... Tick #2 ... Tick #3 ... Intervalo detenido</pre>
+  </div>
+
+  <h4 class="sub">Simulando una operación de base de datos</h4>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>function buscarUsuario(id, callback) {
+  console.log(`Buscando usuario ${id} en la base de datos...`);
+
+  // Simulamos 800ms de latencia de base de datos
+  setTimeout(() => {
+    const usuario = { id, nombre: 'Ana García', email: 'ana@mail.com' };
+    callback(usuario); // Llamamos al callback con el resultado
+  }, 800);
+}
+
+buscarUsuario(1, (usuario) => {
+  console.log('Usuario encontrado:', usuario.nombre);
+});
+
+console.log('El servidor sigue atendiendo otras solicitudes...');
+// Output:
+// Buscando usuario 1 en la base de datos...
+// El servidor sigue atendiendo otras solicitudes...
+// Usuario encontrado: Ana García   ← después de 800ms</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">06</span>Callback Hell — El Problema</h2>
+  <p class="body">Cuando se necesita encadenar varias operaciones asíncronas (buscar usuario → luego buscar sus pedidos → luego calcular el total), los callbacks se anidan cada vez más profundamente. Esto se llama <strong>Callback Hell</strong> o <em>Pyramid of Doom</em>.</p>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>// ⚠️ CALLBACK HELL — código difícil de leer y mantener
+buscarUsuario(1, (usuario) => {
+  console.log('Usuario:', usuario.nombre);
+
+  buscarPedidos(usuario.id, (pedidos) => {
+    console.log('Pedidos:', pedidos.length);
+
+    calcularTotal(pedidos, (total) => {
+      console.log('Total:', total);
+
+      guardarResumen(usuario.id, total, (resultado) => {
+        console.log('Guardado:', resultado);
+        // Y si necesitás más operaciones... se sigue anidando
+        // El código se vuelve imposible de mantener
+      });
+    });
+  });
+});</pre>
+  </div>
+  <div class="ib red">
+    <span class="ico">🔴</span>
+    <div><strong>Por qué es un problema:</strong> El Callback Hell hace que el código sea muy difícil de leer, de depurar, y de manejar errores. Cada nivel de anidamiento es un nivel más de complejidad. Las Promesas (Clase 13) y async/await (Clase 14) resuelven este problema.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">07</span>Consola Interactiva de Pruebas</h2>
+  <p class="body">Observá el orden de ejecución del código asíncrono. Modificá los tiempos y predecí el output antes de ejecutar.</p>
+  <div class="ejercicio">
+    <div class="ej-header"><div class="ej-title">Entorno de Pruebas: Event Loop en Acción</div><div class="ej-badge">asincronia.js</div></div>
+    <textarea class="editor" id="codeSandbox" spellcheck="false">console.log('=== Inicio del programa ===');
+
+// Simulación de múltiples operaciones asíncronas
+console.log('1. Solicitud recibida del cliente');
+
+setTimeout(() => {
+  console.log('4. Base de datos respondió (tarda más)');
+}, 300);
+
+setTimeout(() => {
+  console.log('3. Autenticación completada (tarda menos)');
+}, 100);
+
+console.log('2. Procesando... (síncrono)');
+
+// ¿Podés predecir el orden antes de ejecutar?
+</textarea>
+    <button class="run-btn" onclick="runSandbox()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Ejecutar Código
+    </button>
+    <div class="terminal-out" id="termOut"></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">08</span>Cuestionario de Autoevaluación</h2>
+  <p class="body">Verifica tus conocimientos antes de proceder con las tareas.</p>
+  <div class="quiz-wrap">
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 1</span>¿Cuál es la diferencia principal entre código síncrono y asíncrono?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,0)"><span class="opt-letter">A</span> El código asíncrono se ejecuta más rápido que el síncrono.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,0)"><span class="opt-letter">B</span> El síncrono espera a que cada operación termine; el asíncrono permite continuar mientras espera.</button>
+      </div>
+      <div class="quiz-feedback" id="fb0"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 2</span>¿Qué es el Event Loop?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,1)"><span class="opt-letter">A</span> Un bucle for que itera sobre los eventos del usuario.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,1)"><span class="opt-letter">B</span> El mecanismo que mueve callbacks de la Queue al Call Stack cuando este está vacío.</button>
+      </div>
+      <div class="quiz-feedback" id="fb1"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 3</span>Si ejecutás setTimeout con 0ms de delay, ¿cuándo se ejecuta el callback?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,2)"><span class="opt-letter">A</span> Inmediatamente, antes de la siguiente línea de código.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,2)"><span class="opt-letter">B</span> Después de que el Call Stack esté vacío, aunque sean 0ms.</button>
+      </div>
+      <div class="quiz-feedback" id="fb2"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 4</span>¿Por qué Node.js es no-bloqueante?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,3)"><span class="opt-letter">A</span> Porque usa múltiples hilos para atender solicitudes en paralelo.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,3)"><span class="opt-letter">B</span> Porque registra callbacks para operaciones lentas y continúa ejecutando otro código mientras espera.</button>
+      </div>
+      <div class="quiz-feedback" id="fb3"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 5</span>¿Para qué sirve clearInterval?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,4)"><span class="opt-letter">A</span> Para pausar la ejecución del programa durante N milisegundos.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,4)"><span class="opt-letter">B</span> Para detener un setInterval y que deje de ejecutarse periódicamente.</button>
+      </div>
+      <div class="quiz-feedback" id="fb4"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 6</span>¿Qué es el Callback Hell?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,5)"><span class="opt-letter">A</span> Un error de seguridad en aplicaciones Node.js.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,5)"><span class="opt-letter">B</span> El anidamiento excesivo de callbacks que hace el código difícil de leer y mantener.</button>
+      </div>
+      <div class="quiz-feedback" id="fb5"></div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 7</span>¿Para qué tipo de aplicaciones es ideal Node.js?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,6)"><span class="opt-letter">A</span> Para procesamiento intensivo de video y cálculos matemáticos pesados.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,6)"><span class="opt-letter">B</span> Para APIs REST y aplicaciones con muchas operaciones de red o disco (I/O intensivo).</button>
+      </div>
+      <div class="quiz-feedback" id="fb6"></div>
+    </div>
+
+  </div>
+  <div class="quiz-score" id="quizScore">
+    <div class="quiz-score-num" id="scoreNum">0/7</div>
+    <div>
+      <div style="font-size:14px;color:var(--fg2)" id="scoreLabel"></div>
+      <button onclick="resetQuiz()" style="margin-top:8px;font-size:13px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;text-decoration:underline">↺ Reintentar</button>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="tarea">
+    <h3>Tarea para la Próxima Clase (Obligatoria)</h3>
+    <ol>
+      <li>Crear un archivo <code>asincronia.js</code> y simular con <code>setTimeout</code> el ciclo completo de una solicitud HTTP: recibir el request → buscar en base de datos (800ms) → procesar el resultado (200ms) → enviar respuesta. Imprimir cada paso con console.log.</li>
+      <li>Usar <code>setInterval</code> para crear un "monitor de servidor" que imprima el estado cada 2 segundos, y se detenga automáticamente después de 5 reportes.</li>
+      <li>Escribir en un comentario el orden exacto en que se ejecutan las líneas de un bloque de código mixto síncrono/asíncrono antes de ejecutarlo. Luego verificar si coincide.</li>
+      <li><strong>Investigar:</strong> ¿Qué es una Promesa en JavaScript? ¿Qué estados puede tener? La próxima clase arrancamos con Promesas.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-brand">CapOL Escuela</div>
+  <div class="footer-right">Curso Backend desde Cero · Clase 12</div>
+</div>
+
+</div>
+
+<script>
+const html = document.documentElement;
+const MOON = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+const SUN  = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+const icon = document.getElementById('themeIcon');
+function applyTheme(t) { html.dataset.theme = t; icon.innerHTML = t === 'dark' ? SUN : MOON; localStorage.setItem('theme', t); }
+document.getElementById('themeBtn').addEventListener('click', () => applyTheme(html.dataset.theme === 'dark' ? 'light' : 'dark'));
+applyTheme(localStorage.getItem('theme') || 'dark');
+const fill = document.getElementById('progress-fill');
+window.addEventListener('scroll', () => { const h = document.documentElement; fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%'; }, { passive: true });
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function runSandbox() {
+  const code = document.getElementById('codeSandbox').value;
+  const out  = document.getElementById('termOut');
+  out.classList.add('show');
+  const lines = [], orig = console.log;
+  console.log = (...a) => lines.push(a.map(x => x === null ? 'null' : x === undefined ? 'undefined' : typeof x === 'object' ? JSON.stringify(x,null,2) : String(x)).join(' '));
+  let h = '<div class="t-prompt">▶ OUTPUT (síncrono — setTimeout no ejecuta en sandbox)</div>';
+  try { new Function(code)(); h += lines.length ? lines.map(l => `<div class="t-line">${esc(l)}</div>`).join('') : '<div class="t-ok">✓ Sin output síncrono</div>'; }
+  catch(e) { h += `<div class="t-err">✗ Error: ${esc(e.message)}</div>`; }
+  out.innerHTML = h; console.log = orig;
+}
+const CORRECT = [1,1,1,1,1,1,1];
+const EXPLAIN = [
+  'El código asíncrono no bloquea: puede iniciar operaciones y continuar ejecutando mientras esperan.',
+  'El Event Loop es el vigilante que mueve callbacks de la Queue al Stack cuando este se vacía.',
+  'setTimeout 0ms solo garantiza que no se ejecute ANTES de que el Stack se vacíe.',
+  'El modelo no-bloqueante registra callbacks y libera el hilo para seguir atendiendo.',
+  'clearInterval() cancela un setInterval activo para que deje de ejecutarse.',
+  'El Callback Hell es la pirámide de anidamiento que hace el código ilegible e inmantenible.',
+  'Node.js es excelente para I/O intensivo (APIs, bases de datos) pero no para CPU intensivo.',
+];
+let answers = new Array(7).fill(null), done = new Array(7).fill(false);
+window.checkAnswer = function(btn, sel, qi) {
+  if (done[qi]) return; done[qi]=true; answers[qi]=sel;
+  btn.closest('.quiz-opts').querySelectorAll('.quiz-opt-btn').forEach((b,i) => { b.disabled=true; if(i===CORRECT[qi]) b.classList.add('correct'); else if(i===sel) b.classList.add('wrong'); });
+  const fb=document.getElementById('fb'+qi); fb.classList.add('show');
+  if(sel===CORRECT[qi]){fb.classList.add('ok');fb.innerHTML='✓ Correcto. '+EXPLAIN[qi];}
+  else{fb.classList.add('no');fb.innerHTML='✗ Incorrecto. '+EXPLAIN[qi];}
+  if(done.every(Boolean)) showScore();
+};
+function showScore(){
+  const c=answers.filter((a,i)=>a===CORRECT[i]).length, t=CORRECT.length, p=Math.round(c/t*100);
+  document.getElementById('scoreNum').textContent=c+'/'+t;
+  document.getElementById('scoreLabel').textContent=p===100?'🎉 Perfecto. Dominaste el tema.':p>=75?'💪 Muy bien. Repasá los que erraste.':p>=50?'📚 Pasable. Vale la pena releer la clase.':'🔄 Repasá el material y volvé a intentarlo.';
+  document.getElementById('quizScore').classList.add('show');
+}
+window.resetQuiz=function(){
+  answers=new Array(7).fill(null);done=new Array(7).fill(false);
+  document.querySelectorAll('.quiz-opt-btn').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong');});
+  document.querySelectorAll('.quiz-feedback').forEach(fb=>{fb.classList.remove('show','ok','no');fb.innerHTML='';});
+  document.getElementById('quizScore').classList.remove('show');
+};
+</script>
+</body>
+</html>
