@@ -114,7 +114,7 @@
     "archivo": "clases/clase13.html",
     "duracion": "60 min",
     "temas": [".then()", ".catch()", "Promise.all"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 14,
