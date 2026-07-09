@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 13 — Promesas · CapOL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#00c896;--danger:#ff4757;--warn:#ffa502;--purple:#a29bfe;--blue-tag:#74b9ff}
+[data-theme="dark"]{--bg:#0f0f11;--bg2:#16161a;--bg3:#1c1c21;--border:#2a2a32;--border2:#35353f;--fg:#e2e2ec;--fg2:#a0a0b0;--fg3:#606070;--card-bg:#16161a;--code-bg:#0a0a0d;--code-fg:#b8d0c8;--shadow:0 4px 24px rgba(0,0,0,.5)}
+[data-theme="light"]{--bg:#f5f5f0;--bg2:#ffffff;--bg3:#ebebeb;--border:#d8d8d0;--border2:#c5c5bc;--fg:#1a1a24;--fg2:#505060;--fg3:#909098;--card-bg:#ffffff;--code-bg:#1a1a24;--code-fg:#c8e0d8;--shadow:0 4px 24px rgba(0,0,0,.1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;line-height:1.75;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+.page{max-width:800px;margin:0 auto;padding:0 24px 120px}
+#topbar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:15px;text-decoration:none;color:var(--fg)}
+.brand-dot{width:30px;height:30px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#000;font-size:13px;font-weight:800;font-family:'IBM Plex Mono',monospace}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fg2);transition:all .2s}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+.powered{font-size:11px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+.back-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s}
+.back-btn:hover{color:var(--accent)}
+#progress-bar{position:fixed;top:56px;left:0;right:0;height:2px;background:var(--border);z-index:99}
+#progress-fill{height:100%;background:var(--accent);width:0%;transition:width .1s}
+.hero{padding:64px 0 40px;border-bottom:1px solid var(--border);margin-bottom:48px}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.hero-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--accent)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(32px,6vw,52px);font-weight:700;line-height:1.1;color:var(--fg);margin-bottom:18px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-desc{font-size:16px;color:var(--fg2);max-width:560px;line-height:1.7;margin-bottom:28px}
+.hero-meta{display:flex;gap:20px;flex-wrap:wrap}
+.hero-chip{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--fg2);font-family:'IBM Plex Mono',monospace}
+.hero-chip svg{color:var(--accent)}
+.objetivos{background:color-mix(in srgb,var(--accent) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);border-radius:12px;padding:24px 28px;margin-bottom:48px}
+.objetivos-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.objetivos ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.objetivos li{display:flex;gap:10px;font-size:14.5px}
+.objetivos li::before{content:'▸';color:var(--accent);flex-shrink:0;margin-top:2px}
+.section{margin-bottom:52px}
+.sec-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--fg);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:2px 8px;border-radius:5px}
+p.body{font-size:15px;line-height:1.8;color:var(--fg2);margin-bottom:12px}
+h4.sub{font-family:'DM Sans',sans-serif;font-weight:600;font-size:15px;color:var(--fg);margin:24px 0 8px;display:flex;align-items:center;gap:8px}
+h4.sub::before{content:'●';font-size:8px;color:var(--accent)}
+.cb{background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:12px 0}
+.cb-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border2);background:color-mix(in srgb,#000 20%,var(--code-bg))}
+.cb-dots{display:flex;gap:5px}
+.cb-dots span{width:10px;height:10px;border-radius:50%}
+.cb-dots .r{background:#ff5f56}.cb-dots .y{background:#ffbd2e}.cb-dots .g{background:#27c93f}
+.cb-lang{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#555}
+.cb pre{padding:16px 18px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--code-fg);white-space:pre}
+.ce{width:100%;border-collapse:collapse;background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:16px 0}
+.ce th{background:color-mix(in srgb,#000 20%,var(--code-bg));padding:10px 14px;font-size:13px;text-align:left;font-weight:600;border-bottom:1px solid var(--border2)}
+.ce tr{border-top:1px solid #1e1e28}
+.ce td{padding:10px 14px;font-size:13px;vertical-align:top;line-height:1.6}
+.ce td:first-child{font-family:'IBM Plex Mono',monospace;color:var(--code-fg);width:30%}
+.ce td:last-child{color:var(--fg2);padding-left:18px;border-left:1px solid #1e1e28}
+.ce tr:hover td{background:#0f0f14}
+[data-theme="light"] .ce tr:hover td{background:#f0f0e8}
+code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix(in srgb,var(--blue-tag) 10%,var(--bg3));color:var(--blue-tag);padding:1px 6px;border-radius:4px}
+.ib{border-radius:10px;padding:14px 18px;margin:12px 0;display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.65}
+.ib .ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.ib.green{background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 28%,transparent)}
+.ib.amber{background:color-mix(in srgb,var(--warn) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--warn) 28%,transparent)}
+.ib.red{background:color-mix(in srgb,var(--danger) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--danger) 28%,transparent)}
+.ib.blue{background:color-mix(in srgb,var(--blue-tag) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 28%,transparent)}
+.ejercicio{background:color-mix(in srgb,#000 30%,var(--bg2));border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin:16px 0}
+[data-theme="light"] .ejercicio{background:#f0f0ea}
+.ej-header{padding:10px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;background:var(--code-bg)}
+.ej-title{font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;color:var(--fg)}
+.ej-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--fg3)}
+textarea.editor{width:100%;background:var(--code-bg);color:#b8d0c8;border:none;outline:none;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;padding:16px 18px;resize:vertical;min-height:240px;tab-size:2}
+.run-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:var(--accent);color:#000;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;transition:background .15s}
+.run-btn:hover{background:color-mix(in srgb,var(--accent) 80%,#fff)}
+.terminal-out{font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:14px 18px;line-height:1.7;background:color-mix(in srgb,#000 50%,var(--code-bg));border-top:1px solid var(--border2);display:none}
+.terminal-out.show{display:block}
+.t-line{color:#a0c8a8}.t-ok{color:var(--accent)}.t-err{color:var(--danger)}.t-prompt{color:var(--fg3);margin-bottom:8px;font-size:11px}
+.quiz-wrap{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+.quiz-item{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.quiz-q{padding:14px 18px;border-bottom:1px solid var(--border);font-size:14.5px;font-weight:600;background:var(--bg2)}
+.quiz-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:4px}
+.quiz-opts{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.quiz-opt-btn{width:100%;text-align:left;padding:10px 16px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;color:var(--fg);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:10px;transition:all .15s}
+.quiz-opt-btn:hover:not(:disabled){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--bg3))}
+.opt-letter{width:22px;height:22px;border-radius:6px;background:var(--border2);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;color:var(--fg3)}
+.quiz-opt-btn:hover:not(:disabled) .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.correct{background:color-mix(in srgb,var(--accent) 12%,var(--bg3));border-color:var(--accent);color:var(--accent)}
+.quiz-opt-btn.correct .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.wrong{background:color-mix(in srgb,var(--danger) 10%,var(--bg3));border-color:var(--danger);color:var(--danger)}
+.quiz-opt-btn.wrong .opt-letter{background:var(--danger);color:#fff}
+.quiz-opt-btn:disabled{cursor:default}
+.quiz-feedback{padding:10px 18px 14px;font-size:13.5px;display:none}
+.quiz-feedback.show{display:flex;align-items:center;gap:8px}
+.quiz-feedback.ok{color:var(--accent)}.quiz-feedback.no{color:var(--danger)}
+.quiz-score{margin-top:20px;padding:18px 22px;background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:12px;display:none;align-items:center;gap:16px}
+.quiz-score.show{display:flex}
+.quiz-score-num{font-family:'Fraunces',serif;font-size:40px;font-weight:700;color:var(--accent);line-height:1}
+.tarea{background:color-mix(in srgb,var(--blue-tag) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 25%,transparent);border-radius:12px;padding:24px 28px}
+.tarea h3{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--blue-tag);margin-bottom:14px}
+.tarea ol{padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.footer{border-top:1px solid var(--border);padding:32px 0 0;margin-top:64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-brand{font-family:'Fraunces',serif;font-weight:700;font-size:15px}
+.footer-right{font-size:12px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+</style>
+</head>
+<body>
+<div id="topbar">
+  <a href="../index.html" class="back-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Inicio</a>
+  <div class="brand"><div class="brand-dot">B</div>Backend desde Cero</div>
+  <div class="topbar-right">
+    <span class="powered">CapOL × Apoc Automation</span>
+    <button class="theme-btn" id="themeBtn" title="Cambiar tema">
+      <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+<div class="page">
+<div class="hero">
+  <div class="hero-eyebrow">Clase 13 · Bloque 3: Asincronía</div>
+  <h1><em>Promesas en JavaScript</em></h1>
+  <p class="hero-desc">Superá el Callback Hell con la herramienta más importante de la asincronía: las Promesas. Aprendé a crear, encadenar y combinar promesas para escribir código asíncrono limpio, legible y con manejo de errores centralizado.</p>
+  <div class="hero-meta">
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>60 minutos</span>
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Requiere Clase 12</span>
+  </div>
+</div>
+<div class="objetivos">
+  <div class="objetivos-title">Objetivos de la clase</div>
+  <ul>
+    <li>Entender qué es una Promesa y qué problema resuelve respecto a los callbacks.</li>
+    <li>Conocer los tres estados de una Promesa: pending, fulfilled y rejected.</li>
+    <li>Consumir promesas usando <code>.then()</code> y manejar errores con <code>.catch()</code>.</li>
+    <li>Encadenar múltiples operaciones asíncronas de forma limpia.</li>
+    <li>Usar <code>Promise.all</code> para ejecutar varias promesas en paralelo.</li>
+    <li>Crear promesas propias con <code>new Promise(resolve, reject)</code>.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">01</span>¿Qué es una Promesa?</h2>
+  <p class="body">Una <strong>Promesa</strong> (Promise) es un objeto que representa el resultado eventual de una operación asíncrona. Es como un recibo: cuando pedís algo, te dan un papel que dice "te prometo entregarte el resultado cuando esté listo". Podés seguir haciendo cosas con ese papel antes de que llegue el resultado.</p>
+  <div class="ib blue">
+    <span class="ico">🎫</span>
+    <div><strong>Analogía real:</strong> Es como pedir un trámite en el banco. Te dan un número de turno (la promesa). Podés seguir usando el celular mientras esperás. Cuando llaman tu número, la operación terminó: puede haber salido bien (fulfilled) o hubo un error (rejected).</div>
+  </div>
+  <p class="body">Las Promesas resuelven el Callback Hell visto en la clase anterior. En lugar de anidar callbacks, las Promesas permiten encadenar operaciones asíncronas de forma lineal y legible.</p>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">02</span>Los Tres Estados de una Promesa</h2>
+  <table class="ce">
+    <thead><tr><th>Estado</th><th>Significado y qué ocurre</th></tr></thead>
+    <tbody>
+      <tr><td>pending</td><td><strong>Pendiente:</strong> Estado inicial. La operación asíncrona todavía está en curso. La promesa ni se resolvió ni fue rechazada.</td></tr>
+      <tr><td>fulfilled</td><td><strong>Resuelta:</strong> La operación completó con éxito. Se ejecuta el callback del .then() con el valor resultante.</td></tr>
+      <tr><td>rejected</td><td><strong>Rechazada:</strong> La operación falló. Se ejecuta el callback del .catch() con el error.</td></tr>
+    </tbody>
+  </table>
+  <div class="ib amber">
+    <span class="ico">⚠️</span>
+    <div><strong>Regla importante:</strong> Una promesa solo puede pasar de pending a fulfilled, o de pending a rejected. Una vez resuelta o rechazada, su estado es definitivo y no puede cambiar.</div>
+  </div>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>const promesaExitosa = new Promise((resolve, reject) => {
+  // Estado: PENDING → después de resolve(): FULFILLED
+  resolve('Operación completada!');
+});
+
+const promesaFallida = new Promise((resolve, reject) => {
+  // Estado: PENDING → después de reject(): REJECTED
+  reject(new Error('Algo salió mal'));
+});</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">03</span>Consumir Promesas: .then() y .catch()</h2>
+  <p class="body"><code>.then()</code> registra una función que se ejecuta cuando la promesa se <strong>resuelve exitosamente</strong>. <code>.catch()</code> registra una función que se ejecuta cuando la promesa es <strong>rechazada</strong>.</p>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>function buscarUsuario(id) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (id > 0) {
+        resolve({ id, nombre: 'Ana García', email: 'ana@mail.com' });
+      } else {
+        reject(new Error('ID inválido'));
+      }
+    }, 500);
+  });
+}
+
+// Caso exitoso:
+buscarUsuario(1)
+  .then(usuario => {
+    console.log('Usuario encontrado:', usuario.nombre);
+  })
+  .catch(error => {
+    console.log('Error:', error.message);
+  });
+
+// Caso fallido:
+buscarUsuario(-1)
+  .then(usuario => console.log(usuario))
+  .catch(error => console.log('Error capturado:', error.message));
+  // → 'Error capturado: ID inválido'
+
+// .finally() — ejecuta siempre, con éxito o error:
+buscarUsuario(1)
+  .then(u  => console.log('OK:', u.nombre))
+  .catch(e => console.log('Error:', e.message))
+  .finally(() => console.log('Operación terminada'));</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">04</span>Encadenamiento de Promesas</h2>
+  <p class="body">La gran ventaja de las Promesas es que se pueden <strong>encadenar</strong>. Cada <code>.then()</code> puede retornar una nueva promesa, y el siguiente <code>.then()</code> espera a que esa promesa se resuelva. El código queda lineal en lugar de anidado.</p>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>function buscarUsuario(id) {
+  return new Promise(resolve =>
+    setTimeout(() => resolve({ id, nombre: 'Ana' }), 300)
+  );
+}
+
+function buscarPedidos(usuarioId) {
+  return new Promise(resolve =>
+    setTimeout(() => resolve([{ id: 101, total: 5000 }, { id: 102, total: 3200 }]), 300)
+  );
+}
+
+// Encadenamiento limpio — sin anidamiento
+buscarUsuario(1)
+  .then(usuario => {
+    console.log('Usuario:', usuario.nombre);
+    return buscarPedidos(usuario.id); // ← retorna otra promesa
+  })
+  .then(pedidos => {
+    console.log('Pedidos:', pedidos.length);
+    const total = pedidos.reduce((sum, p) => sum + p.total, 0);
+    return total;
+  })
+  .then(total => {
+    console.log('Total de compras: $' + total);
+  })
+  .catch(error => {
+    // Un solo .catch captura errores de TODA la cadena
+    console.log('Error en algún paso:', error.message);
+  });</pre>
+  </div>
+  <div class="ib green">
+    <span class="ico">✅</span>
+    <div><strong>Ventaja clave:</strong> Un único <code>.catch()</code> al final de la cadena captura cualquier error que ocurra en cualquier <code>.then()</code> anterior. No necesitás manejar errores en cada paso.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">05</span>Promise.all — Ejecutar en Paralelo</h2>
+  <p class="body"><code>Promise.all</code> recibe un array de promesas y retorna una nueva promesa que se resuelve cuando <strong>todas</strong> las promesas se resuelven. Si <strong>cualquiera</strong> falla, Promise.all falla inmediatamente. Es ideal cuando necesitás varios datos independientes y no querés esperar uno por uno.</p>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>const promesaUsuario  = buscarUsuario(1);    // tarda 300ms
+const promesaConfig   = buscarConfig();      // tarda 200ms
+const promesaPermisos = buscarPermisos(1);   // tarda 400ms
+
+// Sin Promise.all: 300 + 200 + 400 = 900ms totales
+// Con Promise.all: max(300, 200, 400) = 400ms totales ✓
+
+Promise.all([promesaUsuario, promesaConfig, promesaPermisos])
+  .then(([usuario, config, permisos]) => {
+    // Desestructuramos el array de resultados
+    console.log('Usuario:', usuario.nombre);
+    console.log('Config:', config.tema);
+    console.log('Permisos:', permisos);
+  })
+  .catch(error => {
+    console.log('Una de las operaciones falló:', error.message);
+  });</pre>
+  </div>
+
+  <h4 class="sub">Promise.race — La más rápida gana</h4>
+  <p class="body"><code>Promise.race</code> resuelve con el resultado de la <strong>primera</strong> promesa que complete. Es útil para implementar timeouts:</p>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>const consultaDB = buscarDatos();
+const timeout = new Promise((_, reject) =>
+  setTimeout(() => reject(new Error('Timeout: consulta tardó demasiado')), 3000)
+);
+
+Promise.race([consultaDB, timeout])
+  .then(datos  => console.log('Datos recibidos:', datos))
+  .catch(error => console.log('Error o timeout:', error.message));</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">06</span>Crear Promesas con new Promise</h2>
+  <p class="body">Cuando querés "promesificar" una función que usa callbacks, podés envolverla en un <code>new Promise</code>. El constructor recibe una función ejecutora con dos parámetros: <code>resolve</code> (llamar cuando todo sale bien) y <code>reject</code> (llamar cuando falla).</p>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>// Función utilitaria: esperar N milisegundos
+function esperar(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Función con resolve y reject:
+function validarToken(token) {
+  return new Promise((resolve, reject) => {
+    if (!token) {
+      reject(new Error('Token requerido'));
+      return; // Importante: salir después de reject
+    }
+    if (token === 'token-valido-123') {
+      resolve({ userId: 1, rol: 'admin' });
+    } else {
+      reject(new Error('Token inválido o expirado'));
+    }
+  });
+}
+
+validarToken('token-valido-123')
+  .then(payload => console.log('Autenticado como:', payload.rol))
+  .catch(error  => console.log('Auth fallida:', error.message));</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">SANDBOX</span>Consola Interactiva de Pruebas</h2>
+  <p class="body">Ejecutá y modificá el código para verificar los conceptos de la clase.</p>
+  <div class="ejercicio">
+    <div class="ej-header"><div class="ej-title">Entorno de Pruebas</div><div class="ej-badge">sandbox.js</div></div>
+    <textarea class="editor" id="codeSandbox" spellcheck="false">// Promesas en acción — creamos y encadenamos
+function simularBD(datos, demora = 300) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (datos) resolve(datos);
+      else reject(new Error('Sin datos'));
+    }, demora);
+  });
+}
+
+// Encadenamiento de promesas
+simularBD({ id: 1, nombre: 'Ana' })
+  .then(usuario => {
+    console.log('Usuario:', usuario.nombre);
+    return simularBD([{ id: 101, monto: 5000 }, { id: 102, monto: 3200 }]);
+  })
+  .then(pedidos => {
+    const total = pedidos.reduce((sum, p) => sum + p.monto, 0);
+    console.log('Total pedidos: $' + total);
+    return total;
+  })
+  .then(total => console.log('Proceso completado. Total: $' + total))
+  .catch(e => console.log('Error:', e.message))
+  .finally(() => console.log('--- fin ---'));
+
+// Nota: en el sandbox solo verás el output síncrono
+// En Node.js real verías todos los logs encadenados
+console.log('Promesa iniciada...');</textarea>
+    <button class="run-btn" onclick="runSandbox()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Ejecutar Código</button>
+    <div class="terminal-out" id="termOut"></div>
+  </div>
+</div>
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">QUIZ</span>Cuestionario de Autoevaluación</h2>
+  <p class="body">Verifica tus conocimientos antes de proceder con las tareas.</p>
+  <div class="quiz-wrap">
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 1</span>¿Cuáles son los tres estados posibles de una Promesa?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,0)"><span class="opt-letter">A</span> waiting, done y failed.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,0)"><span class="opt-letter">B</span> pending, fulfilled y rejected.</button>
+      </div>
+      <div class="quiz-feedback" id="fb0"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 2</span>¿Qué hace .then()?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,1)"><span class="opt-letter">A</span> Espera un tiempo determinado antes de ejecutar el código.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,1)"><span class="opt-letter">B</span> Registra una función que se ejecuta cuando la promesa se resuelve exitosamente.</button>
+      </div>
+      <div class="quiz-feedback" id="fb1"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 3</span>¿Dónde se maneja un error en una cadena de .then()?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,2)"><span class="opt-letter">A</span> En cada .then() individualmente.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,2)"><span class="opt-letter">B</span> En un único .catch() al final de la cadena, que captura errores de cualquier paso anterior.</button>
+      </div>
+      <div class="quiz-feedback" id="fb2"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 4</span>¿Qué hace Promise.all si una de las promesas falla?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,3)"><span class="opt-letter">A</span> Ignora el error y espera a que las demás terminen.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,3)"><span class="opt-letter">B</span> Rechaza inmediatamente con el error de la promesa que falló.</button>
+      </div>
+      <div class="quiz-feedback" id="fb3"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 5</span>¿Para qué sirve Promise.race?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,4)"><span class="opt-letter">A</span> Para ejecutar todas las promesas en paralelo y esperar a que todas terminen.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,4)"><span class="opt-letter">B</span> Para resolver o rechazar con el resultado de la primera promesa que complete.</button>
+      </div>
+      <div class="quiz-feedback" id="fb4"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 6</span>¿Cuándo se usa new Promise(resolve, reject)?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,5)"><span class="opt-letter">A</span> Solo cuando se trabaja con bases de datos.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,5)"><span class="opt-letter">B</span> Cuando querés crear tu propia promesa o convertir una función con callback a promesa.</button>
+      </div>
+      <div class="quiz-feedback" id="fb5"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 7</span>¿Cuál es la ventaja del encadenamiento de promesas frente a los callbacks?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,6)"><span class="opt-letter">A</span> Las promesas son más rápidas en ejecución que los callbacks.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,6)"><span class="opt-letter">B</span> El código queda lineal y legible en lugar de anidado, y un solo .catch maneja todos los errores.</button>
+      </div>
+      <div class="quiz-feedback" id="fb6"></div>
+    </div></div>
+  <div class="quiz-score" id="quizScore">
+    <div class="quiz-score-num" id="scoreNum">0/7</div>
+    <div>
+      <div style="font-size:14px;color:var(--fg2)" id="scoreLabel"></div>
+      <button onclick="resetQuiz()" style="margin-top:8px;font-size:13px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;text-decoration:underline">↺ Reintentar</button>
+    </div>
+  </div>
+</div>
+<div class="section">
+  <div class="tarea">
+    <h3>Tarea para la Próxima Clase (Obligatoria)</h3>
+    <ol>
+      <li>Crear <code>promesas.js</code> con una función <code>simularLogin(email, password)</code> que retorne una Promesa: se resuelve con un objeto usuario si las credenciales son correctas, y se rechaza con error descriptivo si no.</li>
+      <li>Encadenar 3 operaciones con <code>.then()</code>: validar el token → buscar el perfil → buscar permisos. Un único <code>.catch()</code> al final. Cada operación simulada con setTimeout.</li>
+      <li>Usar <code>Promise.all</code> para cargar simultáneamente: perfil del usuario, notificaciones y configuración. Comparar el tiempo con hacerlo en serie.</li>
+      <li><strong>Investigar:</strong> ¿Qué es la sintaxis <code>async/await</code>? ¿Cómo simplifica el trabajo con Promesas?</li>
+    </ol>
+  </div>
+</div>
+<div class="footer">
+  <div class="footer-brand">CapOL Escuela</div>
+  <div class="footer-right">Curso Backend desde Cero · Clase 13</div>
+</div>
+</div>
+<script>
+const html = document.documentElement;
+const MOON = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+const SUN  = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+const icon = document.getElementById('themeIcon');
+function applyTheme(t) { html.dataset.theme = t; icon.innerHTML = t === 'dark' ? SUN : MOON; localStorage.setItem('theme', t); }
+document.getElementById('themeBtn').addEventListener('click', () => applyTheme(html.dataset.theme === 'dark' ? 'light' : 'dark'));
+applyTheme(localStorage.getItem('theme') || 'dark');
+const fill = document.getElementById('progress-fill');
+window.addEventListener('scroll', () => { const h = document.documentElement; fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%'; }, { passive: true });
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function runSandbox() {
+  const code = document.getElementById('codeSandbox').value;
+  const out  = document.getElementById('termOut');
+  out.classList.add('show');
+  const lines = [], orig = console.log;
+  console.log = (...a) => lines.push(a.map(x => x === null ? 'null' : x === undefined ? 'undefined' : typeof x === 'object' ? JSON.stringify(x,null,2) : String(x)).join(' '));
+  let h = '<div class="t-prompt">▶ OUTPUT</div>';
+  try { new Function(code)(); h += lines.length ? lines.map(l => `<div class="t-line">${esc(l)}</div>`).join('') : '<div class="t-ok">✓ Sin output</div>'; }
+  catch(e) { h += `<div class="t-err">✗ Error: ${esc(e.message)}</div>`; }
+  out.innerHTML = h; console.log = orig;
+}
+const CORRECT = [1, 1, 1, 1, 1, 1, 1];
+const EXPLAIN = ["pending es el estado inicial, fulfilled cuando sale bien, rejected cuando falla.", ".then() registra el callback de éxito. .catch() registra el de error.", "Un único .catch() al final captura errores de toda la cadena de .then().", "Promise.all falla inmediatamente si cualquier promesa del array es rechazada.", "Promise.race resuelve/rechaza con la primera promesa que termine, útil para timeouts.", "new Promise(resolve, reject) es para crear promesas propias o promesificar callbacks.", "El encadenamiento elimina el anidamiento y centraliza el manejo de errores en un .catch()."];
+let answers = new Array(7).fill(null), done = new Array(7).fill(false);
+window.checkAnswer = function(btn, sel, qi) {
+  if (done[qi]) return; done[qi]=true; answers[qi]=sel;
+  btn.closest('.quiz-opts').querySelectorAll('.quiz-opt-btn').forEach((b,i) => { b.disabled=true; if(i===CORRECT[qi]) b.classList.add('correct'); else if(i===sel) b.classList.add('wrong'); });
+  const fb=document.getElementById('fb'+qi); fb.classList.add('show');
+  if(sel===CORRECT[qi]){fb.classList.add('ok');fb.innerHTML='✓ Correcto. '+EXPLAIN[qi];}
+  else{fb.classList.add('no');fb.innerHTML='✗ Incorrecto. '+EXPLAIN[qi];}
+  if(done.every(Boolean)) showScore();
+};
+function showScore(){
+  const c=answers.filter((a,i)=>a===CORRECT[i]).length, t=CORRECT.length, p=Math.round(c/t*100);
+  document.getElementById('scoreNum').textContent=c+'/'+t;
+  document.getElementById('scoreLabel').textContent=p===100?'🎉 Perfecto. Dominaste el tema.':p>=75?'💪 Muy bien. Repasá los que erraste.':p>=50?'📚 Pasable. Vale la pena releer la clase.':'🔄 Repasá el material y volvé a intentarlo.';
+  document.getElementById('quizScore').classList.add('show');
+}
+window.resetQuiz=function(){
+  answers=new Array(7).fill(null);done=new Array(7).fill(false);
+  document.querySelectorAll('.quiz-opt-btn').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong');});
+  document.querySelectorAll('.quiz-feedback').forEach(fb=>{fb.classList.remove('show','ok','no');fb.innerHTML='';});
+  document.getElementById('quizScore').classList.remove('show');
+};</script>
+</body>
+</html>
