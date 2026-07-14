@@ -123,7 +123,7 @@
     "archivo": "clases/clase14.html",
     "duracion": "60 min",
     "temas": ["async/await", "try/catch", "Comparación con .then()"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 15,
