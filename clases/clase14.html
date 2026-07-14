@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 14 — Async/Await · CapOL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#00c896;--danger:#ff4757;--warn:#ffa502;--purple:#a29bfe;--blue-tag:#74b9ff}
+[data-theme="dark"]{--bg:#0f0f11;--bg2:#16161a;--bg3:#1c1c21;--border:#2a2a32;--border2:#35353f;--fg:#e2e2ec;--fg2:#a0a0b0;--fg3:#606070;--card-bg:#16161a;--code-bg:#0a0a0d;--code-fg:#b8d0c8;--shadow:0 4px 24px rgba(0,0,0,.5)}
+[data-theme="light"]{--bg:#f5f5f0;--bg2:#ffffff;--bg3:#ebebeb;--border:#d8d8d0;--border2:#c5c5bc;--fg:#1a1a24;--fg2:#505060;--fg3:#909098;--card-bg:#ffffff;--code-bg:#1a1a24;--code-fg:#c8e0d8;--shadow:0 4px 24px rgba(0,0,0,.1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;line-height:1.75;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+.page{max-width:800px;margin:0 auto;padding:0 24px 120px}
+#topbar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:15px;text-decoration:none;color:var(--fg)}
+.brand-dot{width:30px;height:30px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#000;font-size:13px;font-weight:800;font-family:'IBM Plex Mono',monospace}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fg2);transition:all .2s}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+.powered{font-size:11px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+.back-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s}
+.back-btn:hover{color:var(--accent)}
+#progress-bar{position:fixed;top:56px;left:0;right:0;height:2px;background:var(--border);z-index:99}
+#progress-fill{height:100%;background:var(--accent);width:0%;transition:width .1s}
+.hero{padding:64px 0 40px;border-bottom:1px solid var(--border);margin-bottom:48px}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.hero-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--accent)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(32px,6vw,52px);font-weight:700;line-height:1.1;color:var(--fg);margin-bottom:18px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-desc{font-size:16px;color:var(--fg2);max-width:560px;line-height:1.7;margin-bottom:28px}
+.hero-meta{display:flex;gap:20px;flex-wrap:wrap}
+.hero-chip{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--fg2);font-family:'IBM Plex Mono',monospace}
+.hero-chip svg{color:var(--accent)}
+.objetivos{background:color-mix(in srgb,var(--accent) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);border-radius:12px;padding:24px 28px;margin-bottom:48px}
+.objetivos-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.objetivos ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.objetivos li{display:flex;gap:10px;font-size:14.5px}
+.objetivos li::before{content:'▸';color:var(--accent);flex-shrink:0;margin-top:2px}
+.section{margin-bottom:52px}
+.sec-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--fg);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:2px 8px;border-radius:5px}
+p.body{font-size:15px;line-height:1.8;color:var(--fg2);margin-bottom:12px}
+h4.sub{font-family:'DM Sans',sans-serif;font-weight:600;font-size:15px;color:var(--fg);margin:24px 0 8px;display:flex;align-items:center;gap:8px}
+h4.sub::before{content:'●';font-size:8px;color:var(--accent)}
+.cb{background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:12px 0}
+.cb-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border2);background:color-mix(in srgb,#000 20%,var(--code-bg))}
+.cb-dots{display:flex;gap:5px}
+.cb-dots span{width:10px;height:10px;border-radius:50%}
+.cb-dots .r{background:#ff5f56}.cb-dots .y{background:#ffbd2e}.cb-dots .g{background:#27c93f}
+.cb-lang{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#555}
+.cb pre{padding:16px 18px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--code-fg);white-space:pre}
+.ce{width:100%;border-collapse:collapse;background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:16px 0}
+.ce th{background:color-mix(in srgb,#000 20%,var(--code-bg));padding:10px 14px;font-size:13px;text-align:left;font-weight:600;border-bottom:1px solid var(--border2)}
+.ce tr{border-top:1px solid #1e1e28}
+.ce td{padding:10px 14px;font-size:13px;vertical-align:top;line-height:1.6}
+.ce td:first-child{font-family:'IBM Plex Mono',monospace;color:var(--code-fg);width:30%}
+.ce td:last-child{color:var(--fg2);padding-left:18px;border-left:1px solid #1e1e28}
+.ce tr:hover td{background:#0f0f14}
+[data-theme="light"] .ce tr:hover td{background:#f0f0e8}
+code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix(in srgb,var(--blue-tag) 10%,var(--bg3));color:var(--blue-tag);padding:1px 6px;border-radius:4px}
+.ib{border-radius:10px;padding:14px 18px;margin:12px 0;display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.65}
+.ib .ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.ib.green{background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 28%,transparent)}
+.ib.amber{background:color-mix(in srgb,var(--warn) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--warn) 28%,transparent)}
+.ib.red{background:color-mix(in srgb,var(--danger) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--danger) 28%,transparent)}
+.ib.blue{background:color-mix(in srgb,var(--blue-tag) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 28%,transparent)}
+.ejercicio{background:color-mix(in srgb,#000 30%,var(--bg2));border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin:16px 0}
+[data-theme="light"] .ejercicio{background:#f0f0ea}
+.ej-header{padding:10px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;background:var(--code-bg)}
+.ej-title{font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;color:var(--fg)}
+.ej-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--fg3)}
+textarea.editor{width:100%;background:var(--code-bg);color:#b8d0c8;border:none;outline:none;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;padding:16px 18px;resize:vertical;min-height:240px;tab-size:2}
+.run-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:var(--accent);color:#000;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;transition:background .15s}
+.run-btn:hover{background:color-mix(in srgb,var(--accent) 80%,#fff)}
+.terminal-out{font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:14px 18px;line-height:1.7;background:color-mix(in srgb,#000 50%,var(--code-bg));border-top:1px solid var(--border2);display:none}
+.terminal-out.show{display:block}
+.t-line{color:#a0c8a8}.t-ok{color:var(--accent)}.t-err{color:var(--danger)}.t-prompt{color:var(--fg3);margin-bottom:8px;font-size:11px}
+.quiz-wrap{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+.quiz-item{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.quiz-q{padding:14px 18px;border-bottom:1px solid var(--border);font-size:14.5px;font-weight:600;background:var(--bg2)}
+.quiz-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:4px}
+.quiz-opts{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.quiz-opt-btn{width:100%;text-align:left;padding:10px 16px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;color:var(--fg);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:10px;transition:all .15s}
+.quiz-opt-btn:hover:not(:disabled){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--bg3))}
+.opt-letter{width:22px;height:22px;border-radius:6px;background:var(--border2);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;color:var(--fg3)}
+.quiz-opt-btn:hover:not(:disabled) .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.correct{background:color-mix(in srgb,var(--accent) 12%,var(--bg3));border-color:var(--accent);color:var(--accent)}
+.quiz-opt-btn.correct .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.wrong{background:color-mix(in srgb,var(--danger) 10%,var(--bg3));border-color:var(--danger);color:var(--danger)}
+.quiz-opt-btn.wrong .opt-letter{background:var(--danger);color:#fff}
+.quiz-opt-btn:disabled{cursor:default}
+.quiz-feedback{padding:10px 18px 14px;font-size:13.5px;display:none}
+.quiz-feedback.show{display:flex;align-items:center;gap:8px}
+.quiz-feedback.ok{color:var(--accent)}.quiz-feedback.no{color:var(--danger)}
+.quiz-score{margin-top:20px;padding:18px 22px;background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:12px;display:none;align-items:center;gap:16px}
+.quiz-score.show{display:flex}
+.quiz-score-num{font-family:'Fraunces',serif;font-size:40px;font-weight:700;color:var(--accent);line-height:1}
+.tarea{background:color-mix(in srgb,var(--blue-tag) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 25%,transparent);border-radius:12px;padding:24px 28px}
+.tarea h3{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--blue-tag);margin-bottom:14px}
+.tarea ol{padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.footer{border-top:1px solid var(--border);padding:32px 0 0;margin-top:64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-brand{font-family:'Fraunces',serif;font-weight:700;font-size:15px}
+.footer-right{font-size:12px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+</style>
+</head>
+<body>
+<div id="topbar">
+  <a href="../index.html" class="back-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Inicio</a>
+  <div class="brand"><div class="brand-dot">B</div>Backend desde Cero</div>
+  <div class="topbar-right">
+    <span class="powered">CapOL × Apoc Automation</span>
+    <button class="theme-btn" id="themeBtn" title="Cambiar tema">
+      <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+<div class="page">
+<div class="hero">
+  <div class="hero-eyebrow">Clase 14 · Bloque 3: Asincronía</div>
+  <h1><em>Async / Await</em></h1>
+  <p class="hero-desc">Dominá la sintaxis más elegante para código asíncrono. Async/await te permite escribir Promesas que se leen como código síncrono, con manejo de errores natural con try/catch y sin cadenas de .then().</p>
+  <div class="hero-meta">
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>60 minutos</span>
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Requiere Clase 13</span>
+  </div>
+</div>
+<div class="objetivos">
+  <div class="objetivos-title">Objetivos de la clase</div>
+  <ul>
+    <li>Entender qué es <code>async/await</code> y qué relación tiene con las Promesas.</li>
+    <li>Declarar funciones asíncronas con la palabra clave <code>async</code>.</li>
+    <li>Pausar la ejecución de forma elegante con <code>await</code>.</li>
+    <li>Manejar errores en código asíncrono con <code>try/catch</code>.</li>
+    <li>Usar <code>await</code> dentro de bucles para operaciones secuenciales.</li>
+    <li>Combinar <code>async/await</code> con <code>Promise.all</code> para operaciones paralelas.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">01</span>¿Qué es async/await?</h2>
+  <p class="body"><code>async/await</code> es <strong>azúcar sintáctica</strong> sobre las Promesas: no es un mecanismo nuevo, sino una forma más limpia y legible de escribir el mismo código asíncrono. Fue introducida en ES2017.</p>
+  <p class="body">La idea es que el código asíncrono se <em>vea</em> y se <em>lea</em> como código síncrono, sin cadenas de <code>.then()</code>. Esto facilita enormemente la comprensión y el mantenimiento.</p>
+  <div class="ib blue">
+    <span class="ico">💡</span>
+    <div><strong>Concepto clave:</strong> async/await no reemplaza las Promesas: las usa por debajo. Una función async siempre retorna una Promesa. await solo pausa la ejecución dentro de esa función, nunca bloquea el Event Loop.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">02</span>La palabra clave async</h2>
+  <p class="body">Agregar <code>async</code> antes de una función hace dos cosas: la convierte en asíncrona, y hace que <strong>siempre retorne una Promesa</strong>. Si retornás un valor normal, se envuelve automáticamente en una Promesa resuelta.</p>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>// Función async — siempre retorna una Promesa
+async function obtenerMensaje() {
+  return 'Hola desde async';
+}
+
+// Es exactamente equivalente a:
+function obtenerMensaje() {
+  return Promise.resolve('Hola desde async');
+}
+
+// Ambas se consumen igual:
+obtenerMensaje().then(msg => console.log(msg)); // 'Hola desde async'
+
+// Arrow function async:
+const obtenerDatos = async () => {
+  return { ok: true, datos: [] };
+};</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">03</span>La palabra clave await</h2>
+  <p class="body"><code>await</code> solo se puede usar dentro de una función <code>async</code>. Pausa la ejecución de la función hasta que la Promesa se resuelva, y retorna el valor resuelto directamente — sin necesidad de <code>.then()</code>.</p>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>function buscarUsuario(id) {
+  return new Promise(resolve =>
+    setTimeout(() => resolve({ id, nombre: 'Ana García' }), 500)
+  );
+}
+
+function buscarPedidos(userId) {
+  return new Promise(resolve =>
+    setTimeout(() => resolve([{ id: 1, total: 5000 }]), 300)
+  );
+}
+
+// ✓ Con async/await — lineal, limpio, fácil de leer
+async function cargarPerfil(userId) {
+  const usuario = await buscarUsuario(userId);  // espera 500ms
+  console.log('Usuario:', usuario.nombre);
+
+  const pedidos = await buscarPedidos(usuario.id); // espera 300ms
+  console.log('Pedidos:', pedidos.length);
+
+  const total = pedidos.reduce((sum, p) => sum + p.total, 0);
+  console.log('Total: $' + total);
+
+  return { usuario, pedidos, total };
+}
+
+cargarPerfil(1);</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">04</span>Manejo de Errores con try/catch</h2>
+  <p class="body">En lugar de <code>.catch()</code>, con async/await se usa el bloque <code>try/catch</code> tradicional de JavaScript. Si la promesa awaiteada es rechazada, el error se lanza como una excepción y <code>catch</code> lo captura.</p>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>async function procesarPago(monto, tarjeta) {
+  try {
+    // Validaciones síncronas primero (Early Return)
+    if (monto <= 0) throw new Error('El monto debe ser mayor a cero');
+    if (!tarjeta)   throw new Error('Tarjeta requerida');
+
+    // Operaciones asíncronas
+    const validacion = await validarTarjeta(tarjeta);
+    const cobro      = await realizarCobro(monto, validacion.token);
+    const recibo     = await generarRecibo(cobro.id);
+
+    console.log('Pago exitoso. Recibo #' + recibo.numero);
+    return { exito: true, recibo };
+
+  } catch (error) {
+    // Captura cualquier error de validación O de las promesas
+    console.log('Error en pago:', error.message);
+    return { exito: false, error: error.message };
+  }
+}
+
+procesarPago(1500, '4539-xxxx-xxxx-1234').then(resultado => {
+  console.log(resultado.exito ? '✓ OK' : '✗ Falló');
+});</pre>
+  </div>
+  <div class="ib amber">
+    <span class="ico">⚠️</span>
+    <div><strong>Patrón recomendado:</strong> Siempre envolvé el cuerpo de una función async en try/catch. Un error no capturado en una función async genera una Promesa rechazada sin manejar, lo cual puede crashear tu servidor en Node.js.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">05</span>await en Bucles</h2>
+  <p class="body">Hay dos estrategias para procesar arrays de forma asíncrona según si las operaciones deben ser <strong>secuenciales</strong> o <strong>paralelas</strong>:</p>
+  <h4 class="sub">Secuencial — for...of con await (una espera a la anterior)</h4>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>async function procesarEnSerie(pedidos) {
+  const resultados = [];
+  for (const pedido of pedidos) {
+    // await dentro del for...of funciona correctamente
+    const resultado = await procesarPedido(pedido.id);
+    resultados.push(resultado);
+    console.log(`Pedido ${pedido.id} procesado`);
+  }
+  return resultados;
+  // Total: suma de todos los tiempos individuales
+}</pre>
+  </div>
+  <h4 class="sub">Paralelo — Promise.all (todas a la vez)</h4>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>async function procesarEnParalelo(pedidos) {
+  // map crea un array de Promesas sin esperarlas
+  const promesas = pedidos.map(pedido => procesarPedido(pedido.id));
+
+  // await Promise.all espera a que TODAS terminen
+  const resultados = await Promise.all(promesas);
+  return resultados;
+  // Total: tiempo del pedido más lento (mucho más eficiente)
+}
+
+// ⚠️ NUNCA HACER ESTO — forEach NO respeta el await
+// pedidos.forEach(async (pedido) => {
+//   await procesarPedido(pedido.id); // NO funciona como se espera
+// });</pre>
+  </div>
+  <div class="ib green">
+    <span class="ico">✅</span>
+    <div><strong>Regla práctica:</strong> Usá <code>for...of</code> con await para operaciones que dependen una de la anterior. Usá <code>Promise.all</code> para operaciones independientes que pueden ejecutarse en paralelo.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">06</span>Comparación: .then() vs async/await</h2>
+  <table class="ce">
+    <thead><tr><th>Característica</th><th>.then() / .catch()</th><th>async / await</th></tr></thead>
+    <tbody>
+      <tr><td>Legibilidad</td><td>Cadenas que pueden hacerse largas</td><td>Lee como código síncrono, muy natural</td></tr>
+      <tr><td>Manejo de errores</td><td>.catch() al final de la cadena</td><td>try/catch estándar de JavaScript</td></tr>
+      <tr><td>Variables intermedias</td><td>Hay que pasarlas entre .then()</td><td>Accesibles en todo el bloque async</td></tr>
+      <tr><td>Bucles</td><td>Complejo de manejar</td><td>for...of con await funciona naturalmente</td></tr>
+      <tr><td>¿Cuándo usar?</td><td>Operaciones simples, event handlers</td><td>Casi siempre — es el estándar moderno</td></tr>
+    </tbody>
+  </table>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>// La misma operación — comparación directa:
+
+// Versión con .then():
+buscarUsuario(1)
+  .then(u => buscarPedidos(u.id))
+  .then(p => console.log('Pedidos:', p.length))
+  .catch(e => console.log('Error:', e.message));
+
+// Versión con async/await (mismo resultado, más legible):
+async function mostrarPedidos() {
+  try {
+    const u = await buscarUsuario(1);
+    const p = await buscarPedidos(u.id);
+    console.log('Pedidos:', p.length);
+  } catch (e) {
+    console.log('Error:', e.message);
+  }
+}</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">07</span>Patrón Real de Backend con async/await</h2>
+  <p class="body">Así se ve un endpoint de Express usando async/await — exactamente como lo vas a escribir en el Bloque 5 del curso:</p>
+  <div class="cb">
+    <div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div>
+    <pre>// Endpoint GET /usuarios/:id — patrón real de producción
+app.get('/usuarios/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Validación síncrona primero
+    if (!id || isNaN(id)) {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
+
+    // Consulta a la base de datos (asíncrona)
+    const usuario = await db.query(
+      'SELECT * FROM usuarios WHERE id = $1',
+      [id]
+    );
+
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    res.json(usuario);
+
+  } catch (error) {
+    // Cualquier error inesperado → 500 Internal Server Error
+    console.error('Error interno:', error.message);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">SANDBOX</span>Consola Interactiva de Pruebas</h2>
+  <p class="body">Ejecutá y modificá el código para verificar los conceptos de la clase.</p>
+  <div class="ejercicio">
+    <div class="ej-header"><div class="ej-title">Entorno de Pruebas</div><div class="ej-badge">sandbox.js</div></div>
+    <textarea class="editor" id="codeSandbox" spellcheck="false">// async/await en acción
+// Funciones que retornan promesas (simuladas con setTimeout)
+function esperar(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Función async con try/catch
+async function cargarDashboard(userId) {
+  try {
+    console.log('Cargando dashboard para usuario', userId);
+
+    // Simular llamadas a "base de datos"
+    // En el sandbox son síncronas, en Node serían asíncronas reales
+    const usuario   = { id: userId, nombre: 'Ana García', rol: 'admin' };
+    const pedidos   = [{ id: 1, total: 5000 }, { id: 2, total: 3200 }];
+    const total     = pedidos.reduce((sum, p) => sum + p.total, 0);
+
+    console.log('Usuario:', usuario.nombre, '(' + usuario.rol + ')');
+    console.log('Pedidos:', pedidos.length);
+    console.log('Total de compras: $' + total);
+
+    return { usuario, pedidos, total };
+
+  } catch (error) {
+    console.log('Error al cargar dashboard:', error.message);
+    return null;
+  }
+}
+
+// Ejecutar la función async
+cargarDashboard(1).then(data => {
+  if (data) console.log('Dashboard cargado exitosamente');
+});
+</textarea>
+    <button class="run-btn" onclick="runSandbox()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Ejecutar Código</button>
+    <div class="terminal-out" id="termOut"></div>
+  </div>
+</div>
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">QUIZ</span>Cuestionario de Autoevaluación</h2>
+  <p class="body">Verifica tus conocimientos antes de proceder con las tareas.</p>
+  <div class="quiz-wrap">
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 1</span>¿Qué retorna siempre una función declarada con async?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,0)"><span class="opt-letter">A</span> Un valor primitivo (string, número, etc.).</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,0)"><span class="opt-letter">B</span> Siempre retorna una Promesa, aunque el return sea un valor normal.</button>
+      </div>
+      <div class="quiz-feedback" id="fb0"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 2</span>¿Dentro de qué tipo de función se puede usar await?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,1)"><span class="opt-letter">A</span> En cualquier función de JavaScript.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,1)"><span class="opt-letter">B</span> Solo dentro de funciones declaradas con async.</button>
+      </div>
+      <div class="quiz-feedback" id="fb1"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 3</span>¿Qué hace await en una función async?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,2)"><span class="opt-letter">A</span> Bloquea el servidor hasta que la promesa termine.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,2)"><span class="opt-letter">B</span> Pausa la ejecución de la función async y retorna el valor resuelto de la promesa.</button>
+      </div>
+      <div class="quiz-feedback" id="fb2"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 4</span>¿Cómo se manejan los errores con async/await?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,3)"><span class="opt-letter">A</span> Con .catch() al final de la función.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,3)"><span class="opt-letter">B</span> Con un bloque try/catch que envuelve el código asíncrono.</button>
+      </div>
+      <div class="quiz-feedback" id="fb3"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 5</span>¿Cuál es la forma correcta de usar await en un bucle?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,4)"><span class="opt-letter">A</span> forEach con async: pedidos.forEach(async (p) => await procesar(p))</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,4)"><span class="opt-letter">B</span> for...of con await: for (const p of pedidos) { await procesar(p) }</button>
+      </div>
+      <div class="quiz-feedback" id="fb4"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 6</span>¿Cómo se ejecutan varias promesas independientes en paralelo con async/await?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,5)"><span class="opt-letter">A</span> Poniendo varios await uno debajo del otro.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,5)"><span class="opt-letter">B</span> Usando await Promise.all([promesa1, promesa2, promesa3]).</button>
+      </div>
+      <div class="quiz-feedback" id="fb5"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q"><span class="quiz-num">Pregunta 7</span>¿Es async/await un reemplazo de las Promesas?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,6)"><span class="opt-letter">A</span> Sí, es un mecanismo completamente nuevo e independiente.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,6)"><span class="opt-letter">B</span> No, es sintaxis sobre Promesas. Por debajo sigue usando Promesas exactamente.</button>
+      </div>
+      <div class="quiz-feedback" id="fb6"></div>
+    </div></div>
+  <div class="quiz-score" id="quizScore">
+    <div class="quiz-score-num" id="scoreNum">0/7</div>
+    <div>
+      <div style="font-size:14px;color:var(--fg2)" id="scoreLabel"></div>
+      <button onclick="resetQuiz()" style="margin-top:8px;font-size:13px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;text-decoration:underline">↺ Reintentar</button>
+    </div>
+  </div>
+</div>
+<div class="section">
+  <div class="tarea">
+    <h3>Tarea para la Próxima Clase (Obligatoria)</h3>
+    <ol>
+      <li>Crear <code>async_await.js</code> y reescribir los ejercicios de promesas de la clase anterior usando <code>async/await</code> con <code>try/catch</code>.</li>
+      <li>Crear una función <code>async cargarDashboard(userId)</code> que con <code>Promise.all</code> cargue en paralelo: perfil del usuario, últimos 5 pedidos y notificaciones sin leer.</li>
+      <li>Simular el endpoint completo de un login: recibir email y password → validar formato → buscar usuario → verificar password → generar token → retornar respuesta. Todo con async/await y manejo correcto de errores.</li>
+      <li><strong>Próxima Clase — Bloque 4 Node.js:</strong> Investigar los módulos nativos de Node.js: <code>fs</code>, <code>path</code>, <code>http</code>. ¿Para qué sirve cada uno?</li>
+    </ol>
+  </div>
+</div>
+<div class="footer">
+  <div class="footer-brand">CapOL Escuela</div>
+  <div class="footer-right">Curso Backend desde Cero · Clase 14</div>
+</div>
+</div>
+<script>
+const html = document.documentElement;
+const MOON = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+const SUN  = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+const icon = document.getElementById('themeIcon');
+function applyTheme(t) { html.dataset.theme = t; icon.innerHTML = t === 'dark' ? SUN : MOON; localStorage.setItem('theme', t); }
+document.getElementById('themeBtn').addEventListener('click', () => applyTheme(html.dataset.theme === 'dark' ? 'light' : 'dark'));
+applyTheme(localStorage.getItem('theme') || 'dark');
+const fill = document.getElementById('progress-fill');
+window.addEventListener('scroll', () => { const h = document.documentElement; fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%'; }, { passive: true });
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function runSandbox() {
+  const code = document.getElementById('codeSandbox').value;
+  const out  = document.getElementById('termOut');
+  out.classList.add('show');
+  const lines = [], orig = console.log;
+  console.log = (...a) => lines.push(a.map(x => x === null ? 'null' : x === undefined ? 'undefined' : typeof x === 'object' ? JSON.stringify(x,null,2) : String(x)).join(' '));
+  let h = '<div class="t-prompt">▶ OUTPUT</div>';
+  try { new Function(code)(); h += lines.length ? lines.map(l => `<div class="t-line">${esc(l)}</div>`).join('') : '<div class="t-ok">✓ Sin output</div>'; }
+  catch(e) { h += `<div class="t-err">✗ Error: ${esc(e.message)}</div>`; }
+  out.innerHTML = h; console.log = orig;
+}
+const CORRECT = [1, 1, 1, 1, 1, 1, 1];
+const EXPLAIN = ["async siempre envuelve el valor de retorno en Promise.resolve().", "await solo funciona dentro de funciones async; usarlo fuera es un SyntaxError.", "await pausa la función async pero libera el Event Loop para ejecutar otro código.", "try/catch con async/await es el patrón estándar moderno para manejo de errores.", "forEach no espera los awaits; for...of o for clásico son las formas correctas.", "await uno por uno es secuencial. Promise.all lanza todas en paralelo.", "async/await es syntactic sugar: compila a .then()/.catch() por debajo."];
+let answers = new Array(7).fill(null), done = new Array(7).fill(false);
+window.checkAnswer = function(btn, sel, qi) {
+  if (done[qi]) return; done[qi]=true; answers[qi]=sel;
+  btn.closest('.quiz-opts').querySelectorAll('.quiz-opt-btn').forEach((b,i) => { b.disabled=true; if(i===CORRECT[qi]) b.classList.add('correct'); else if(i===sel) b.classList.add('wrong'); });
+  const fb=document.getElementById('fb'+qi); fb.classList.add('show');
+  if(sel===CORRECT[qi]){fb.classList.add('ok');fb.innerHTML='✓ Correcto. '+EXPLAIN[qi];}
+  else{fb.classList.add('no');fb.innerHTML='✗ Incorrecto. '+EXPLAIN[qi];}
+  if(done.every(Boolean)) showScore();
+};
+function showScore(){
+  const c=answers.filter((a,i)=>a===CORRECT[i]).length, t=CORRECT.length, p=Math.round(c/t*100);
+  document.getElementById('scoreNum').textContent=c+'/'+t;
+  document.getElementById('scoreLabel').textContent=p===100?'🎉 Perfecto. Dominaste el tema.':p>=75?'💪 Muy bien. Repasá los que erraste.':p>=50?'📚 Pasable. Vale la pena releer la clase.':'🔄 Repasá el material y volvé a intentarlo.';
+  document.getElementById('quizScore').classList.add('show');
+}
+window.resetQuiz=function(){
+  answers=new Array(7).fill(null);done=new Array(7).fill(false);
+  document.querySelectorAll('.quiz-opt-btn').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong');});
+  document.querySelectorAll('.quiz-feedback').forEach(fb=>{fb.classList.remove('show','ok','no');fb.innerHTML='';});
+  document.getElementById('quizScore').classList.remove('show');
+};</script>
+</body>
+</html>
