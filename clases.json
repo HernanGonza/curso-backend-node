@@ -132,7 +132,7 @@
     "archivo": "clases/clase15.html",
     "duracion": "60 min",
     "temas": ["Módulos nativos", "require()", "fs", "path"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 16,
