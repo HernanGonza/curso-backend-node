@@ -141,7 +141,7 @@
     "archivo": "clases/clase16.html",
     "duracion": "60 min",
     "temas": ["http.createServer", "req/res", "Puertos"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 17,
