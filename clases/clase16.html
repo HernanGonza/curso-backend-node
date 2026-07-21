@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 16 &mdash; Crear Servidor con http &middot; CapOL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#00c896;--danger:#ff4757;--warn:#ffa502;--purple:#a29bfe;--blue-tag:#74b9ff}
+[data-theme="dark"]{--bg:#0f0f11;--bg2:#16161a;--bg3:#1c1c21;--border:#2a2a32;--border2:#35353f;--fg:#e2e2ec;--fg2:#a0a0b0;--fg3:#606070;--card-bg:#16161a;--code-bg:#0a0a0d;--code-fg:#b8d0c8;--shadow:0 4px 24px rgba(0,0,0,.5)}
+[data-theme="light"]{--bg:#f5f5f0;--bg2:#ffffff;--bg3:#ebebeb;--border:#d8d8d0;--border2:#c5c5bc;--fg:#1a1a24;--fg2:#505060;--fg3:#909098;--card-bg:#ffffff;--code-bg:#1a1a24;--code-fg:#c8e0d8;--shadow:0 4px 24px rgba(0,0,0,.1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;line-height:1.75;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+.page{max-width:800px;margin:0 auto;padding:0 24px 120px}
+#topbar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:15px;text-decoration:none;color:var(--fg)}
+.brand-dot{width:30px;height:30px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#000;font-size:13px;font-weight:800;font-family:'IBM Plex Mono',monospace}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fg2);transition:all .2s}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+.powered{font-size:11px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+.back-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s}
+.back-btn:hover{color:var(--accent)}
+#progress-bar{position:fixed;top:56px;left:0;right:0;height:2px;background:var(--border);z-index:99}
+#progress-fill{height:100%;background:var(--accent);width:0%;transition:width .1s}
+.hero{padding:64px 0 40px;border-bottom:1px solid var(--border);margin-bottom:48px}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.hero-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--accent)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(32px,6vw,52px);font-weight:700;line-height:1.1;color:var(--fg);margin-bottom:18px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-desc{font-size:16px;color:var(--fg2);max-width:560px;line-height:1.7;margin-bottom:28px}
+.hero-meta{display:flex;gap:20px;flex-wrap:wrap}
+.hero-chip{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--fg2);font-family:'IBM Plex Mono',monospace}
+.hero-chip svg{color:var(--accent)}
+.objetivos{background:color-mix(in srgb,var(--accent) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);border-radius:12px;padding:24px 28px;margin-bottom:48px}
+.objetivos-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.objetivos ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.objetivos li{display:flex;gap:10px;font-size:14.5px}
+.objetivos li::before{content:'▸';color:var(--accent);flex-shrink:0;margin-top:2px}
+.section{margin-bottom:52px}
+.sec-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--fg);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:2px 8px;border-radius:5px}
+p.body{font-size:15px;line-height:1.8;color:var(--fg2);margin-bottom:12px}
+h4.sub{font-family:'DM Sans',sans-serif;font-weight:600;font-size:15px;color:var(--fg);margin:24px 0 8px;display:flex;align-items:center;gap:8px}
+h4.sub::before{content:'●';font-size:8px;color:var(--accent)}
+.cb{background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:12px 0}
+.cb-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border2);background:color-mix(in srgb,#000 20%,var(--code-bg))}
+.cb-dots{display:flex;gap:5px}
+.cb-dots span{width:10px;height:10px;border-radius:50%}
+.cb-dots .r{background:#ff5f56}.cb-dots .y{background:#ffbd2e}.cb-dots .g{background:#27c93f}
+.cb-lang{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#555}
+.cb pre{padding:16px 18px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--code-fg);white-space:pre}
+.ce{width:100%;border-collapse:collapse;background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:16px 0}
+.ce th{background:color-mix(in srgb,#000 20%,var(--code-bg));padding:10px 14px;font-size:13px;text-align:left;font-weight:600;border-bottom:1px solid var(--border2)}
+.ce tr{border-top:1px solid #1e1e28}
+.ce td{padding:10px 14px;font-size:13px;vertical-align:top;line-height:1.6}
+.ce td:first-child{font-family:'IBM Plex Mono',monospace;color:var(--code-fg);width:30%}
+.ce td:last-child{color:var(--fg2);padding-left:18px;border-left:1px solid #1e1e28}
+.ce tr:hover td{background:#0f0f14}
+[data-theme="light"] .ce tr:hover td{background:#f0f0e8}
+code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix(in srgb,var(--blue-tag) 10%,var(--bg3));color:var(--blue-tag);padding:1px 6px;border-radius:4px}
+.ib{border-radius:10px;padding:14px 18px;margin:12px 0;display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.65}
+.ib .ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.ib.green{background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 28%,transparent)}
+.ib.amber{background:color-mix(in srgb,var(--warn) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--warn) 28%,transparent)}
+.ib.red{background:color-mix(in srgb,var(--danger) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--danger) 28%,transparent)}
+.ib.blue{background:color-mix(in srgb,var(--blue-tag) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 28%,transparent)}
+.ejercicio{background:color-mix(in srgb,#000 30%,var(--bg2));border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin:16px 0}
+[data-theme="light"] .ejercicio{background:#f0f0ea}
+.ej-header{padding:10px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;background:var(--code-bg)}
+.ej-title{font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;color:var(--fg)}
+.ej-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--fg3)}
+textarea.editor{width:100%;background:var(--code-bg);color:#b8d0c8;border:none;outline:none;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;padding:16px 18px;resize:vertical;min-height:240px;tab-size:2}
+.run-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:var(--accent);color:#000;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;transition:background .15s}
+.run-btn:hover{background:color-mix(in srgb,var(--accent) 80%,#fff)}
+.terminal-out{font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:14px 18px;line-height:1.7;background:color-mix(in srgb,#000 50%,var(--code-bg));border-top:1px solid var(--border2);display:none}
+.terminal-out.show{display:block}
+.t-line{color:#a0c8a8}.t-ok{color:var(--accent)}.t-err{color:var(--danger)}.t-prompt{color:var(--fg3);margin-bottom:8px;font-size:11px}
+.quiz-wrap{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+.quiz-item{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.quiz-q{padding:14px 18px;border-bottom:1px solid var(--border);font-size:14.5px;font-weight:600;background:var(--bg2)}
+.quiz-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:4px}
+.quiz-opts{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.quiz-opt-btn{width:100%;text-align:left;padding:10px 16px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;color:var(--fg);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:10px;transition:all .15s}
+.quiz-opt-btn:hover:not(:disabled){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--bg3))}
+.opt-letter{width:22px;height:22px;border-radius:6px;background:var(--border2);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;color:var(--fg3)}
+.quiz-opt-btn:hover:not(:disabled) .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.correct{background:color-mix(in srgb,var(--accent) 12%,var(--bg3));border-color:var(--accent);color:var(--accent)}
+.quiz-opt-btn.correct .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.wrong{background:color-mix(in srgb,var(--danger) 10%,var(--bg3));border-color:var(--danger);color:var(--danger)}
+.quiz-opt-btn.wrong .opt-letter{background:var(--danger);color:#fff}
+.quiz-opt-btn:disabled{cursor:default}
+.quiz-feedback{padding:10px 18px 14px;font-size:13.5px;display:none}
+.quiz-feedback.show{display:flex;align-items:center;gap:8px}
+.quiz-feedback.ok{color:var(--accent)}.quiz-feedback.no{color:var(--danger)}
+.quiz-score{margin-top:20px;padding:18px 22px;background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:12px;display:none;align-items:center;gap:16px}
+.quiz-score.show{display:flex}
+.quiz-score-num{font-family:'Fraunces',serif;font-size:40px;font-weight:700;color:var(--accent);line-height:1}
+.tarea{background:color-mix(in srgb,var(--blue-tag) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 25%,transparent);border-radius:12px;padding:24px 28px}
+.tarea h3{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--blue-tag);margin-bottom:14px}
+.tarea ol{padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.footer{border-top:1px solid var(--border);padding:32px 0 0;margin-top:64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-brand{font-family:'Fraunces',serif;font-weight:700;font-size:15px}
+.footer-right{font-size:12px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+</style>
+</head>
+<body>
+<div id="topbar">
+  <a href="../index.html" class="back-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Inicio</a>
+  <div class="brand"><div class="brand-dot">B</div>Backend desde Cero</div>
+  <div class="topbar-right">
+    <span class="powered">CapOL × Apoc Automation</span>
+    <button class="theme-btn" id="themeBtn" title="Cambiar tema">
+      <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+<div class="page">
+<div class="hero">
+  <div class="hero-eyebrow">Clase 16 &middot; Bloque 4: Node.js</div>
+  <h1><em>Crear Servidor con http</em></h1>
+  <p class="hero-desc">Cre&#225; tu primer servidor HTTP desde cero usando solo Node.js. Entend&#233; la anatom&#237;a de un request y una response, el ciclo de vida completo de una solicitud, y c&#243;mo Node.js maneja miles de conexiones simult&#225;neas sin bloquearse.</p>
+  <div class="hero-meta">
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>60 minutos</span>
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Requiere Clase 15</span>
+  </div>
+</div>
+<div class="objetivos">
+  <div class="objetivos-title">Objetivos de la clase</div>
+  <ul><li>Entender qu&#233; es un servidor HTTP y c&#243;mo funciona el ciclo request-response.</li><li>Crear un servidor HTTP con el m&#243;dulo nativo de Node.js.</li><li>Comprender los objetos <code>req</code> y <code>res</code> y su diferencia conceptual.</li><li>Usar <code>res.write()</code> y <code>res.end()</code> correctamente.</li><li>Entender el ciclo de vida completo de un request en 8 pasos.</li><li>Usar variables de entorno para configurar el puerto del servidor.</li></ul>
+</div>
+<div class="section"><h2 class="sec-title"><span class="sec-num">01</span>&#191;Qu&#233; es un Servidor HTTP?</h2><p class="body">Para entender qu&#233; hace Node.js cuando creamos un servidor, primero hay que entender qu&#233; es un servidor HTTP a nivel conceptual. Un <strong>servidor HTTP</strong> es un programa que permanece en ejecuci&#243;n y <em>escucha</em> en un n&#250;mero de <strong>puerto</strong> de red. Un puerto es un n&#250;mero del 0 al 65535 que identifica un servicio espec&#237;fico dentro de una misma direcci&#243;n IP: el 80 es el est&#225;ndar para HTTP, el 443 para HTTPS, el 5432 para PostgreSQL, y en desarrollo usamos el 3000 por convenci&#243;n.</p><p class="body">Cuando un cliente (un navegador, Postman, o cualquier aplicaci&#243;n) quiere comunicarse con el servidor, establece una conexi&#243;n hacia la IP del servidor y el puerto donde est&#225; escuchando. El servidor detecta esa conexi&#243;n, lee el mensaje HTTP que envi&#243; el cliente &#8212;el <strong>request</strong>&#8212; y devuelve una respuesta HTTP &#8212;el <strong>response</strong>. Ese intercambio completo es el ciclo request-response.</p><div class="ib blue"><span class="ico">&#128161;</span><div><strong>El servidor es reactivo:</strong> Un servidor HTTP no hace nada por su cuenta. Simplemente espera. Toda acci&#243;n es una reacci&#243;n a un request entrante. Esta arquitectura se llama modelo cliente-servidor y es la base de toda la web.</div></div></div><div class="section"><h2 class="sec-title"><span class="sec-num">02</span>http.createServer &#8212; Crear el Servidor</h2><p class="body">El m&#243;dulo nativo <code>http</code> de Node.js provee todo lo necesario para crear un servidor HTTP sin instalar ning&#250;n paquete externo. La funci&#243;n central es <code>http.createServer()</code>.</p><p class="body"><code>createServer()</code> recibe como argumento una funci&#243;n &#8212;llamada <strong>funci&#243;n manejadora</strong> o <em>request handler</em>&#8212; que se ejecutar&#225; cada vez que llegue un nuevo request. Esta funci&#243;n recibe dos objetos: <code>req</code> (el request entrante, con toda la informaci&#243;n del cliente) y <code>res</code> (el objeto para construir y enviar la respuesta).</p><p class="body"><code>createServer()</code> no inicia la escucha por s&#237; solo: solo crea el servidor. Para que empiece a aceptar conexiones, hay que llamar al m&#233;todo <code>.listen()</code> con el n&#250;mero de puerto. El callback de <code>listen</code> se ejecuta una sola vez cuando el servidor est&#225; listo.</p><div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div><pre>const http = require('http');
+
+// createServer recibe el callback que se ejecuta en CADA request:
+const servidor = http.createServer((req, res) => {
+  // req = informacion del request entrante (solo lectura)
+  // res = herramientas para construir y enviar la respuesta
+  res.end('Hola desde Node.js!');
+});
+
+// Sin .listen(), el servidor existe pero no escucha nada.
+// El callback de listen se ejecuta UNA SOLA VEZ cuando esta listo.
+servidor.listen(3000, () => {
+  console.log('Servidor corriendo en http://localhost:3000');
+});</pre></div><div class="ib green"><span class="ico">&#9989;</span><div><strong>Para probarlo:</strong> Ejecut&#225; <code>node server.js</code> en la terminal y abr&#237; <code>http://localhost:3000</code> en el navegador.</div></div></div><div class="section"><h2 class="sec-title"><span class="sec-num">03</span>Los Objetos req y res</h2><p class="body">La funci&#243;n manejadora que pasamos a <code>createServer</code> recibe siempre dos objetos. Entenderlos es fundamental porque son la interfaz entre tu c&#243;digo y el cliente que hace el request.</p><p class="body">El objeto <strong><code>req</code></strong> (request) es de <em>solo lectura</em>. Contiene toda la informaci&#243;n de la solicitud entrante: la URL que pidi&#243; el cliente (<code>req.url</code>), el m&#233;todo HTTP utilizado (<code>req.method</code>), los headers enviados (<code>req.headers</code>), y el cuerpo del mensaje para requests POST o PUT. Pens&#225;lo como el sobre y la carta que envi&#243; el cliente: pod&#233;s leer todo su contenido pero no modificarlo.</p><p class="body">El objeto <strong><code>res</code></strong> (response) es de <em>solo escritura</em>. Es el conjunto de herramientas para construir la respuesta: pod&#233;s setear el status code, agregar headers, escribir el cuerpo, y finalmente cerrarlo. Pens&#225;lo como la hoja en blanco donde vas a escribir tu respuesta.</p><table class="ce"><thead><tr><th>Objeto</th><th>Lectura/Escritura</th><th>Contiene / Permite</th></tr></thead><tbody><tr><td>req</td><td>Solo lectura</td><td>req.url, req.method, req.headers, el body del request</td></tr><tr><td>res</td><td>Solo escritura</td><td>res.writeHead(), res.write(), res.end(), res.setHeader()</td></tr></tbody></table></div><div class="section"><h2 class="sec-title"><span class="sec-num">04</span>res.write() y res.end() &#8212; Construir la Respuesta</h2><p class="body">Una respuesta HTTP tiene dos partes: los <strong>headers</strong> (metadatos: status code, tipo de contenido, cookies) y el <strong>body</strong> (el cuerpo: el HTML, el JSON, el archivo). En Node.js nativo, estas partes se construyen con m&#233;todos distintos.</p><p class="body"><code>res.writeHead(statusCode, headers)</code> env&#237;a el status code y los headers. Solo puede llamarse una vez y debe hacerse <em>antes</em> de escribir el cuerpo. <code>res.write(fragmento)</code> escribe un fragmento del cuerpo; puede llamarse varias veces. <code>res.end()</code> es <strong>obligatorio</strong>: cierra la respuesta. Si no lo llam&#225;s, la conexi&#243;n queda abierta y el cliente esperar&#225; indefinidamente hasta que expire el timeout.</p><div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div><pre>const servidor = http.createServer((req, res) => {
+
+  // PASO 1: status code + headers (antes del cuerpo)
+  res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+
+  // PASO 2: cuerpo de la respuesta (puede llamarse varias veces)
+  res.write('<h1>Bienvenido a mi servidor</h1>');
+  res.write('<p>Node.js funcionando correctamente</p>');
+
+  // PASO 3: cerrar la respuesta - SIEMPRE obligatorio
+  res.end();
+  // O todo en uno: res.end('<p>ultimo contenido</p>');
+});</pre></div></div><div class="section"><h2 class="sec-title"><span class="sec-num">05</span>Ciclo de Vida de un Request &#8212; Paso a Paso</h2><p class="body">Entender exactamente qu&#233; pasa cuando llega un request al servidor es esencial para poder depurar problemas y dise&#241;ar la l&#243;gica correctamente. El flujo completo:</p><table class="ce"><thead><tr><th>Paso</th><th>Qu&#233; ocurre</th></tr></thead><tbody><tr><td>1. Cliente env&#237;a</td><td>El navegador o Postman construye un mensaje HTTP y lo env&#237;a a la IP:puerto del servidor</td></tr><tr><td>2. Conexi&#243;n TCP</td><td>Se establece la conexi&#243;n. Node.js detecta la nueva conexi&#243;n en el puerto 3000</td></tr><tr><td>3. Node.js parsea</td><td>El m&#243;dulo http parsea autom&#225;ticamente la cabecera HTTP y crea los objetos req y res</td></tr><tr><td>4. Callback ejecuta</td><td>Node.js llama a tu funci&#243;n manejadora (req, res) => { ... }</td></tr><tr><td>5. Tu c&#243;digo procesa</td><td>Le&#233;s req.url y req.method para saber qu&#233; quiere el cliente y aplic&#225;s la l&#243;gica</td></tr><tr><td>6. Construis la respuesta</td><td>Us&#225;s res.writeHead() para el status y headers, y res.write() para el cuerpo</td></tr><tr><td>7. res.end()</td><td>La respuesta completa se env&#237;a al cliente y la conexi&#243;n TCP se cierra</td></tr><tr><td>8. Event Loop sigue</td><td>Node.js vuelve a escuchar. Puede haber miles de requests esperando; atiende el siguiente</td></tr></tbody></table></div><div class="section"><h2 class="sec-title"><span class="sec-num">06</span>Variables de Entorno y el Puerto</h2><p class="body">Codificar directamente el n&#250;mero de puerto en el c&#243;digo (lo que se llama <strong>hardcodear</strong>) es una mala pr&#225;ctica. Las plataformas de deployment en producci&#243;n como Render o Railway asignan el puerto din&#225;micamente mediante una variable de entorno llamada <code>PORT</code>. Si tu c&#243;digo dice <code>listen(3000)</code>, el servidor no arrancar&#225; en producci&#243;n porque intenta escuchar en el puerto 3000, que no es el que la plataforma asign&#243;.</p><p class="body">Las <strong>variables de entorno</strong> son valores de configuraci&#243;n que el sistema operativo o la plataforma pone a disposici&#243;n del programa. En Node.js se acceden con <code>process.env</code>. El patr&#243;n <code>process.env.PORT || 3000</code> significa: us&#225; el puerto de la variable de entorno PORT; si no existe (desarrollo local), us&#225; el 3000 como fallback.</p><div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div><pre>const PUERTO = process.env.PORT || 3000;
+
+const servidor = http.createServer((req, res) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+
+  if (req.url === '/') {
+    res.writeHead(200);
+    res.end('Bienvenido a la API!');
+
+  } else if (req.url === '/salud') {
+    res.writeHead(200);
+    res.end('OK - Uptime: ' + process.uptime().toFixed(0) + 's');
+
+  } else {
+    res.writeHead(404);
+    res.end('404 - Ruta no encontrada');
+  }
+});
+
+servidor.listen(PUERTO, () => {
+  console.log(`Servidor en http://localhost:${PUERTO}`);
+});</pre></div></div>
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">SANDBOX</span>Consola Interactiva</h2>
+  <p class="body">Simul&#225; el comportamiento del router de un servidor HTTP.</p>
+<div class="ib amber"><span class="ico">&#9888;&#65039;</span><div><strong>Nota Node.js:</strong> Esta clase requiere Node.js local. El sandbox simula la l&#243;gica JavaScript pura. Para ejecutar c&#243;digo con <code>require</code>, <code>fs</code> o <code>http</code>, us&#225; la terminal con <code>node archivo.js</code>.</div></div>
+  <div class="ejercicio">
+    <div class="ej-header"><div class="ej-title">Entorno de pruebas</div><div class="ej-badge">sandbox.js</div></div>
+    <textarea class="editor" id="codeSandbox" spellcheck="false">// Simulacion del comportamiento del servidor HTTP
+// (En Node.js real esto es el callback de http.createServer)
+
+function simularServidor(method, url) {
+  console.log('-> ' + method + ' ' + url);
+
+  if (method === 'GET' && url === '/') {
+    console.log('   200 OK: Bienvenido a la API!');
+  } else if (method === 'GET' && url === '/salud') {
+    console.log('   200 OK: ' + JSON.stringify({ ok: true, uptime: '42s' }));
+  } else if (method === 'GET' && url === '/info') {
+    console.log('   200 OK: ' + JSON.stringify({ plataforma: 'linux', nucleos: 4 }));
+  } else {
+    console.log('   404 Not Found: Ruta no encontrada');
+  }
+}
+
+// Simular requests entrantes:
+simularServidor('GET', '/');
+simularServidor('GET', '/salud');
+simularServidor('GET', '/info');
+simularServidor('GET', '/ruta-inexistente');
+simularServidor('POST', '/api/usuarios');</textarea>
+    <button class="run-btn" onclick="runSandbox()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Ejecutar C&#243;digo</button>
+    <div class="terminal-out" id="termOut"></div>
+  </div>
+</div>
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">QUIZ</span>Cuestionario de Autoevaluaci&#243;n</h2>
+  <p class="body">Verific&#225; tus conocimientos antes de proceder con las tareas.</p>
+  <div class="quiz-wrap"><div class="quiz-item"><div class="quiz-q"><span class="quiz-num">Pregunta 1</span>&#191;Qu&#233; hace http.createServer()?</div><div class="quiz-opts"><button class="quiz-opt-btn" onclick="checkAnswer(this,0,0)"><span class="opt-letter">A</span> Inicia el servidor y lo pone a escuchar en un puerto.</button><button class="quiz-opt-btn" onclick="checkAnswer(this,1,0)"><span class="opt-letter">B</span> Crea el objeto servidor y registra el callback que se ejecutar&#225; en cada request.</button></div><div class="quiz-feedback" id="fb0"></div></div><div class="quiz-item"><div class="quiz-q"><span class="quiz-num">Pregunta 2</span>&#191;Cu&#225;ntas veces se ejecuta el callback de .listen()?</div><div class="quiz-opts"><button class="quiz-opt-btn" onclick="checkAnswer(this,0,1)"><span class="opt-letter">A</span> Una vez por cada request que llega.</button><button class="quiz-opt-btn" onclick="checkAnswer(this,1,1)"><span class="opt-letter">B</span> Una sola vez: cuando el servidor termina de configurarse y est&#225; listo para recibir conexiones.</button></div><div class="quiz-feedback" id="fb1"></div></div><div class="quiz-item"><div class="quiz-q"><span class="quiz-num">Pregunta 3</span>&#191;Qu&#233; contiene el objeto req?</div><div class="quiz-opts"><button class="quiz-opt-btn" onclick="checkAnswer(this,0,2)"><span class="opt-letter">A</span> Las herramientas para construir y enviar la respuesta.</button><button class="quiz-opt-btn" onclick="checkAnswer(this,1,2)"><span class="opt-letter">B</span> Toda la informaci&#243;n del request entrante: URL, m&#233;todo, headers y body (solo lectura).</button></div><div class="quiz-feedback" id="fb2"></div></div><div class="quiz-item"><div class="quiz-q"><span class="quiz-num">Pregunta 4</span>&#191;Qu&#233; pasa si no llam&#225;s res.end()?</div><div class="quiz-opts"><button class="quiz-opt-btn" onclick="checkAnswer(this,0,3)"><span class="opt-letter">A</span> El servidor lanza un error de sintaxis.</button><button class="quiz-opt-btn" onclick="checkAnswer(this,1,3)"><span class="opt-letter">B</span> El cliente queda esperando la respuesta indefinidamente hasta que la conexi&#243;n expire por timeout.</button></div><div class="quiz-feedback" id="fb3"></div></div><div class="quiz-item"><div class="quiz-q"><span class="quiz-num">Pregunta 5</span>&#191;Cu&#225;l es la diferencia entre res.write() y res.end()?</div><div class="quiz-opts"><button class="quiz-opt-btn" onclick="checkAnswer(this,0,4)"><span class="opt-letter">A</span> write() cierra la respuesta; end() la mantiene abierta.</button><button class="quiz-opt-btn" onclick="checkAnswer(this,1,4)"><span class="opt-letter">B</span> write() env&#237;a fragmentos del cuerpo sin cerrarlo; end() env&#237;a el &#250;ltimo fragmento y cierra la respuesta.</button></div><div class="quiz-feedback" id="fb4"></div></div><div class="quiz-item"><div class="quiz-q"><span class="quiz-num">Pregunta 6</span>&#191;Por qu&#233; usar process.env.PORT en lugar de un n&#250;mero fijo?</div><div class="quiz-opts"><button class="quiz-opt-btn" onclick="checkAnswer(this,0,5)"><span class="opt-letter">A</span> Los n&#250;meros fijos no son v&#225;lidos en JavaScript.</button><button class="quiz-opt-btn" onclick="checkAnswer(this,1,5)"><span class="opt-letter">B</span> Las plataformas de producci&#243;n asignan el puerto din&#225;micamente; hardcodear 3000 hace que el servidor no arranque.</button></div><div class="quiz-feedback" id="fb5"></div></div><div class="quiz-item"><div class="quiz-q"><span class="quiz-num">Pregunta 7</span>&#191;Qu&#233; status code indica que una ruta no existe?</div><div class="quiz-opts"><button class="quiz-opt-btn" onclick="checkAnswer(this,0,6)"><span class="opt-letter">A</span> 200</button><button class="quiz-opt-btn" onclick="checkAnswer(this,1,6)"><span class="opt-letter">B</span> 404</button></div><div class="quiz-feedback" id="fb6"></div></div></div>
+  <div class="quiz-score" id="quizScore">
+    <div class="quiz-score-num" id="scoreNum">0/7</div>
+    <div>
+      <div style="font-size:14px;color:var(--fg2)" id="scoreLabel"></div>
+      <button onclick="resetQuiz()" style="margin-top:8px;font-size:13px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;text-decoration:underline">&#8634; Reintentar</button>
+    </div>
+  </div>
+</div>
+<div class="section">
+  <div class="tarea">
+    <h3>Tarea para la Pr&#243;xima Clase (Obligatoria)</h3>
+    <ol><li>Crear <code>server.js</code> con rutas: <code>/</code> &#8594; bienvenida, <code>/salud</code> &#8594; estado con <code>process.uptime()</code>, <code>/info</code> &#8594; info con m&#243;dulo <code>os</code>. Otras rutas &#8594; 404.</li><li>Agregar ruta <code>/estado</code> que responda JSON: <code>{"ok": true, "timestamp": ..., "version": "1.0.0"}</code>. Setear header <code>Content-Type: application/json</code>.</li><li>Probar todas las rutas desde Postman. Verificar status codes y headers.</li><li><strong>Pr&#243;xima clase:</strong> &#191;C&#243;mo le&#233;s los headers del request? &#191;C&#243;mo diferenci&#225;s GET de POST?</li></ol>
+  </div>
+</div>
+<div class="footer">
+  <div class="footer-brand">CapOL Escuela</div>
+  <div class="footer-right">Curso Backend desde Cero &middot; Clase 16</div>
+</div>
+</div>
+<script>
+const html=document.documentElement;
+const MOON=`<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+const SUN=`<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+const icon=document.getElementById('themeIcon');
+function applyTheme(t){html.dataset.theme=t;icon.innerHTML=t==='dark'?SUN:MOON;localStorage.setItem('theme',t);}
+document.getElementById('themeBtn').addEventListener('click',()=>applyTheme(html.dataset.theme==='dark'?'light':'dark'));
+applyTheme(localStorage.getItem('theme')||'dark');
+const fill=document.getElementById('progress-fill');
+window.addEventListener('scroll',()=>{const h=document.documentElement;fill.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function runSandbox(){
+  const code=document.getElementById('codeSandbox').value;
+  const out=document.getElementById('termOut');
+  out.classList.add('show');
+  const lines=[],orig=console.log;
+  console.log=(...a)=>lines.push(a.map(x=>x===null?'null':x===undefined?'undefined':typeof x==='object'?JSON.stringify(x,null,2):String(x)).join(' '));
+  let h='<div class="t-prompt">&#9654; OUTPUT</div>';
+  try{new Function(code)();h+=lines.length?lines.map(l=>`<div class="t-line">${esc(l)}</div>`).join(''):'<div class="t-ok">&#10003; Sin output</div>';}
+  catch(e){h+=`<div class="t-err">&#10007; Error: ${esc(e.message)}</div>`;}
+  out.innerHTML=h;console.log=orig;
+}
+const CORRECT=[1, 1, 1, 1, 1, 1, 1];
+const EXPLAIN=['createServer solo registra la funcion manejadora; listen() es quien pone a escuchar en el puerto.', 'El callback de listen es de inicializacion, se ejecuta una sola vez.', 'req es de solo lectura: URL, metodo, headers. res es de solo escritura: para construir la respuesta.', 'Sin res.end() la conexion queda abierta y el cliente espera hasta el timeout.', 'write() puede usarse varias veces; end() es la ultima llamada que cierra la respuesta.', 'process.env.PORT permite que Render/Railway asignen el puerto en produccion.', '404 Not Found es el codigo semantico correcto para rutas y recursos inexistentes.'];
+let answers=new Array(7).fill(null),done=new Array(7).fill(false);
+window.checkAnswer=function(btn,sel,qi){
+  if(done[qi])return;done[qi]=true;answers[qi]=sel;
+  btn.closest('.quiz-opts').querySelectorAll('.quiz-opt-btn').forEach((b,i)=>{b.disabled=true;if(i===CORRECT[qi])b.classList.add('correct');else if(i===sel)b.classList.add('wrong');});
+  const fb=document.getElementById('fb'+qi);fb.classList.add('show');
+  if(sel===CORRECT[qi]){fb.classList.add('ok');fb.innerHTML='&#10003; Correcto. '+EXPLAIN[qi];}
+  else{fb.classList.add('no');fb.innerHTML='&#10007; Incorrecto. '+EXPLAIN[qi];}
+  if(done.every(Boolean))showScore();
+};
+function showScore(){
+  const c=answers.filter((a,i)=>a===CORRECT[i]).length,t=CORRECT.length,p=Math.round(c/t*100);
+  document.getElementById('scoreNum').textContent=c+'/'+t;
+  document.getElementById('scoreLabel').textContent=p===100?'&#127881; Perfecto. Dominaste el tema.':p>=75?'&#128170; Muy bien. Repasa los que erraste.':p>=50?'&#128218; Pasable. Vale la pena releer la clase.':'&#128260; Repasa el material y vuelve a intentarlo.';
+  document.getElementById('quizScore').classList.add('show');
+}
+window.resetQuiz=function(){
+  answers=new Array(7).fill(null);done=new Array(7).fill(false);
+  document.querySelectorAll('.quiz-opt-btn').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong');});
+  document.querySelectorAll('.quiz-feedback').forEach(fb=>{fb.classList.remove('show','ok','no');fb.innerHTML='';});
+  document.getElementById('quizScore').classList.remove('show');
+};
+</script>
+</body>
+</html>
