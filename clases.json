@@ -150,7 +150,7 @@
     "archivo": "clases/clase17.html",
     "duracion": "60 min",
     "temas": ["req.url", "req.method", "res.writeHead", "JSON"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 18,
