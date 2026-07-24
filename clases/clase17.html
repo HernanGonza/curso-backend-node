@@ -160,7 +160,7 @@ const servidor = http.createServer((req, res) => {
 
   // Convertir a numero con fallback para evitar NaN:
   const pagina = parseInt(urlObj.searchParams.get('pagina')) || 2;
-  const limite = parseInt(urlObj.searchParams.get('limite')) || 20;
+  const limite = parseInt(urlObj.searchParams.get('limite')) || 10;
 
   res.end(`Pagina ${pagina}, ${limite} resultados`);
 });</pre></div></div><div class="section"><h2 class="sec-title"><span class="sec-num">03</span>Enviar JSON como Respuesta</h2><p class="body">Toda API REST responde principalmente con JSON (JavaScript Object Notation). Para que el cliente pueda interpretar correctamente la respuesta, es obligatorio declarar dos cosas: el <strong>status code</strong> y el header <code>Content-Type: application/json</code>. Sin ese header, el cliente no sabe que el cuerpo es JSON y puede no procesarlo correctamente.</p><p class="body">El proceso siempre es el mismo: llamar a <code>res.writeHead()</code> con el status y el header, y luego <code>res.end()</code> con el resultado de <code>JSON.stringify(objeto)</code>. Como este proceso se repite en cada endpoint, la buena pr&#225;ctica es extraerlo en una funci&#243;n helper <code>enviarJSON()</code>. As&#237; si necesit&#225;s cambiar algo (agregar un header CORS), lo cambi&#225;s en un solo lugar.</p><div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div><pre>// Funcion helper reutilizable - la usas en TODOS tus endpoints:
