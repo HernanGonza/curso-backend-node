@@ -159,7 +159,7 @@ const servidor = http.createServer((req, res) => {
   console.log(urlObj.searchParams.get('orden'));      // null (no existe)
 
   // Convertir a numero con fallback para evitar NaN:
-  const pagina = parseInt(urlObj.searchParams.get('pagina')) || 1;
+  const pagina = parseInt(urlObj.searchParams.get('pagina')) || 2;
   const limite = parseInt(urlObj.searchParams.get('limite')) || 20;
 
   res.end(`Pagina ${pagina}, ${limite} resultados`);
