@@ -159,7 +159,7 @@
     "archivo": "clases/clase18.html",
     "duracion": "60 min",
     "temas": ["Routing manual", "404", "Parámetros de URL"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 19,
