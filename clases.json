@@ -168,7 +168,7 @@
     "archivo": "clases/clase19.html",
     "duracion": "60 min",
     "temas": ["Parsear body", "CRUD en memoria", "Status codes"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 20,
