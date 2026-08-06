@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang='es' data-theme='dark'>
+<head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<title>Clase 20 &mdash; Introducci&#243;n a Express &middot; CapOL</title>
+<link rel='preconnect' href='https://fonts.googleapis.com'>
+<link href='https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700&family=DM+Sans:wght@400;500;600&display=swap' rel='stylesheet'>
+<style>
+:root{--accent:#00c896;--danger:#ff4757;--warn:#ffa502;--purple:#a29bfe;--blue-tag:#74b9ff}
+[data-theme="dark"]{--bg:#0f0f11;--bg2:#16161a;--bg3:#1c1c21;--border:#2a2a32;--border2:#35353f;--fg:#e2e2ec;--fg2:#a0a0b0;--fg3:#606070;--card-bg:#16161a;--code-bg:#0a0a0d;--code-fg:#b8d0c8;--shadow:0 4px 24px rgba(0,0,0,.5)}
+[data-theme="light"]{--bg:#f5f5f0;--bg2:#ffffff;--bg3:#ebebeb;--border:#d8d8d0;--border2:#c5c5bc;--fg:#1a1a24;--fg2:#505060;--fg3:#909098;--card-bg:#ffffff;--code-bg:#1a1a24;--code-fg:#c8e0d8;--shadow:0 4px 24px rgba(0,0,0,.1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;line-height:1.75;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+.page{max-width:800px;margin:0 auto;padding:0 24px 120px}
+#topbar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:15px;text-decoration:none;color:var(--fg)}
+.brand-dot{width:30px;height:30px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#000;font-size:13px;font-weight:800;font-family:'IBM Plex Mono',monospace}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fg2);transition:all .2s}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+.powered{font-size:11px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+.back-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s}
+.back-btn:hover{color:var(--accent)}
+#progress-bar{position:fixed;top:56px;left:0;right:0;height:2px;background:var(--border);z-index:99}
+#progress-fill{height:100%;background:var(--accent);width:0%;transition:width .1s}
+.hero{padding:64px 0 40px;border-bottom:1px solid var(--border);margin-bottom:48px}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.hero-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--accent)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(32px,6vw,52px);font-weight:700;line-height:1.1;color:var(--fg);margin-bottom:18px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-desc{font-size:16px;color:var(--fg2);max-width:560px;line-height:1.7;margin-bottom:28px}
+.hero-meta{display:flex;gap:20px;flex-wrap:wrap}
+.hero-chip{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--fg2);font-family:'IBM Plex Mono',monospace}
+.hero-chip svg{color:var(--accent)}
+.objetivos{background:color-mix(in srgb,var(--accent) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);border-radius:12px;padding:24px 28px;margin-bottom:48px}
+.objetivos-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.objetivos ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.objetivos li{display:flex;gap:10px;font-size:14.5px}
+.objetivos li::before{content:'▸';color:var(--accent);flex-shrink:0;margin-top:2px}
+.section{margin-bottom:52px}
+.sec-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--fg);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:2px 8px;border-radius:5px}
+p.body{font-size:15px;line-height:1.8;color:var(--fg2);margin-bottom:12px}
+h4.sub{font-family:'DM Sans',sans-serif;font-weight:600;font-size:15px;color:var(--fg);margin:24px 0 8px;display:flex;align-items:center;gap:8px}
+h4.sub::before{content:'●';font-size:8px;color:var(--accent)}
+.cb{background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:12px 0}
+.cb-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border2);background:color-mix(in srgb,#000 20%,var(--code-bg))}
+.cb-dots{display:flex;gap:5px}
+.cb-dots span{width:10px;height:10px;border-radius:50%}
+.cb-dots .r{background:#ff5f56}.cb-dots .y{background:#ffbd2e}.cb-dots .g{background:#27c93f}
+.cb-lang{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#555}
+.cb pre{padding:16px 18px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--code-fg);white-space:pre}
+.ce{width:100%;border-collapse:collapse;background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:16px 0}
+.ce th{background:color-mix(in srgb,#000 20%,var(--code-bg));padding:10px 14px;font-size:13px;text-align:left;font-weight:600;border-bottom:1px solid var(--border2)}
+.ce tr{border-top:1px solid #1e1e28}
+.ce td{padding:10px 14px;font-size:13px;vertical-align:top;line-height:1.6}
+.ce td:first-child{font-family:'IBM Plex Mono',monospace;color:var(--code-fg);width:30%}
+.ce td:last-child{color:var(--fg2);padding-left:18px;border-left:1px solid #1e1e28}
+.ce tr:hover td{background:#0f0f14}
+[data-theme="light"] .ce tr:hover td{background:#f0f0e8}
+code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix(in srgb,var(--blue-tag) 10%,var(--bg3));color:var(--blue-tag);padding:1px 6px;border-radius:4px}
+.ib{border-radius:10px;padding:14px 18px;margin:12px 0;display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.65}
+.ib .ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.ib.green{background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 28%,transparent)}
+.ib.amber{background:color-mix(in srgb,var(--warn) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--warn) 28%,transparent)}
+.ib.red{background:color-mix(in srgb,var(--danger) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--danger) 28%,transparent)}
+.ib.blue{background:color-mix(in srgb,var(--blue-tag) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 28%,transparent)}
+.ejercicio{background:color-mix(in srgb,#000 30%,var(--bg2));border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin:16px 0}
+[data-theme="light"] .ejercicio{background:#f0f0ea}
+.ej-header{padding:10px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;background:var(--code-bg)}
+.ej-title{font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;color:var(--fg)}
+.ej-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--fg3)}
+textarea.editor{width:100%;background:var(--code-bg);color:#b8d0c8;border:none;outline:none;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;padding:16px 18px;resize:vertical;min-height:240px;tab-size:2}
+.run-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:var(--accent);color:#000;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;transition:background .15s}
+.run-btn:hover{background:color-mix(in srgb,var(--accent) 80%,#fff)}
+.terminal-out{font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:14px 18px;line-height:1.7;background:color-mix(in srgb,#000 50%,var(--code-bg));border-top:1px solid var(--border2);display:none}
+.terminal-out.show{display:block}
+.t-line{color:#a0c8a8}.t-ok{color:var(--accent)}.t-err{color:var(--danger)}.t-prompt{color:var(--fg3);margin-bottom:8px;font-size:11px}
+.quiz-wrap{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+.quiz-item{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.quiz-q{padding:14px 18px;border-bottom:1px solid var(--border);font-size:14.5px;font-weight:600;background:var(--bg2)}
+.quiz-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:4px}
+.quiz-opts{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.quiz-opt-btn{width:100%;text-align:left;padding:10px 16px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;color:var(--fg);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:10px;transition:all .15s}
+.quiz-opt-btn:hover:not(:disabled){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--bg3))}
+.opt-letter{width:22px;height:22px;border-radius:6px;background:var(--border2);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;color:var(--fg3)}
+.quiz-opt-btn:hover:not(:disabled) .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.correct{background:color-mix(in srgb,var(--accent) 12%,var(--bg3));border-color:var(--accent);color:var(--accent)}
+.quiz-opt-btn.correct .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.wrong{background:color-mix(in srgb,var(--danger) 10%,var(--bg3));border-color:var(--danger);color:var(--danger)}
+.quiz-opt-btn.wrong .opt-letter{background:var(--danger);color:#fff}
+.quiz-opt-btn:disabled{cursor:default}
+.quiz-feedback{padding:10px 18px 14px;font-size:13.5px;display:none}
+.quiz-feedback.show{display:flex;align-items:center;gap:8px}
+.quiz-feedback.ok{color:var(--accent)}.quiz-feedback.no{color:var(--danger)}
+.quiz-score{margin-top:20px;padding:18px 22px;background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:12px;display:none;align-items:center;gap:16px}
+.quiz-score.show{display:flex}
+.quiz-score-num{font-family:'Fraunces',serif;font-size:40px;font-weight:700;color:var(--accent);line-height:1}
+.tarea{background:color-mix(in srgb,var(--blue-tag) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 25%,transparent);border-radius:12px;padding:24px 28px}
+.tarea h3{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--blue-tag);margin-bottom:14px}
+.tarea ol{padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.footer{border-top:1px solid var(--border);padding:32px 0 0;margin-top:64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-brand{font-family:'Fraunces',serif;font-weight:700;font-size:15px}
+.footer-right{font-size:12px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+</style>
+</head>
+<body>
+<div id="topbar">
+  <a href="../index.html" class="back-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Inicio</a>
+  <div class="brand"><div class="brand-dot">B</div>Backend desde Cero</div>
+  <div class="topbar-right">
+    <span class="powered">CapOL &times; Apoc Automation</span>
+    <button class="theme-btn" id="themeBtn" title="Cambiar tema">
+      <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+<div class='page'>
+<div class='hero'>
+  <div class='hero-eyebrow'>Clase 20 &middot; Bloque 5: Express</div>
+  <h1><em>Introducci&#243;n a Express</em></h1>
+  <p class='hero-desc'>Despu&#233;s de construir un servidor desde cero en el Bloque 4, llega Express. Descubr&#237; qu&#233; agrega este framework sobre el m&#243;dulo http nativo, c&#243;mo definir rutas de forma declarativa, c&#243;mo acceder a par&#225;metros, query strings y el body del request, y c&#243;mo enviar respuestas JSON con el status correcto.</p>
+  <div class='hero-meta'>
+    <span class='hero-chip'><svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><circle cx='12' cy='12' r='10'/><polyline points='12 6 12 12 16 14'/></svg>60 minutos</span>
+    <span class='hero-chip'><svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><polyline points='9 11 12 14 22 4'/><path d='M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11'/></svg>Requiere Clase 19</span>
+  </div>
+</div>
+<div class='objetivos'>
+  <div class='objetivos-title'>Objetivos de la clase</div>
+  <ul><li>Entender qu&#233; es Express y qu&#233; agrega sobre el m&#243;dulo http nativo.</li><li>Instalar Express e inicializar un servidor con <code>app.listen()</code>.</li><li>Definir rutas con <code>app.get()</code>, <code>app.post()</code>, <code>app.put()</code> y <code>app.delete()</code>.</li><li>Usar <code>res.json()</code>, <code>res.status()</code> y <code>res.sendStatus()</code>.</li><li>Acceder a par&#225;metros de ruta con <code>req.params</code> y a query strings con <code>req.query</code>.</li><li>Configurar <code>express.json()</code> para parsear el body autom&#225;ticamente.</li></ul>
+</div>
+<div class="section"><h2 class="sec-title"><span class="sec-num">01</span>&#191;Qu&#233; es Express y por qu&#233; usarlo?</h2><p class='body'>En las clases 15 a 19 construimos un servidor HTTP desde cero usando el m&#243;dulo nativo <code>http</code> de Node.js. Lo hicimos deliberadamente: entender c&#243;mo funciona el servidor por debajo es fundamental para no usar las herramientas como cajas negras. Viste lo que implica: parsear la URL manualmente, extraer par&#225;metros con expresiones regulares, leer el body como stream de eventos, construir una funci&#243;n helper para enviar JSON, y manejar el routing con bloques if/else.</p><p class='body'><strong>Express</strong> es un framework minimalista para Node.js que resuelve exactamente todos esos problemas. No es un lenguaje nuevo: es una capa de abstracci&#243;n construida sobre el m&#243;dulo <code>http</code> nativo. Internamente, Express sigue haciendo exactamente lo mismo que hiciste vos. La diferencia es que lo hace con una API limpia y te libera de escribir ese c&#243;digo repetitivo en cada proyecto.</p><p class='body'>Express es el framework de Node.js m&#225;s utilizado en el mundo. La enorme mayor&#237;a de los tutoriales, proyectos open source y APIs de producci&#243;n en el ecosistema Node.js usan Express o est&#225;n inspirados en su arquitectura.</p><div class="ib blue"><span class="ico">&#128161;</span><div><strong>&#191;Qu&#233; agrega Express sobre Node.js nativo?</strong> Routing declarativo con par&#225;metros autom&#225;ticos (<code>app.get('/usuarios/:id')</code>), sistema de middlewares, helpers de respuesta (<code>res.json()</code>, <code>res.status()</code>), manejo estructurado de errores, y compatibilidad con miles de paquetes del ecosistema.</div></div></div><div class="section"><h2 class="sec-title"><span class="sec-num">02</span>Instalaci&#243;n y Primer Servidor con Express</h2><p class='body'>Express se instala como cualquier paquete de npm. Una vez instalado, el archivo de entrada importa Express, crea una instancia de la aplicaci&#243;n llamando a la funci&#243;n <code>express()</code>, define las rutas, y llama al m&#233;todo <code>listen()</code> para iniciar el servidor.</p><p class='body'>La variable que se llama por convenci&#243;n <code>app</code> es el objeto central de toda la aplicaci&#243;n Express. A trav&#233;s de este objeto se definen todas las rutas, se registran middlewares, y se configura el servidor. Equivale al objeto que crear&#237;as con <code>http.createServer()</code>, pero con decenas de m&#233;todos adicionales.</p><div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div><pre>// En la terminal:
+// npm install express
+
+const express = require('express');
+
+// express() crea la instancia de la aplicacion.
+// Todo el servidor vive en este objeto 'app'.
+const app = express();
+
+// Definir una ruta GET:
+app.get('/', (req, res) => {
+  res.json({ mensaje: 'API Express funcionando' });
+});
+
+// Iniciar el servidor:
+app.listen(3000, () => {
+  console.log('Servidor Express en http://localhost:3000');
+});</pre></div><div class="ib green"><span class="ico">&#9989;</span><div><strong>Comp&#225;r con Node.js nativo:</strong> Con http nativo: crear servidor, parsear URL, verificar m&#233;todo, manejar 404 manualmente. Con Express: <code>app.get('/ruta', handler)</code> hace todo en una sola l&#237;nea declarativa.</div></div></div><div class="section"><h2 class="sec-title"><span class="sec-num">03</span>M&#233;todos HTTP en Express</h2><p class='body'>Express provee un m&#233;todo de <code>app</code> por cada m&#233;todo HTTP. El nombre coincide con el m&#233;todo HTTP en min&#250;sculas: <code>app.get()</code> para GET, <code>app.post()</code> para POST, <code>app.put()</code> para PUT, <code>app.delete()</code> para DELETE. Cada uno recibe la ruta y la funci&#243;n manejadora que se ejecuta cuando llega un request que coincide.</p><p class='body'>La funci&#243;n manejadora siempre recibe tres argumentos: <code>req</code> (el request), <code>res</code> (la response) y opcionalmente <code>next</code> (para pasar el control al siguiente middleware). Esto es id&#233;ntico al m&#243;dulo <code>http</code> nativo pero con una API mucho m&#225;s limpia.</p><div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div><pre>app.get('/api/usuarios', (req, res) => {
+  res.json({ data: usuarios });
+});
+
+app.post('/api/usuarios', (req, res) => {
+  res.status(201).json({ mensaje: 'Creado' });
+});
+
+app.put('/api/usuarios/:id', (req, res) => {
+  res.json({ mensaje: 'Actualizado' });
+});
+
+app.delete('/api/usuarios/:id', (req, res) => {
+  res.sendStatus(204); // sin body
+});</pre></div></div><div class="section"><h2 class="sec-title"><span class="sec-num">04</span>M&#233;todos de Respuesta &#8212; res.json(), res.status()</h2><p class='body'>En Node.js nativo, enviar una respuesta JSON requeria llamar a <code>res.writeHead()</code> con el status y los headers, serializar el objeto con <code>JSON.stringify()</code>, y finalmente <code>res.end()</code>. Express simplifica todo esto en m&#233;todos de alto nivel que hacen la misma operaci&#243;n en una sola llamada.</p><p class='body'><code>res.json(objeto)</code> serializa el objeto, setea autom&#225;ticamente el header <code>Content-Type: application/json</code>, y env&#237;a la respuesta con status 200 por defecto. <code>res.status(codigo)</code> permite cambiar el status code antes de enviar. Como devuelve el mismo objeto <code>res</code>, se puede encadenar: <code>res.status(201).json(objeto)</code>.</p><div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div><pre>// Respuesta JSON con status 200 (por defecto):
+res.json({ ok: true, data: usuarios });
+
+// Status personalizado encadenado:
+res.status(201).json({ ok: true, data: nuevoUsuario });
+res.status(400).json({ ok: false, error: 'Datos invalidos' });
+res.status(404).json({ ok: false, error: 'No encontrado' });
+
+// Solo status, sin cuerpo (para DELETE exitoso):
+res.sendStatus(204);
+
+// Texto plano:
+res.send('Servidor funcionando');</pre></div></div><div class="section"><h2 class="sec-title"><span class="sec-num">05</span>req.params &#8212; Par&#225;metros de Ruta</h2><p class='body'>Cuando Express define una ruta con el patr&#243;n <code>'/usuarios/:id'</code>, los dos puntos (<code>:</code>) indican que ese segmento de la URL es un <strong>par&#225;metro de ruta din&#225;mico</strong>. Express extrae autom&#225;ticamente el valor de ese segmento y lo pone en el objeto <code>req.params</code>. Si el request es a <code>/usuarios/42</code>, entonces <code>req.params.id</code> ser&#225; el string <code>'42'</code>.</p><p class='body'>Detalle importante: <code>req.params.id</code> siempre es un <em>string</em>, aunque la URL contenga un n&#250;mero. Si necesit&#225;s usarlo como n&#250;mero (por ejemplo, para buscar en la base de datos), hay que convertirlo con <code>parseInt(req.params.id)</code>. Si la conversi&#243;n falla, <code>parseInt</code> devuelve <code>NaN</code>, lo que deber&#237;a disparar un error 400.</p><div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div><pre>// La ruta define :id como parametro dinamico:
+app.get('/api/usuarios/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+
+  if (isNaN(id)) {
+    return res.status(400).json({ error: 'ID debe ser un numero' });
+  }
+
+  const usuario = usuarios.find(u => u.id === id);
+  if (!usuario) {
+    return res.status(404).json({ error: 'Usuario no encontrado' });
+  }
+
+  res.json({ data: usuario });
+});
+
+// Multiples parametros:
+app.get('/api/usuarios/:userId/posts/:postId', (req, res) => {
+  const { userId, postId } = req.params; // desestructuracion
+  res.json({ userId, postId });
+});</pre></div></div><div class="section"><h2 class="sec-title"><span class="sec-num">06</span>req.query &#8212; Query Strings</h2><p class='body'>Los <strong>query strings</strong> son los par&#225;metros que van en la URL despu&#233;s del signo <code>?</code>, separados por <code>&amp;</code>. Por ejemplo: <code>/api/usuarios?pagina=2&amp;limite=10&amp;buscar=ana</code>. Se usan para filtrado, paginaci&#243;n, b&#250;squeda y cualquier dato opcional que el cliente quiera enviar junto a un request GET.</p><p class='body'>Express parsea estos par&#225;metros autom&#225;ticamente: todos quedan disponibles en el objeto <code>req.query</code>, donde cada clave es un par&#225;metro. Siguen siendo strings, as&#237; que los n&#250;meros deben convertirse con <code>parseInt()</code> o <code>parseFloat()</code>.</p><div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div><pre>// Request: GET /api/usuarios?pagina=2&limite=10&buscar=ana
+app.get('/api/usuarios', (req, res) => {
+  console.log(req.query); // { pagina: '2', limite: '10', buscar: 'ana' }
+
+  const pagina = parseInt(req.query.pagina) || 1;
+  const limite = parseInt(req.query.limite) || 20;
+  const buscar = req.query.buscar || '';
+
+  let resultado = usuarios;
+  if (buscar) {
+    resultado = usuarios.filter(u =>
+      u.nombre.toLowerCase().includes(buscar.toLowerCase())
+    );
+  }
+
+  const inicio    = (pagina - 1) * limite;
+  const paginados = resultado.slice(inicio, inicio + limite);
+
+  res.json({ data: paginados, total: resultado.length, pagina, limite });
+});</pre></div></div><div class="section"><h2 class="sec-title"><span class="sec-num">07</span>req.body &#8212; Leer el Body con express.json()</h2><p class='body'>Cuando un cliente hace un POST o PUT, env&#237;a datos en el cuerpo (body) del request en formato JSON. En Node.js nativo, leer ese body implicaba escuchar eventos de stream. Con Express, existe un <strong>middleware</strong> incorporado llamado <code>express.json()</code> que lo hace autom&#225;ticamente.</p><p class='body'>Un middleware es una funci&#243;n que se ejecuta antes de llegar al handler de la ruta. <code>express.json()</code> detecta si el request tiene <code>Content-Type: application/json</code>, lee el body, lo parsea con <code>JSON.parse()</code>, y pone el resultado en <code>req.body</code>. Si no registr&#225;s este middleware, <code>req.body</code> ser&#225; <code>undefined</code> en todos los endpoints.</p><div class="cb"><div class="cb-header"><div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="cb-lang">javascript</div></div><pre>const app = express();
+
+// IMPORTANTE: registrar express.json() ANTES de las rutas
+// Sin esto, req.body sera undefined en todos los endpoints
+app.use(express.json());
+
+app.post('/api/usuarios', (req, res) => {
+  // req.body ya viene parseado automaticamente:
+  const { nombre, email, password } = req.body;
+
+  if (!nombre || !email || !password) {
+    return res.status(400).json({
+      ok: false,
+      error: 'nombre, email y password son obligatorios'
+    });
+  }
+
+  const nuevo = { id: nextId++, nombre, email };
+  usuarios.push(nuevo);
+  res.status(201).json({ ok: true, data: nuevo });
+});</pre></div><div class="ib amber"><span class="ico">&#9888;&#65039;</span><div><strong>En Postman:</strong> Para probar endpoints POST con body JSON, seleccion&#225; <strong>Body &rarr; raw &rarr; JSON</strong> y escrib&#237; el objeto. Sin <code>Content-Type: application/json</code>, Express no parsear&#225; el body.</div></div></div>
+<div class='section'>
+  <h2 class='sec-title'><span class='sec-num'>SANDBOX</span>Consola Interactiva</h2>
+  <p class='body'>Simul&#225; la l&#243;gica interna que Express usa para extraer par&#225;metros y query strings.</p>
+<div class="ib amber"><span class="ico">&#9888;&#65039;</span><div><strong>Nota:</strong> Esta clase requiere Node.js y Express instalados localmente. El sandbox simula la l&#243;gica JavaScript pura. Para probar los endpoints, us&#225; Postman con tu servidor corriendo.</div></div>
+  <div class='ejercicio'>
+    <div class='ej-header'><div class='ej-title'>Entorno de pruebas</div><div class='ej-badge'>sandbox.js</div></div>
+    <textarea class='editor' id='codeSandbox' spellcheck='false'>// Simulacion de la logica de Express (sin el framework)
+
+// Simular req.params:
+function simularParams(patron, url) {
+  const partes = patron.split('/');
+  const valores = url.split('/');
+  const params = {};
+  partes.forEach((p, i) => {
+    if (p.startsWith(':')) params[p.slice(1)] = valores[i];
+  });
+  return params;
+}
+
+// Simular req.query:
+function simularQuery(queryString) {
+  const params = {};
+  if (!queryString) return params;
+  queryString.split('&').forEach(par => {
+    const [k, v] = par.split('=');
+    params[k] = decodeURIComponent(v || '');
+  });
+  return params;
+}
+
+// Probar:
+const params = simularParams('/api/usuarios/:id', '/api/usuarios/42');
+console.log('req.params:', JSON.stringify(params)); // { id: '42' }
+console.log('id como numero:', parseInt(params.id)); // 42
+
+const query = simularQuery('pagina=2&limite=10&buscar=ana');
+console.log('req.query:', JSON.stringify(query));
+console.log('pagina:', parseInt(query.pagina) || 1);
+console.log('limite:', parseInt(query.limite) || 20);</textarea>
+    <button class='run-btn' onclick='runSandbox()'><svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'><polygon points='5 3 19 12 5 21 5 3'/></svg> Ejecutar C&#243;digo</button>
+    <div class='terminal-out' id='termOut'></div>
+  </div>
+</div>
+<div class='section'>
+  <h2 class='sec-title'><span class='sec-num'>QUIZ</span>Cuestionario de Autoevaluaci&#243;n</h2>
+  <p class='body'>Verific&#225; tus conocimientos antes de proceder con las tareas.</p>
+  <div class='quiz-wrap'><div class="quiz-item"><div class="quiz-q"><span class="quiz-num">Pregunta 1</span>&#191;Qu&#233; es Express en relaci&#243;n a Node.js?</div><div class="quiz-opts"><button class="quiz-opt-btn" onclick="checkAnswer(this,0,0)"><span class="opt-letter">A</span> Un lenguaje nuevo que reemplaza a JavaScript.</button><button class="quiz-opt-btn" onclick="checkAnswer(this,1,0)"><span class="opt-letter">B</span> Un framework que agrega una capa de abstracci&#243;n sobre el m&#243;dulo http nativo de Node.js.</button></div><div class="quiz-feedback" id="fb0"></div></div><div class="quiz-item"><div class="quiz-q"><span class="quiz-num">Pregunta 2</span>&#191;Qu&#233; hace res.status(201).json(datos)?</div><div class="quiz-opts"><button class="quiz-opt-btn" onclick="checkAnswer(this,0,1)"><span class="opt-letter">A</span> Env&#237;a dos respuestas separadas: una con status 201 y otra con datos.</button><button class="quiz-opt-btn" onclick="checkAnswer(this,1,1)"><span class="opt-letter">B</span> Encadena el status code 201 con la respuesta JSON en una sola operaci&#243;n.</button></div><div class="quiz-feedback" id="fb1"></div></div><div class="quiz-item"><div class="quiz-q"><span class="quiz-num">Pregunta 3</span>Si la ruta es '/usuarios/:id' y el request es a '/usuarios/42', &#191;qu&#233; valor tiene req.params.id?</div><div class="quiz-opts"><button class="quiz-opt-btn" onclick="checkAnswer(this,0,2)"><span class="opt-letter">A</span> El n&#250;mero 42 (integer).</button><button class="quiz-opt-btn" onclick="checkAnswer(this,1,2)"><span class="opt-letter">B</span> El string '42' &#8212; siempre es string y hay que convertirlo con parseInt() si se necesita como n&#250;mero.</button></div><div class="quiz-feedback" id="fb2"></div></div><div class="quiz-item"><div class="quiz-q"><span class="quiz-num">Pregunta 4</span>&#191;Para qu&#233; sirven los query strings (req.query)?</div><div class="quiz-opts"><button class="quiz-opt-btn" onclick="checkAnswer(this,0,3)"><span class="opt-letter">A</span> Para enviar datos sensibles de forma segura.</button><button class="quiz-opt-btn" onclick="checkAnswer(this,1,3)"><span class="opt-letter">B</span> Para par&#225;metros opcionales como filtros, paginaci&#243;n y b&#250;squeda en requests GET.</button></div><div class="quiz-feedback" id="fb3"></div></div><div class="quiz-item"><div class="quiz-q"><span class="quiz-num">Pregunta 5</span>&#191;Por qu&#233; req.body es undefined si no se registra express.json()?</div><div class="quiz-opts"><button class="quiz-opt-btn" onclick="checkAnswer(this,0,4)"><span class="opt-letter">A</span> Porque Express no soporta el m&#233;todo POST.</button><button class="quiz-opt-btn" onclick="checkAnswer(this,1,4)"><span class="opt-letter">B</span> Porque express.json() es el middleware que lee el stream del body y lo parsea; sin &#233;l, nadie lo hace.</button></div><div class="quiz-feedback" id="fb4"></div></div><div class="quiz-item"><div class="quiz-q"><span class="quiz-num">Pregunta 6</span>&#191;Cu&#225;l es la diferencia entre req.params y req.query?</div><div class="quiz-opts"><button class="quiz-opt-btn" onclick="checkAnswer(this,0,5)"><span class="opt-letter">A</span> Son exactamente lo mismo, solo cambia el nombre.</button><button class="quiz-opt-btn" onclick="checkAnswer(this,1,5)"><span class="opt-letter">B</span> req.params tiene los par&#225;metros de ruta (:id en la URL); req.query tiene los par&#225;metros del query string (?clave=valor).</button></div><div class="quiz-feedback" id="fb5"></div></div><div class="quiz-item"><div class="quiz-q"><span class="quiz-num">Pregunta 7</span>&#191;Qu&#233; m&#233;todo de Express se usa para responder un DELETE exitoso sin cuerpo?</div><div class="quiz-opts"><button class="quiz-opt-btn" onclick="checkAnswer(this,0,6)"><span class="opt-letter">A</span> res.json(null)</button><button class="quiz-opt-btn" onclick="checkAnswer(this,1,6)"><span class="opt-letter">B</span> res.sendStatus(204) &#8212; env&#237;a solo el status 204 No Content sin cuerpo de respuesta.</button></div><div class="quiz-feedback" id="fb6"></div></div></div>
+  <div class='quiz-score' id='quizScore'>
+    <div class='quiz-score-num' id='scoreNum'>0/7</div>
+    <div>
+      <div style='font-size:14px;color:var(--fg2)' id='scoreLabel'></div>
+      <button onclick='resetQuiz()' style='margin-top:8px;font-size:13px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:IBM Plex Mono,monospace;text-decoration:underline'>&#8634; Reintentar</button>
+    </div>
+  </div>
+</div>
+<div class='section'>
+  <div class='tarea'>
+    <h3>Tarea para la Pr&#243;xima Clase (Obligatoria)</h3>
+    <ol><li>Crear proyecto con <code>npm init -y</code>. Instalar Express. Crear <code>index.js</code> con un servidor Express con al menos 3 rutas GET con respuestas JSON diferentes.</li><li>Implementar CRUD completo de usuarios con Express. Probar todos los endpoints con Postman.</li><li>Agregar a <code>GET /api/usuarios</code> soporte para <code>?limite=N</code> (paginaci&#243;n) y <code>?buscar=texto</code> (filtro).</li><li><strong>Pr&#243;xima clase:</strong> Investigar qu&#233; es un middleware en Express. &#191;Qu&#233; hace <code>app.use()</code>? &#191;Qu&#233; es el paquete <code>morgan</code>?</li></ol>
+  </div>
+</div>
+<div class='footer'>
+  <div class='footer-brand'>CapOL Escuela</div>
+  <div class='footer-right'>Curso Backend desde Cero &middot; Clase 20</div>
+</div>
+</div>
+<script>
+const html=document.documentElement;
+const MOON=`<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+const SUN=`<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+const icon=document.getElementById('themeIcon');
+function applyTheme(t){html.dataset.theme=t;icon.innerHTML=t==='dark'?SUN:MOON;localStorage.setItem('theme',t);}
+document.getElementById('themeBtn').addEventListener('click',()=>applyTheme(html.dataset.theme==='dark'?'light':'dark'));
+applyTheme(localStorage.getItem('theme')||'dark');
+const fill=document.getElementById('progress-fill');
+window.addEventListener('scroll',()=>{const h=document.documentElement;fill.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function runSandbox(){
+  const code=document.getElementById('codeSandbox').value;
+  const out=document.getElementById('termOut');
+  out.classList.add('show');
+  const lines=[],orig=console.log;
+  console.log=(...a)=>lines.push(a.map(x=>x===null?'null':x===undefined?'undefined':typeof x==='object'?JSON.stringify(x,null,2):String(x)).join(' '));
+  let h='<div class="t-prompt">&#9654; OUTPUT</div>';
+  try{new Function(code)();h+=lines.length?lines.map(l=>`<div class="t-line">${esc(l)}</div>`).join(''):'<div class="t-ok">&#10003; Sin output</div>';}
+  catch(e){h+=`<div class="t-err">&#10007; Error: ${esc(e.message)}</div>`;}
+  out.innerHTML=h;console.log=orig;
+}
+const CORRECT=[1, 1, 1, 1, 1, 1, 1];
+const EXPLAIN=['Express es una capa sobre el modulo http nativo. Hace lo mismo pero con una API mucho mas limpia.', 'status() y json() se encadenan porque status() devuelve el mismo objeto res.', 'req.params siempre devuelve strings; usar parseInt() para convertir a numero cuando sea necesario.', 'req.query es ideal para filtros y paginacion en GET. Los datos obligatorios van en el body del POST.', 'express.json() es un middleware que procesa el body antes de llegar al handler.', 'req.params extrae segmentos de la URL (:id). req.query extrae parametros despues del ?.', 'sendStatus(204) es la forma semantica correcta de responder a un DELETE exitoso.'];
+let answers=new Array(7).fill(null),done=new Array(7).fill(false);
+window.checkAnswer=function(btn,sel,qi){
+  if(done[qi])return;done[qi]=true;answers[qi]=sel;
+  btn.closest('.quiz-opts').querySelectorAll('.quiz-opt-btn').forEach((b,i)=>{b.disabled=true;if(i===CORRECT[qi])b.classList.add('correct');else if(i===sel)b.classList.add('wrong');});
+  const fb=document.getElementById('fb'+qi);fb.classList.add('show');
+  if(sel===CORRECT[qi]){fb.classList.add('ok');fb.innerHTML='&#10003; Correcto. '+EXPLAIN[qi];}
+  else{fb.classList.add('no');fb.innerHTML='&#10007; Incorrecto. '+EXPLAIN[qi];}
+  if(done.every(Boolean))showScore();
+};
+function showScore(){
+  const c=answers.filter((a,i)=>a===CORRECT[i]).length,t=CORRECT.length,p=Math.round(c/t*100);
+  document.getElementById('scoreNum').textContent=c+'/'+t;
+  document.getElementById('scoreLabel').textContent=p===100?'&#127881; Perfecto.':p>=75?'&#128170; Muy bien. Repas&#225; los que erraste.':p>=50?'&#128218; Pasable. Vale releer la clase.':'&#128260; Repas&#225; el material e intent&#225; de nuevo.';
+  document.getElementById('quizScore').classList.add('show');
+}
+window.resetQuiz=function(){
+  answers=new Array(7).fill(null);done=new Array(7).fill(false);
+  document.querySelectorAll('.quiz-opt-btn').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong');});
+  document.querySelectorAll('.quiz-feedback').forEach(fb=>{fb.classList.remove('show','ok','no');fb.innerHTML='';});
+  document.getElementById('quizScore').classList.remove('show');
+};
+</script>
+</body>
+</html>
