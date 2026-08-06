@@ -177,7 +177,7 @@
     "archivo": "clases/clase20.html",
     "duracion": "60 min",
     "temas": ["Express vs http nativo", "app.get()", "res.json()"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 21,
