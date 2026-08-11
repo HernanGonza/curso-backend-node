@@ -186,7 +186,7 @@
     "archivo": "clases/clase21.html",
     "duracion": "60 min",
     "temas": ["app.listen()", "Estructura del proyecto", "nodemon"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 22,
