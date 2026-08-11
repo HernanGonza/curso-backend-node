@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 21 &mdash; Servidor con Express &middot; CapOL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#00c896;--danger:#ff4757;--warn:#ffa502;--purple:#a29bfe;--blue-tag:#74b9ff}
+[data-theme="dark"]{--bg:#0f0f11;--bg2:#16161a;--bg3:#1c1c21;--border:#2a2a32;--border2:#35353f;--fg:#e2e2ec;--fg2:#a0a0b0;--fg3:#606070;--card-bg:#16161a;--code-bg:#0a0a0d;--code-fg:#b8d0c8;--shadow:0 4px 24px rgba(0,0,0,.5)}
+[data-theme="light"]{--bg:#f5f5f0;--bg2:#ffffff;--bg3:#ebebeb;--border:#d8d8d0;--border2:#c5c5bc;--fg:#1a1a24;--fg2:#505060;--fg3:#909098;--card-bg:#ffffff;--code-bg:#1a1a24;--code-fg:#c8e0d8;--shadow:0 4px 24px rgba(0,0,0,.1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;line-height:1.75;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+.page{max-width:800px;margin:0 auto;padding:0 24px 120px}
+#topbar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:15px;text-decoration:none;color:var(--fg)}
+.brand-dot{width:30px;height:30px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#000;font-size:13px;font-weight:800;font-family:'IBM Plex Mono',monospace}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fg2);transition:all .2s}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+.powered{font-size:11px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+.back-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s}
+.back-btn:hover{color:var(--accent)}
+#progress-bar{position:fixed;top:56px;left:0;right:0;height:2px;background:var(--border);z-index:99}
+#progress-fill{height:100%;background:var(--accent);width:0%;transition:width .1s}
+.hero{padding:64px 0 40px;border-bottom:1px solid var(--border);margin-bottom:48px}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.hero-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--accent)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(32px,6vw,52px);font-weight:700;line-height:1.1;color:var(--fg);margin-bottom:18px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-desc{font-size:16px;color:var(--fg2);max-width:560px;line-height:1.7;margin-bottom:28px}
+.hero-meta{display:flex;gap:20px;flex-wrap:wrap}
+.hero-chip{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--fg2);font-family:'IBM Plex Mono',monospace}
+.hero-chip svg{color:var(--accent)}
+.objetivos{background:color-mix(in srgb,var(--accent) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);border-radius:12px;padding:24px 28px;margin-bottom:48px}
+.objetivos-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.objetivos ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.objetivos li{display:flex;gap:10px;font-size:14.5px}
+.objetivos li::before{content:'▸';color:var(--accent);flex-shrink:0;margin-top:2px}
+.section{margin-bottom:52px}
+.sec-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--fg);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:2px 8px;border-radius:5px}
+p.body{font-size:15px;line-height:1.8;color:var(--fg2);margin-bottom:12px}
+h4.sub{font-family:'DM Sans',sans-serif;font-weight:600;font-size:15px;color:var(--fg);margin:24px 0 8px;display:flex;align-items:center;gap:8px}
+h4.sub::before{content:'●';font-size:8px;color:var(--accent)}
+.cb{background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:12px 0}
+.cb-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border2);background:color-mix(in srgb,#000 20%,var(--code-bg))}
+.cb-dots{display:flex;gap:5px}
+.cb-dots span{width:10px;height:10px;border-radius:50%}
+.cb-dots .r{background:#ff5f56}.cb-dots .y{background:#ffbd2e}.cb-dots .g{background:#27c93f}
+.cb-lang{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#555}
+.cb pre{padding:16px 18px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--code-fg);white-space:pre}
+.ce{width:100%;border-collapse:collapse;background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:16px 0}
+.ce th{background:color-mix(in srgb,#000 20%,var(--code-bg));padding:10px 14px;font-size:13px;text-align:left;font-weight:600;border-bottom:1px solid var(--border2)}
+.ce tr{border-top:1px solid #1e1e28}
+.ce td{padding:10px 14px;font-size:13px;vertical-align:top;line-height:1.6}
+.ce td:first-child{font-family:'IBM Plex Mono',monospace;color:var(--code-fg);width:40%}
+.ce td:last-child{color:var(--fg2);padding-left:18px;border-left:1px solid #1e1e28}
+.ce tr:hover td{background:#0f0f14}
+[data-theme="light"] .ce tr:hover td{background:#f0f0e8}
+code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix(in srgb,var(--blue-tag) 10%,var(--bg3));color:var(--blue-tag);padding:1px 6px;border-radius:4px}
+.ib{border-radius:10px;padding:14px 18px;margin:12px 0;display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.65}
+.ib .ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.ib.green{background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 28%,transparent)}
+.ib.amber{background:color-mix(in srgb,var(--warn) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--warn) 28%,transparent)}
+.ib.red{background:color-mix(in srgb,var(--danger) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--danger) 28%,transparent)}
+.ib.blue{background:color-mix(in srgb,var(--blue-tag) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 28%,transparent)}
+.ejercicio{background:color-mix(in srgb,#000 30%,var(--bg2));border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin:16px 0}
+[data-theme="light"] .ejercicio{background:#f0f0ea}
+.ej-header{padding:10px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;background:var(--code-bg)}
+.ej-title{font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;color:var(--fg)}
+.ej-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--fg3)}
+textarea.editor{width:100%;background:var(--code-bg);color:#b8d0c8;border:none;outline:none;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;padding:16px 18px;resize:vertical;min-height:220px;tab-size:2}
+.run-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:var(--accent);color:#000;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;transition:background .15s}
+.run-btn:hover{background:color-mix(in srgb,var(--accent) 80%,#fff)}
+.terminal-out{font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:14px 18px;line-height:1.7;background:color-mix(in srgb,#000 50%,var(--code-bg));border-top:1px solid var(--border2);display:none}
+.terminal-out.show{display:block}
+.t-line{color:#a0c8a8}.t-ok{color:var(--accent)}.t-err{color:var(--danger)}.t-prompt{color:var(--fg3);margin-bottom:8px;font-size:11px}
+.quiz-wrap{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+.quiz-item{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.quiz-q{padding:14px 18px;border-bottom:1px solid var(--border);font-size:14.5px;font-weight:600;background:var(--bg2)}
+.quiz-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:4px}
+.quiz-opts{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.quiz-opt-btn{width:100%;text-align:left;padding:10px 16px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;color:var(--fg);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:10px;transition:all .15s}
+.quiz-opt-btn:hover:not(:disabled){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--bg3))}
+.opt-letter{width:22px;height:22px;border-radius:6px;background:var(--border2);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;color:var(--fg3)}
+.quiz-opt-btn:hover:not(:disabled) .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.correct{background:color-mix(in srgb,var(--accent) 12%,var(--bg3));border-color:var(--accent);color:var(--accent)}
+.quiz-opt-btn.correct .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.wrong{background:color-mix(in srgb,var(--danger) 10%,var(--bg3));border-color:var(--danger);color:var(--danger)}
+.quiz-opt-btn.wrong .opt-letter{background:var(--danger);color:#fff}
+.quiz-opt-btn:disabled{cursor:default}
+.quiz-feedback{padding:10px 18px 14px;font-size:13.5px;display:none}
+.quiz-feedback.show{display:flex;align-items:center;gap:8px}
+.quiz-feedback.ok{color:var(--accent)}.quiz-feedback.no{color:var(--danger)}
+.quiz-score{margin-top:20px;padding:18px 22px;background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:12px;display:none;align-items:center;gap:16px}
+.quiz-score.show{display:flex}
+.quiz-score-num{font-family:'Fraunces',serif;font-size:40px;font-weight:700;color:var(--accent);line-height:1}
+.tarea{background:color-mix(in srgb,var(--blue-tag) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 25%,transparent);border-radius:12px;padding:24px 28px}
+.tarea h3{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--blue-tag);margin-bottom:14px}
+.tarea ol{padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.footer{border-top:1px solid var(--border);padding:32px 0 0;margin-top:64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-brand{font-family:'Fraunces',serif;font-weight:700;font-size:15px}
+.footer-right{font-size:12px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <a href="../index.html" class="back-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Inicio</a>
+  <div class="brand"><div class="brand-dot">B</div>Backend desde Cero</div>
+  <div class="topbar-right">
+    <span class="powered">CapOL &times; Apoc Automation</span>
+    <button class="theme-btn" id="themeBtn" title="Cambiar tema">
+      <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+
+<div class="page">
+<div class="hero">
+  <div class="hero-eyebrow">Clase 21 &middot; Bloque 5: Express</div>
+  <h1><em>Servidor con Express</em></h1>
+  <p class="hero-desc">Profundiz&aacute; en app.listen(), aprend&eacute; a organizar un proyecto Express en carpetas a medida que crece, y automatiz&aacute; el reinicio del servidor durante el desarrollo con nodemon.</p>
+  <div class="hero-meta">
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>60 minutos</span>
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Requiere Clase 20</span>
+  </div>
+</div>
+<div class="objetivos">
+  <div class="objetivos-title">Objetivos de la clase</div>
+  <ul>
+    <li>Comprender en profundidad qu&eacute; hace app.listen() y c&oacute;mo funciona el ciclo de vida de un servidor Express.</li>
+    <li>Escribir un callback de confirmaci&oacute;n de arranque siguiendo buenas pr&aacute;cticas profesionales.</li>
+    <li>Organizar un proyecto Express en carpetas a medida que el c&oacute;digo crece, anticipando el patr&oacute;n routes/controllers.</li>
+    <li>Distinguir dependencies de devDependencies y entender el rol de los scripts en package.json.</li>
+    <li>Identificar el problema que resuelve nodemon e instalarlo correctamente en un proyecto real.</li>
+    <li>Configurar un flujo de desarrollo profesional con reinicio autom&aacute;tico del servidor.</li>
+  </ul>
+</div>
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">01</span>app.listen(): Poniendo el Servidor a Escuchar</h2>
+  <p class="body">Hasta ahora vimos c&oacute;mo Express permite definir rutas con <code>app.get()</code> y devolver respuestas con <code>res.json()</code>. Pero ninguna de esas rutas puede recibir tr&aacute;fico real hasta que el servidor est&eacute; efectivamente <strong>escuchando</strong> en un puerto de la m&aacute;quina. Esa es la responsabilidad exclusiva de <code>app.listen()</code>: le indica al sistema operativo "reserv&aacute; este puerto y avisame cada vez que llegue una conexi&oacute;n entrante".</p>
+  <p class="body">Un puerto es, conceptualmente, una puerta numerada dentro de una misma direcci&oacute;n IP. Una computadora puede tener decenas de programas escuchando simult&aacute;neamente, y el puerto es lo que le permite al sistema operativo saber a cu&aacute;l de ellos entregarle cada paquete de red que llega. Cuando escrib&iacute;s <code>http://localhost:3000</code> en el navegador, el <code>3000</code> le dice exactamente a qu&eacute; proceso tiene que llegar ese pedido.</p>
+  <div class="ib blue">
+    <span class="ico">&#128161;</span>
+    <div><strong>Analog&iacute;a pr&aacute;ctica:</strong> Pens&aacute; en un edificio de oficinas (la m&aacute;quina) con muchas puertas numeradas (los puertos). app.listen(3000) es como colgar un cartel en la puerta 3000 que dice &laquo;ac&aacute; atiende la aplicaci&oacute;n de la tienda virtual&raquo;. Si nadie cuelga ese cartel, cualquiera que golpee esa puerta no encuentra a nadie del otro lado.</div>
+  </div>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+  res.json({ mensaje: 'Servidor funcionando' });
+});
+
+app.listen(3000); // El servidor queda escuchando en el puerto 3000</pre>
+  </div>
+  <p class="body">Es importante notar que <code>app.listen()</code> es, generalmente, la <strong>&uacute;ltima l&iacute;nea</strong> del archivo principal del servidor. Todo lo que se define antes (rutas, middlewares, configuraci&oacute;n) se registra en memoria primero; reci&eacute;n cuando se llama a <code>listen()</code> el servidor arranca a procesar conexiones reales.</p>
+</div><div class="section">
+  <h2 class="sec-title"><span class="sec-num">02</span>El Callback de Confirmaci&oacute;n de Arranque</h2>
+  <p class="body"><code>app.listen()</code> acepta un segundo par&aacute;metro opcional: una funci&oacute;n callback que se ejecuta apenas el servidor termina de inicializarse y queda listo para recibir tr&aacute;fico. En un entorno profesional, este callback nunca se omite: es la &uacute;nica forma de tener una confirmaci&oacute;n expl&iacute;cita en la consola de que todo arranc&oacute; correctamente.</p>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>const PORT = 3000;
+
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+});</pre>
+  </div>
+  <div class="ib amber">
+    <span class="ico">&#9888;&#65039;</span>
+    <div><strong>Error com&uacute;n de principiante:</strong> Escribir c&oacute;digo despu&eacute;s de app.listen() esperando que se ejecute &laquo;antes&raquo; del arranque. app.listen() no bloquea el archivo: Node.js sigue leyendo lo que sigue debajo de inmediato. Toda l&oacute;gica que dependa de que el servidor ya est&eacute; arriba tiene que ir dentro del callback, nunca despu&eacute;s de la llamada.</div>
+  </div>
+  <h4 class="sub">Buenas pr&aacute;cticas al centralizar el puerto</h4>
+  <p class="body">En vez de escribir el n&uacute;mero de puerto "hardcodeado" en el medio del archivo, es una convenci&oacute;n profesional definirlo como una constante al principio, y m&aacute;s adelante (Bloque 6) tomarlo de una variable de entorno con <code>process.env.PORT</code>. Por ahora, alcanza con declararlo como una constante clara y reutilizable.</p>
+</div><div class="section">
+  <h2 class="sec-title"><span class="sec-num">03</span>Estructura de un Proyecto Express en Crecimiento</h2>
+  <p class="body">Cuando un servidor Express tiene solo dos o tres rutas, tenerlas todas en un &uacute;nico archivo <code>index.js</code> no genera ning&uacute;n problema. Pero a medida que el proyecto crece &mdash;nuevas entidades, nueva l&oacute;gica de negocio, nuevas validaciones&mdash; ese archivo &uacute;nico se vuelve inmanejable: cientos de l&iacute;neas mezclando configuraci&oacute;n del servidor, rutas y l&oacute;gica de negocio.</p>
+  <p class="body">La soluci&oacute;n no es t&eacute;cnica sino <strong>organizativa</strong>: separar responsabilidades en carpetas y archivos con un prop&oacute;sito claro y &uacute;nico. Esta es una convenci&oacute;n ampliamente adoptada en la comunidad de Node.js y Express, y es la que vas a encontrar en casi cualquier proyecto backend profesional.</p>
+  <table class="ce">
+    <thead><tr><th>Carpeta / Archivo</th><th>Responsabilidad</th></tr></thead>
+    <tbody>
+      <tr><td><code>index.js</code></td><td>Punto de entrada. Crea la app, registra middlewares globales y llama a app.listen().</td></tr>
+      <tr><td><code>routes/</code></td><td>Define <em>qu&eacute;</em> URLs existen y a qu&eacute; funci&oacute;n responden. No contiene l&oacute;gica de negocio.</td></tr>
+      <tr><td><code>controllers/</code></td><td>Contiene la l&oacute;gica de negocio real: qu&eacute; hacer cuando llega cada request.</td></tr>
+      <tr><td><code>models/</code></td><td>Representa los datos de la aplicaci&oacute;n (m&aacute;s adelante, conectado a la base de datos).</td></tr>
+      <tr><td><code>node_modules/</code></td><td>Carpeta autogenerada con las dependencias instaladas. Nunca se edita ni se sube a git.</td></tr>
+    </tbody>
+  </table>
+  <div class="ib green">
+    <span class="ico">&#128737;&#65039;</span>
+    <div><strong>Por qu&eacute; importa:</strong> Separar en carpetas no es una moda est&eacute;tica: permite que varias personas trabajen en el mismo proyecto sin pisarse, facilita encontrar d&oacute;nde est&aacute; cada cosa, y hace que el c&oacute;digo sea testeable en partes aisladas. En la Clase 22 vamos a poner esta estructura en pr&aacute;ctica de forma concreta con rutas y controllers reales.</div>
+  </div>
+</div><div class="section">
+  <h2 class="sec-title"><span class="sec-num">04</span>package.json: Scripts y Dependencias</h2>
+  <p class="body">El archivo <code>package.json</code> es el documento central de cualquier proyecto Node.js: describe el nombre del proyecto, su versi&oacute;n, y sobre todo, qu&eacute; paquetes externos necesita para funcionar y qu&eacute; comandos personalizados est&aacute;n disponibles para ejecutarlo.</p>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">json</div>
+    </div>
+    <pre>{
+  "name": "tienda-virtual-api",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}</pre>
+  </div>
+  <table class="ce">
+    <thead><tr><th>Campo</th><th>Qu&eacute; representa</th></tr></thead>
+    <tbody>
+      <tr><td><code>dependencies</code></td><td>Paquetes necesarios para que la aplicaci&oacute;n <strong>funcione en producci&oacute;n</strong> (ej: express).</td></tr>
+      <tr><td><code>devDependencies</code></td><td>Paquetes usados &uacute;nicamente durante el <strong>desarrollo</strong>, no en producci&oacute;n (ej: nodemon).</td></tr>
+      <tr><td><code>scripts</code></td><td>Atajos de terminal. Se ejecutan con <code>npm run &lt;nombre&gt;</code> (excepto "start", que usa solo <code>npm start</code>).</td></tr>
+    </tbody>
+  </table>
+  <p class="body">La diferencia entre <code>dependencies</code> y <code>devDependencies</code> se define al momento de instalar el paquete: <code>npm install express</code> lo agrega como dependencia de producci&oacute;n, mientras que <code>npm install nodemon --save-dev</code> (o su forma corta <code>-D</code>) lo agrega como dependencia de desarrollo.</p>
+</div><div class="section">
+  <h2 class="sec-title"><span class="sec-num">05</span>El Problema que Resuelve Nodemon</h2>
+  <p class="body">Node.js, por dise&ntilde;o, ejecuta un archivo de principio a fin y no vuelve a leerlo autom&aacute;ticamente si el c&oacute;digo cambia. Esto significa que, durante el desarrollo, cada vez que modific&aacute;s y guard&aacute;s una ruta, ten&eacute;s que ir manualmente a la terminal, frenar el proceso con <code>Ctrl+C</code>, y volver a ejecutar <code>node index.js</code> para ver el cambio reflejado. Repetir esto decenas de veces por hora es lento y rompe el flujo de trabajo.</p>
+  <div class="ib blue">
+    <span class="ico">&#128161;</span>
+    <div><strong>Analog&iacute;a pr&aacute;ctica:</strong> Es como si cada vez que corregis una palabra en un documento tuvieras que cerrar el programa entero y volver a abrirlo para ver la correcci&oacute;n. Nodemon automatiza exactamente esa recarga.</div>
+  </div>
+  <p class="body"><strong>Nodemon</strong> ("Node Monitor") es una herramienta que envuelve la ejecuci&oacute;n de Node.js y observa constantemente los archivos del proyecto. Apenas detecta que alguno cambi&oacute; y fue guardado, reinicia el servidor autom&aacute;ticamente, sin intervenci&oacute;n manual.</p>
+</div><div class="section">
+  <h2 class="sec-title"><span class="sec-num">06</span>Instalar y Configurar Nodemon</h2>
+  <p class="body">Nodemon se instala como dependencia de desarrollo, ya que es una herramienta exclusiva del entorno local de programaci&oacute;n: nunca se necesita en el servidor real donde corre la aplicaci&oacute;n en producci&oacute;n.</p>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">bash</div>
+    </div>
+    <pre>npm install nodemon --save-dev
+
+# Alternativa instalandolo de forma global en la maquina (no recomendado por proyecto):
+# npm install -g nodemon</pre>
+  </div>
+  <p class="body">Una vez instalado, se agrega el script <code>"dev": "nodemon index.js"</code> dentro de <code>package.json</code> (como se mostr&oacute; en la secci&oacute;n anterior), y a partir de ah&iacute; el flujo de trabajo diario pasa a ser el siguiente:</p>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">bash</div>
+    </div>
+    <pre>npm run dev
+
+[nodemon] starting `node index.js`
+Servidor corriendo en http://localhost:3000
+[nodemon] restarting due to changes...   # se reinicia solo al guardar un archivo</pre>
+  </div>
+  <div class="ib amber">
+    <span class="ico">&#9888;&#65039;</span>
+    <div><strong>Importante:</strong> npm start sigue funcionando igual que siempre con node index.js &mdash;es el comando est&aacute;ndar que se usa en producci&oacute;n&mdash;. npm run dev es exclusivamente para el d&iacute;a a d&iacute;a de desarrollo local, con recarga autom&aacute;tica.</div>
+  </div>
+</div>
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">07</span>Consola Interactiva de Pruebas</h2>
+  <p class="body">Simul&aacute; en este entorno la l&oacute;gica que arma el mensaje de confirmaci&oacute;n de arranque de un servidor, tal como lo escribir&iacute;as dentro del callback de app.listen().</p>
+
+  <div class="ejercicio">
+    <div class="ej-header">
+      <div class="ej-title">Entorno de Pruebas: Callback de Arranque</div>
+      <div class="ej-badge">sandbox.js</div>
+    </div>
+    <textarea class="editor" id="codeSandbox" spellcheck="false">// Simulacion del callback de app.listen()
+const PORT = 3000;
+const NOMBRE_PROYECTO = "Tienda Virtual API";
+
+function confirmarArranque() {
+  console.log(`${NOMBRE_PROYECTO}`);
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  console.log("Presiona Ctrl+C para detener");
+}
+
+confirmarArranque();
+</textarea>
+    <button class="run-btn" onclick="runSandbox()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Ejecutar C&oacute;digo
+    </button>
+    <div class="terminal-out" id="termOut"></div>
+  </div>
+</div>
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">08</span>Cuestionario de Autoevaluaci&oacute;n</h2>
+  <p class="body">Verifica tus conocimientos te&oacute;ricos antes de proceder con las tareas obligatorias de desarrollo de software.</p>
+
+  <div class="quiz-wrap">
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 1</span>
+        &iquest;Cu&aacute;l es la funci&oacute;n exacta de app.listen()?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,0)"><span class="opt-letter">A</span> Definir una nueva ruta GET en la aplicaci&oacute;n.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,0)"><span class="opt-letter">B</span> Poner al servidor a escuchar conexiones entrantes en un puerto espec&iacute;fico.</button>
+      </div>
+      <div class="quiz-feedback" id="fb0"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 2</span>
+        &iquest;Cu&aacute;ndo se ejecuta el callback que se le pasa como segundo argumento a app.listen()?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,1)"><span class="opt-letter">A</span> Antes de que el servidor termine de inicializarse.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,1)"><span class="opt-letter">B</span> Apenas el servidor queda listo y escuchando en el puerto indicado.</button>
+      </div>
+      <div class="quiz-feedback" id="fb1"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 3</span>
+        &iquest;Qu&eacute; contiene la carpeta controllers/ en la estructura recomendada de un proyecto Express?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,2)"><span class="opt-letter">A</span> La l&oacute;gica de negocio real: qu&eacute; hacer cuando llega cada request.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,2)"><span class="opt-letter">B</span> &Uacute;nicamente la definici&oacute;n de qu&eacute; URLs existen, sin l&oacute;gica interna.</button>
+      </div>
+      <div class="quiz-feedback" id="fb2"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 4</span>
+        &iquest;Qu&eacute; diferencia a devDependencies de dependencies en package.json?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,3)"><span class="opt-letter">A</span> devDependencies son paquetes necesarios solo durante el desarrollo, no en producci&oacute;n.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,3)"><span class="opt-letter">B</span> devDependencies son paquetes obligatorios para que la aplicaci&oacute;n funcione en el servidor real.</button>
+      </div>
+      <div class="quiz-feedback" id="fb3"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 5</span>
+        &iquest;Qu&eacute; problema concreto resuelve nodemon?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,4)"><span class="opt-letter">A</span> Reiniciar manualmente el servidor cada vez que se modifica un archivo del c&oacute;digo.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,4)"><span class="opt-letter">B</span> Permite acceder a bases de datos SQL sin necesidad de instalar drivers adicionales.</button>
+      </div>
+      <div class="quiz-feedback" id="fb4"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 6</span>
+        &iquest;C&oacute;mo se instala nodemon correctamente como herramienta de desarrollo?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,5)"><span class="opt-letter">A</span> npm install nodemon --save-dev</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,5)"><span class="opt-letter">B</span> npm install nodemon --production</button>
+      </div>
+      <div class="quiz-feedback" id="fb5"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 7</span>
+        &iquest;Qu&eacute; comando se usa habitualmente en producci&oacute;n, en lugar de npm run dev?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,6)"><span class="opt-letter">A</span> npm start</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,6)"><span class="opt-letter">B</span> npm run dev</button>
+      </div>
+      <div class="quiz-feedback" id="fb6"></div>
+    </div>
+  </div>
+
+  <div class="quiz-score" id="quizScore">
+    <div class="quiz-score-num" id="scoreNum">0/7</div>
+    <div>
+      <div style="font-size:14px;color:var(--fg2)" id="scoreLabel"></div>
+      <button onclick="resetQuiz()" style="margin-top:8px;font-size:13px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;text-decoration:underline">&#8630; Reintentar</button>
+    </div>
+  </div>
+</div>
+<div class="section">
+  <div class="tarea">
+    <h3>Tarea para la Pr&oacute;xima Clase (Obligatoria)</h3>
+    <ol>
+      <li><strong>Completar nodemon:</strong> Instalar y configurar nodemon en el proyecto de la tienda virtual, verificando el reinicio autom&aacute;tico al guardar cambios.</li>
+      <li><strong>Preparar estructura:</strong> Dejar creadas (aunque vac&iacute;as) las carpetas <code>routes/</code> y <code>controllers/</code> dentro del proyecto.</li>
+      <li><strong>Investigaci&oacute;n pr&oacute;xima clase:</strong> &iquest;Qu&eacute; diferencia hay entre los m&eacute;todos HTTP GET, POST, PUT y DELETE? &iquest;Por qu&eacute; una API REST los usa para representar distintas acciones sobre un mismo recurso?</li>
+    </ol>
+  </div>
+</div>
+<div class="footer">
+  <div class="footer-brand">CapOL Escuela</div>
+  <div class="footer-right">Curso Backend desde Cero &middot; Clase 21</div>
+</div>
+</div>
+
+<script>
+const html=document.documentElement;
+const MOON=`<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+const SUN=`<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+const icon=document.getElementById('themeIcon');
+function applyTheme(t){html.dataset.theme=t;icon.innerHTML=t==='dark'?SUN:MOON;localStorage.setItem('theme',t);}
+document.getElementById('themeBtn').addEventListener('click',()=>applyTheme(html.dataset.theme==='dark'?'light':'dark'));
+applyTheme(localStorage.getItem('theme')||'dark');
+
+const fill=document.getElementById('progress-fill');
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  fill.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+},{passive:true});
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function runSandbox(){
+  const code=document.getElementById('codeSandbox').value;
+  const out=document.getElementById('termOut');
+  out.classList.add('show');
+  const lines=[], orig=console.log;
+  console.log=(...a)=>lines.push(a.map(x=>x===null?'null':x===undefined?'undefined':typeof x==='object'?JSON.stringify(x,null,2):String(x)).join(' '));
+  let h='<div class="t-prompt">&#9654; OUTPUT</div>';
+  try{
+    new Function(code)();
+    h+=lines.length?lines.map(l=>`<div class="t-line">${esc(l)}</div>`).join(''):'<div class="t-ok">&#10003; Sin output</div>';
+  }catch(e){h+=`<div class="t-err">&#10007; Error: ${esc(e.message)}</div>`;}
+  out.innerHTML=h;
+  console.log=orig;
+}
+
+const CORRECT=[1,1,0,0,0,0,0];
+const EXPLAIN=['app.listen() no define rutas; es lo que hace que el servidor empiece a aceptar conexiones reales en un puerto.','El callback se dispara una vez que el servidor ya est&aacute; arriba, nunca antes.','Esa definici&oacute;n de URLs corresponde a routes/; controllers/ contiene la l&oacute;gica que efectivamente se ejecuta.','Herramientas como nodemon solo se usan mientras se programa; no viajan a producci&oacute;n.','Nodemon observa los archivos y reinicia el servidor autom&aacute;ticamente al detectar cambios guardados.','El flag --save-dev (o -D) lo registra en devDependencies, que es lo correcto para esta herramienta.','npm run dev usa nodemon, pensado solo para desarrollo; en producci&oacute;n se usa npm start (node index.js).'];
+
+let answers=new Array(CORRECT.length).fill(null);
+let done=new Array(CORRECT.length).fill(false);
+
+window.checkAnswer=function(btn,sel,qi){
+  if(done[qi])return;
+  done[qi]=true; answers[qi]=sel;
+  btn.closest('.quiz-opts').querySelectorAll('.quiz-opt-btn').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===CORRECT[qi])b.classList.add('correct');
+    else if(i===sel)b.classList.add('wrong');
+  });
+  const fb=document.getElementById('fb'+qi);
+  fb.classList.add('show');
+  if(sel===CORRECT[qi]){fb.classList.add('ok');fb.innerHTML='&#10003; Correcto. '+EXPLAIN[qi];}
+  else{fb.classList.add('no');fb.innerHTML='&#10007; Incorrecto. '+EXPLAIN[qi];}
+  if(done.every(Boolean))showScore();
+};
+
+function showScore(){
+  const correct=answers.filter((a,i)=>a===CORRECT[i]).length;
+  const total=CORRECT.length;
+  const pct=Math.round(correct/total*100);
+  document.getElementById('scoreNum').textContent=correct+'/'+total;
+  document.getElementById('scoreLabel').textContent=
+    pct===100?'\ud83c\udf89 Perfecto. Dominaste el tema.':
+    pct>=75?'\ud83d\udcaa Muy bien. Repas\u00e1 los que erraste.':
+    pct>=50?'\ud83d\udcda Pasable. Vale la pena releer la clase.':
+            '\ud83d\udd04 Repas\u00e1 el material y volv\u00e9 a intentarlo.';
+  document.getElementById('quizScore').classList.add('show');
+}
+
+window.resetQuiz=function(){
+  answers=new Array(CORRECT.length).fill(null);
+  done=new Array(CORRECT.length).fill(false);
+  document.querySelectorAll('.quiz-opt-btn').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong');});
+  document.querySelectorAll('.quiz-feedback').forEach(fb=>{fb.classList.remove('show','ok','no');fb.innerHTML='';});
+  document.getElementById('quizScore').classList.remove('show');
+};
+</script>
+</body>
+</html>
