@@ -195,7 +195,7 @@
     "archivo": "clases/clase22.html",
     "duracion": "60 min",
     "temas": ["GET/POST/PUT/DELETE", "Controllers", "Organizar rutas"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 23,
