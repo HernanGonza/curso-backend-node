@@ -204,7 +204,7 @@
     "archivo": "clases/clase23.html",
     "duracion": "60 min",
     "temas": ["req.params", "req.query", "req.body", "Paginación"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 24,
