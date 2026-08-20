@@ -213,7 +213,7 @@
     "archivo": "clases/clase24.html",
     "duracion": "60 min",
     "temas": ["Qué es un middleware", "express.json()", "Autenticación"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 25,
