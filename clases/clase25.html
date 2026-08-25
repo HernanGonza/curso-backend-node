@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 25 &mdash; Introduccion a Bases de Datos &middot; CapOL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#00c896;--danger:#ff4757;--warn:#ffa502;--purple:#a29bfe;--blue-tag:#74b9ff}
+[data-theme="dark"]{--bg:#0f0f11;--bg2:#16161a;--bg3:#1c1c21;--border:#2a2a32;--border2:#35353f;--fg:#e2e2ec;--fg2:#a0a0b0;--fg3:#606070;--card-bg:#16161a;--code-bg:#0a0a0d;--code-fg:#b8d0c8;--shadow:0 4px 24px rgba(0,0,0,.5)}
+[data-theme="light"]{--bg:#f5f5f0;--bg2:#ffffff;--bg3:#ebebeb;--border:#d8d8d0;--border2:#c5c5bc;--fg:#1a1a24;--fg2:#505060;--fg3:#909098;--card-bg:#ffffff;--code-bg:#1a1a24;--code-fg:#c8e0d8;--shadow:0 4px 24px rgba(0,0,0,.1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;line-height:1.75;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+.page{max-width:800px;margin:0 auto;padding:0 24px 120px}
+#topbar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:15px;text-decoration:none;color:var(--fg)}
+.brand-dot{width:30px;height:30px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#000;font-size:13px;font-weight:800;font-family:'IBM Plex Mono',monospace}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fg2);transition:all .2s}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+.powered{font-size:11px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+.back-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s}
+.back-btn:hover{color:var(--accent)}
+#progress-bar{position:fixed;top:56px;left:0;right:0;height:2px;background:var(--border);z-index:99}
+#progress-fill{height:100%;background:var(--accent);width:0%;transition:width .1s}
+.hero{padding:64px 0 40px;border-bottom:1px solid var(--border);margin-bottom:48px}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.hero-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--accent)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(32px,6vw,52px);font-weight:700;line-height:1.1;color:var(--fg);margin-bottom:18px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-desc{font-size:16px;color:var(--fg2);max-width:560px;line-height:1.7;margin-bottom:28px}
+.hero-meta{display:flex;gap:20px;flex-wrap:wrap}
+.hero-chip{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--fg2);font-family:'IBM Plex Mono',monospace}
+.hero-chip svg{color:var(--accent)}
+.objetivos{background:color-mix(in srgb,var(--accent) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);border-radius:12px;padding:24px 28px;margin-bottom:48px}
+.objetivos-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.objetivos ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.objetivos li{display:flex;gap:10px;font-size:14.5px}
+.objetivos li::before{content:'▸';color:var(--accent);flex-shrink:0;margin-top:2px}
+.section{margin-bottom:52px}
+.sec-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--fg);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:2px 8px;border-radius:5px}
+p.body{font-size:15px;line-height:1.8;color:var(--fg2);margin-bottom:12px}
+h4.sub{font-family:'DM Sans',sans-serif;font-weight:600;font-size:15px;color:var(--fg);margin:24px 0 8px;display:flex;align-items:center;gap:8px}
+h4.sub::before{content:'●';font-size:8px;color:var(--accent)}
+.cb{background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:12px 0}
+.cb-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border2);background:color-mix(in srgb,#000 20%,var(--code-bg))}
+.cb-dots{display:flex;gap:5px}
+.cb-dots span{width:10px;height:10px;border-radius:50%}
+.cb-dots .r{background:#ff5f56}.cb-dots .y{background:#ffbd2e}.cb-dots .g{background:#27c93f}
+.cb-lang{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#555}
+.cb pre{padding:16px 18px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--code-fg);white-space:pre}
+.ce{width:100%;border-collapse:collapse;background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:16px 0}
+.ce th{background:color-mix(in srgb,#000 20%,var(--code-bg));padding:10px 14px;font-size:13px;text-align:left;font-weight:600;border-bottom:1px solid var(--border2)}
+.ce tr{border-top:1px solid #1e1e28}
+.ce td{padding:10px 14px;font-size:13px;vertical-align:top;line-height:1.6}
+.ce td:first-child{font-family:'IBM Plex Mono',monospace;color:var(--code-fg);width:40%}
+.ce td:last-child{color:var(--fg2);padding-left:18px;border-left:1px solid #1e1e28}
+.ce tr:hover td{background:#0f0f14}
+[data-theme="light"] .ce tr:hover td{background:#f0f0e8}
+code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix(in srgb,var(--blue-tag) 10%,var(--bg3));color:var(--blue-tag);padding:1px 6px;border-radius:4px}
+.ib{border-radius:10px;padding:14px 18px;margin:12px 0;display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.65}
+.ib .ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.ib.green{background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 28%,transparent)}
+.ib.amber{background:color-mix(in srgb,var(--warn) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--warn) 28%,transparent)}
+.ib.red{background:color-mix(in srgb,var(--danger) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--danger) 28%,transparent)}
+.ib.blue{background:color-mix(in srgb,var(--blue-tag) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 28%,transparent)}
+.ejercicio{background:color-mix(in srgb,#000 30%,var(--bg2));border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin:16px 0}
+[data-theme="light"] .ejercicio{background:#f0f0ea}
+.ej-header{padding:10px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;background:var(--code-bg)}
+.ej-title{font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;color:var(--fg)}
+.ej-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--fg3)}
+textarea.editor{width:100%;background:var(--code-bg);color:#b8d0c8;border:none;outline:none;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;padding:16px 18px;resize:vertical;min-height:220px;tab-size:2}
+.run-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:var(--accent);color:#000;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;transition:background .15s}
+.run-btn:hover{background:color-mix(in srgb,var(--accent) 80%,#fff)}
+.terminal-out{font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:14px 18px;line-height:1.7;background:color-mix(in srgb,#000 50%,var(--code-bg));border-top:1px solid var(--border2);display:none}
+.terminal-out.show{display:block}
+.t-line{color:#a0c8a8}.t-ok{color:var(--accent)}.t-err{color:var(--danger)}.t-prompt{color:var(--fg3);margin-bottom:8px;font-size:11px}
+.quiz-wrap{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+.quiz-item{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.quiz-q{padding:14px 18px;border-bottom:1px solid var(--border);font-size:14.5px;font-weight:600;background:var(--bg2)}
+.quiz-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:4px}
+.quiz-opts{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.quiz-opt-btn{width:100%;text-align:left;padding:10px 16px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;color:var(--fg);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:10px;transition:all .15s}
+.quiz-opt-btn:hover:not(:disabled){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--bg3))}
+.opt-letter{width:22px;height:22px;border-radius:6px;background:var(--border2);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;color:var(--fg3)}
+.quiz-opt-btn:hover:not(:disabled) .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.correct{background:color-mix(in srgb,var(--accent) 12%,var(--bg3));border-color:var(--accent);color:var(--accent)}
+.quiz-opt-btn.correct .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.wrong{background:color-mix(in srgb,var(--danger) 10%,var(--bg3));border-color:var(--danger);color:var(--danger)}
+.quiz-opt-btn.wrong .opt-letter{background:var(--danger);color:#fff}
+.quiz-opt-btn:disabled{cursor:default}
+.quiz-feedback{padding:10px 18px 14px;font-size:13.5px;display:none}
+.quiz-feedback.show{display:flex;align-items:center;gap:8px}
+.quiz-feedback.ok{color:var(--accent)}.quiz-feedback.no{color:var(--danger)}
+.quiz-score{margin-top:20px;padding:18px 22px;background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:12px;display:none;align-items:center;gap:16px}
+.quiz-score.show{display:flex}
+.quiz-score-num{font-family:'Fraunces',serif;font-size:40px;font-weight:700;color:var(--accent);line-height:1}
+.tarea{background:color-mix(in srgb,var(--blue-tag) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 25%,transparent);border-radius:12px;padding:24px 28px}
+.tarea h3{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--blue-tag);margin-bottom:14px}
+.tarea ol{padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.footer{border-top:1px solid var(--border);padding:32px 0 0;margin-top:64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-brand{font-family:'Fraunces',serif;font-weight:700;font-size:15px}
+.footer-right{font-size:12px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <a href="../index.html" class="back-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Inicio</a>
+  <div class="brand"><div class="brand-dot">B</div>Backend desde Cero</div>
+  <div class="topbar-right">
+    <span class="powered">CapOL &times; Apoc Automation</span>
+    <button class="theme-btn" id="themeBtn" title="Cambiar tema">
+      <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+
+<div class="page">
+<div class="hero">
+  <div class="hero-eyebrow">Clase 25 &middot; Bloque 6: PostgreSQL</div>
+  <h1><em>Introducci&oacute;n a Bases de Datos</em></h1>
+  <p class="hero-desc">Descubr&iacute; por qu&eacute; una base de datos reemplaza a los arrays en memoria, entend&eacute; la diferencia entre SQL y NoSQL, y domin&aacute; los conceptos de tablas, tipos de dato y claves antes de escribir la primera l&iacute;nea de SQL.</p>
+  <div class="hero-meta">
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>60 minutos</span>
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Requiere Clase 24</span>
+  </div>
+</div>
+<div class="objetivos">
+  <div class="objetivos-title">Objetivos de la clase</div>
+  <ul>
+    <li>Entender qu&eacute; es una base de datos y por qu&eacute; reemplaza a los arrays en memoria que usamos hasta ahora.</li>
+    <li>Distinguir las bases de datos SQL (relacionales) de las bases de datos NoSQL.</li>
+    <li>Comprender el modelo relacional: tablas, filas y columnas.</li>
+    <li>Conocer los tipos de datos b&aacute;sicos disponibles en PostgreSQL.</li>
+    <li>Entender qu&eacute; es una clave primaria y qu&eacute; es una clave for&aacute;nea, y para qu&eacute; sirve cada una.</li>
+    <li>Identificar c&oacute;mo se relacionan dos tablas entre s&iacute; en un caso simple de uno a muchos.</li>
+    <li>Instalar PostgreSQL, Antares SQL Client y Postman, dejando el entorno de trabajo completo.</li>
+  </ul>
+</div>
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">01</span>&iquest;Qu&eacute; es una Base de Datos?</h2>
+  <p class="body">Hasta ahora, en el Bloque 5, guardamos los productos de la tienda virtual en un simple array de JavaScript, viviendo en la memoria RAM del proceso de Node.js. Esto funciona para aprender, pero tiene un problema grave: en el momento en que el servidor se reinicia (algo que sucede todo el tiempo, incluso sin querer), todos los datos se pierden. Adem&aacute;s, ese array solo existe dentro de un &uacute;nico proceso, as&iacute; que no hay forma de compartirlo entre distintos servidores o distintas instancias de la aplicaci&oacute;n.</p>
+  <p class="body">Una <strong>base de datos</strong> es un sistema especializado, separado de la aplicaci&oacute;n, dise&ntilde;ado espec&iacute;ficamente para guardar informaci&oacute;n de forma <strong>persistente</strong> (sobrevive a los reinicios), <strong>ordenada</strong> y <strong>consultable</strong> de manera eficiente, incluso cuando hay millones de registros.</p>
+  <div class="ib blue">
+    <span class="ico">&#128161;</span>
+    <div><strong>Analog&iacute;a pr&aacute;ctica:</strong> El array en memoria es como escribir notas en una pizarra: r&aacute;pido y pr&aacute;ctico, pero se borra apenas se apaga la luz. Una base de datos es como un archivo f&iacute;sico bien organizado: m&aacute;s lento de escribir a mano, pero la informaci&oacute;n queda guardada de forma confiable y se puede consultar cualquier d&iacute;a.</div>
+  </div>
+</div><div class="section">
+  <h2 class="sec-title"><span class="sec-num">02</span>SQL vs NoSQL: Dos Paradigmas de Almacenamiento</h2>
+  <p class="body">Existen dos grandes familias de bases de datos. Las <strong>SQL</strong> (tambi&eacute;n llamadas relacionales) organizan la informaci&oacute;n en tablas con una estructura fija y predecible, muy similares a una hoja de c&aacute;lculo. Las <strong>NoSQL</strong> son m&aacute;s flexibles y guardan la informaci&oacute;n en formatos variados, como documentos tipo JSON, sin exigir una estructura r&iacute;gida previa.</p>
+  <table class="ce">
+    <thead><tr><th>Aspecto</th><th>SQL (Relacional)</th><th>NoSQL</th></tr></thead>
+    <tbody>
+      <tr><td>Estructura</td><td>Tablas con columnas fijas y tipos de dato definidos.</td><td>Documentos, pares clave-valor, u otros formatos flexibles.</td></tr>
+      <tr><td>Ejemplos</td><td>PostgreSQL, MySQL, SQL Server.</td><td>MongoDB, Firebase, Redis.</td></tr>
+      <tr><td>Cu&aacute;ndo conviene</td><td>Datos con relaciones claras entre s&iacute; (usuarios, pedidos, productos).</td><td>Datos muy variables entre registros, o que cambian de forma seguido.</td></tr>
+    </tbody>
+  </table>
+  <div class="ib green">
+    <span class="ico">&#128737;&#65039;</span>
+    <div><strong>Por qu&eacute; elegimos PostgreSQL:</strong> Para la tienda virtual &mdash;con productos, usuarios y pedidos claramente relacionados entre s&iacute;&mdash; el modelo relacional encaja naturalmente. Adem&aacute;s, PostgreSQL es gratuito, de c&oacute;digo abierto, y uno de los motores SQL m&aacute;s usados en el mundo profesional.</div>
+  </div>
+</div><div class="section">
+  <h2 class="sec-title"><span class="sec-num">03</span>El Modelo Relacional: Tablas, Filas y Columnas</h2>
+  <p class="body">En una base de datos relacional, la informaci&oacute;n se organiza en <strong>tablas</strong>. Cada tabla representa un tipo de entidad concreta (por ejemplo, productos). Dentro de la tabla, cada <strong>fila</strong> (tambi&eacute;n llamada registro) es una instancia particular de esa entidad, y cada <strong>columna</strong> es un atributo o caracter&iacute;stica que todas las filas comparten.</p>
+  <table class="ce">
+    <thead><tr><th>id</th><th>nombre</th><th>precio</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Mouse inalambrico</td><td>4500</td></tr>
+      <tr><td>2</td><td>Teclado mecanico</td><td>12000</td></tr>
+    </tbody>
+  </table>
+  <p class="body">En este ejemplo, <code>productos</code> es la tabla, cada fila es un producto puntual, y <code>id</code>, <code>nombre</code> y <code>precio</code> son las columnas que definen qu&eacute; informaci&oacute;n guarda cada producto.</p>
+</div><div class="section">
+  <h2 class="sec-title"><span class="sec-num">04</span>Tipos de Datos B&aacute;sicos en PostgreSQL</h2>
+  <p class="body">A diferencia de JavaScript, donde una variable puede cambiar de tipo libremente, en una tabla SQL cada columna tiene un <strong>tipo de dato fijo</strong>, declarado al momento de crear la tabla. Esto obliga a que todos los valores de esa columna sean consistentes entre s&iacute;.</p>
+  <table class="ce">
+    <thead><tr><th>Tipo en PostgreSQL</th><th>Qu&eacute; guarda</th></tr></thead>
+    <tbody>
+      <tr><td><code>INTEGER</code></td><td>N&uacute;meros enteros, sin decimales (ej: cantidad de stock).</td></tr>
+      <tr><td><code>VARCHAR(n)</code></td><td>Texto corto, con un largo m&aacute;ximo de n caracteres (ej: nombre de producto).</td></tr>
+      <tr><td><code>TEXT</code></td><td>Texto largo, sin l&iacute;mite pr&aacute;ctico de longitud (ej: descripci&oacute;n de producto).</td></tr>
+      <tr><td><code>NUMERIC(p,s)</code></td><td>N&uacute;meros decimales exactos, ideales para precios y montos de dinero.</td></tr>
+      <tr><td><code>BOOLEAN</code></td><td>Verdadero o falso (ej: si un producto est&aacute; activo o no).</td></tr>
+      <tr><td><code>DATE</code></td><td>Una fecha, sin componente de hora (ej: fecha de alta de un producto).</td></tr>
+    </tbody>
+  </table>
+  <div class="ib amber">
+    <span class="ico">&#9888;&#65039;</span>
+    <div><strong>Sobre NUMERIC para precios:</strong> Nunca se usa un tipo de punto flotante (como FLOAT) para representar dinero, porque puede introducir peque&ntilde;os errores de redondeo. NUMERIC(10,2) es la elecci&oacute;n est&aacute;ndar para precios: hasta 10 d&iacute;gitos en total, con 2 decimales exactos.</div>
+  </div>
+</div><div class="section">
+  <h2 class="sec-title"><span class="sec-num">05</span>Claves Primarias y Claves For&aacute;neas</h2>
+  <p class="body">La <strong>clave primaria</strong> (Primary Key) es la columna (o combinaci&oacute;n de columnas) que identifica de forma &uacute;nica e inequ&iacute;voca a cada fila de una tabla. No puede repetirse entre filas, y no puede quedar vac&iacute;a. En casi todas las tablas, se usa una columna <code>id</code> num&eacute;rica que se autoincrementa con cada fila nueva.</p>
+  <p class="body">La <strong>clave for&aacute;nea</strong> (Foreign Key) es una columna que guarda el id de una fila perteneciente a <em>otra</em> tabla, estableciendo as&iacute; una relaci&oacute;n entre ambas. Es el mecanismo central que le da sentido a la palabra "relacional".</p>
+  <table class="ce">
+    <thead><tr><th>Tabla pedidos</th><th>Descripci&oacute;n</th></tr></thead>
+    <tbody>
+      <tr><td>id</td><td>Clave primaria de la tabla pedidos.</td></tr>
+      <tr><td>producto_id</td><td>Clave for&aacute;nea: apunta al id de una fila en la tabla productos.</td></tr>
+      <tr><td>cantidad</td><td>Cu&aacute;ntas unidades de ese producto se pidieron.</td></tr>
+    </tbody>
+  </table>
+  <div class="ib blue">
+    <span class="ico">&#128161;</span>
+    <div><strong>Analog&iacute;a pr&aacute;ctica:</strong> Pens&aacute; en el DNI de una persona como su clave primaria: identifica a una &uacute;nica persona sin ambig&uuml;edad. Si un formulario de otra oficina pide \u00abn&uacute;mero de DNI del titular\u00bb, ese campo es una clave for&aacute;nea: no describe a la persona en s&iacute;, apunta a qui&eacute;n es realmente consultando el registro original.</div>
+  </div>
+</div><div class="section">
+  <h2 class="sec-title"><span class="sec-num">06</span>Relaciones entre Tablas: Uno a Muchos</h2>
+  <p class="body">La relaci&oacute;n m&aacute;s com&uacute;n y sencilla entre dos tablas es la de <strong>uno a muchos</strong>: una fila de una tabla puede estar asociada a varias filas de otra tabla, pero cada una de esas filas asociadas solo pertenece a una &uacute;nica fila de la primera.</p>
+  <p class="body">En la tienda virtual, un ejemplo claro es la relaci&oacute;n entre productos y categor&iacute;as: <strong>una categor&iacute;a puede tener muchos productos</strong>, pero <strong>cada producto pertenece a una sola categor&iacute;a</strong>. Esto se modela agregando una columna <code>categoria_id</code> (clave for&aacute;nea) en la tabla de productos, que apunta al <code>id</code> de la tabla de categor&iacute;as.</p>
+  <div class="ib green">
+    <span class="ico">&#128737;&#65039;</span>
+    <div><strong>Por qu&eacute; importa entender esto ahora:</strong> Este mismo patr&oacute;n de uno a muchos es el que vamos a usar en la Clase 27 con JOIN, para combinar datos de varias tablas relacionadas en una sola consulta.</div>
+  </div>
+</div><div class="section">
+  <h2 class="sec-title"><span class="sec-num">07</span>Instalando el Entorno: PostgreSQL, Antares y Postman</h2>
+  <p class="body">Para practicar SQL de forma real (no solo conceptual), hace falta instalar tres herramientas: el motor de PostgreSQL, un gestor visual de bases de datos, y Postman para probar la API m&aacute;s adelante. Esta secci&oacute;n es una gu&iacute;a paso a paso completa para dejar todo instalado.</p>
+  <table class="ce">
+    <thead><tr><th>Herramienta</th><th>Para qu&eacute; se usa</th></tr></thead>
+    <tbody>
+      <tr><td>PostgreSQL</td><td>El motor de base de datos en s&iacute;: el programa que efectivamente guarda y procesa los datos.</td></tr>
+      <tr><td>Antares SQL Client</td><td>Gestor visual multiplataforma para crear bases de datos, tablas, y ejecutar consultas SQL sin escribir todo a mano.</td></tr>
+      <tr><td>Postman</td><td>Herramienta para probar los endpoints de la API que vamos a construir en el Bloque 5 y en el Proyecto Final.</td></tr>
+    </tbody>
+  </table>
+
+  <h4 class="sub">Instalando PostgreSQL en Windows</h4>
+  <p class="body">Descargar el instalador oficial desde <code>postgresql.org/download/windows</code>, ejecutarlo, y avanzar con las opciones por defecto. Durante la instalaci&oacute;n se pide definir una contrase&ntilde;a para el usuario administrador <code>postgres</code>: anotarla, porque se va a usar todo el curso. El puerto por defecto es <code>5432</code>; se deja tal cual. Al finalizar, se puede omitir la instalaci&oacute;n de Stack Builder (herramientas adicionales que no vamos a necesitar).</p>
+
+  <h4 class="sub">Instalando PostgreSQL en macOS</h4>
+  <p class="body">La forma m&aacute;s simple es descargar <strong>Postgres.app</strong> desde <code>postgresapp.com</code>, arrastrarlo a la carpeta Aplicaciones, y abrirlo. Al iniciarlo por primera vez, un bot&oacute;n "Initialize" crea el servidor autom&aacute;ticamente, ya escuchando en el puerto 5432, con el usuario <code>postgres</code> sin contrase&ntilde;a por defecto (se puede definir una desde Antares m&aacute;s adelante).</p>
+
+  <h4 class="sub">Instalando PostgreSQL en Linux (Ubuntu/Debian)</h4>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">bash</div>
+    </div>
+    <pre>sudo apt update
+sudo apt install postgresql postgresql-contrib
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+
+# Definir contrasena para el usuario postgres
+sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'tu_contrasena';"</pre>
+  </div>
+
+  <h4 class="sub">Instalando Antares SQL Client</h4>
+  <p class="body"><strong>Antares</strong> es un gestor visual de bases de datos gratuito y multiplataforma (Windows, macOS, Linux), similar en prop&oacute;sito a pgAdmin pero con una interfaz m&aacute;s liviana y moderna. Se descarga desde <code>antares-sql.app</code>, eligiendo el instalador correspondiente al sistema operativo, y se instala como cualquier otra aplicaci&oacute;n de escritorio.</p>
+  <p class="body">Una vez instalado y abierto, se crea una <strong>nueva conexi&oacute;n</strong> hacia el servidor de PostgreSQL reci&eacute;n instalado:</p>
+  <table class="ce">
+    <thead><tr><th>Campo de conexi&oacute;n</th><th>Valor</th></tr></thead>
+    <tbody>
+      <tr><td>Client</td><td>PostgreSQL</td></tr>
+      <tr><td>Host</td><td>localhost</td></tr>
+      <tr><td>Puerto</td><td>5432</td></tr>
+      <tr><td>Usuario</td><td>postgres</td></tr>
+      <tr><td>Contrase&ntilde;a</td><td>La definida durante la instalaci&oacute;n de PostgreSQL</td></tr>
+    </tbody>
+  </table>
+  <p class="body">Al confirmar la conexi&oacute;n, Antares muestra en el panel izquierdo todas las bases de datos existentes en el servidor, y permite crear bases de datos, tablas y ejecutar consultas SQL desde un editor visual, exactamente igual a lo que se ven&iacute;a haciendo antes con pgAdmin.</p>
+  <div class="ib green">
+    <span class="ico">&#128737;&#65039;</span>
+    <div><strong>Por qu&eacute; Antares en este curso:</strong> Antares ofrece una experiencia m&aacute;s simple para quien reci&eacute;n arranca con SQL, con un editor de consultas m&aacute;s directo y una interfaz m&aacute;s moderna que pgAdmin, sin perder ninguna funcionalidad necesaria para el curso.</div>
+  </div>
+
+  <h4 class="sub">Instalando y Configurando Postman</h4>
+  <p class="body"><strong>Postman</strong> ya se hab&iacute;a instalado al comienzo del curso, pero conviene volver a verificar la instalaci&oacute;n y repasar su configuraci&oacute;n antes de arrancar con SQL y, m&aacute;s adelante, con la conexi&oacute;n real entre Node.js y PostgreSQL.</p>
+  <p class="body">Se descarga desde <code>postman.com/downloads</code>, eligiendo la versi&oacute;n de escritorio correspondiente al sistema operativo. Al abrirlo por primera vez, se puede crear una cuenta gratuita o continuar sin cuenta ("Skip and go to the app"); para este curso no es indispensable tener cuenta.</p>
+  <p class="body">La configuraci&oacute;n recomendada para el resto del curso:</p>
+  <table class="ce">
+    <thead><tr><th>Paso</th><th>Qu&eacute; hacer</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Crear un nuevo Workspace (o usar el que viene por defecto) llamado, por ejemplo, "Backend desde Cero".</td></tr>
+      <tr><td>2</td><td>Dentro del workspace, crear una Collection nueva llamada "Tienda Virtual API", donde se van a ir guardando todos los requests de prueba de las pr&oacute;ximas clases.</td></tr>
+      <tr><td>3</td><td>Crear una Environment (entorno) con una variable llamada baseUrl, apuntando por ahora a http://localhost:3000. Esto va a permitir cambiar entre local y producci&oacute;n sin reescribir cada request.</td></tr>
+      <tr><td>4</td><td>Verificar que la Collection tenga guardado el header Content-Type: application/json para los requests que env&iacute;en body.</td></tr>
+    </tbody>
+  </table>
+  <div class="ib blue">
+    <span class="ico">&#128161;</span>
+    <div><strong>Por qu&eacute; usar variables de entorno en Postman:</strong> Cuando en la Clase 32 la API se despliegue en internet, alcanza con cambiar el valor de baseUrl en el Environment, sin tener que editar uno por uno todos los requests guardados en la Collection.</div>
+  </div>
+</div>
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">08</span>Simulador Conceptual: Pensando en Tablas</h2>
+  <p class="body">Este entorno usa JavaScript &uacute;nicamente para <strong>visualizar</strong> c&oacute;mo se comportar&iacute;a una tabla con clave primaria &uacute;nica, antes de escribir SQL real en la Clase 26. No es SQL: es un modelo simplificado para razonar sobre la estructura.</p>
+
+  <div class="ejercicio">
+    <div class="ej-header">
+      <div class="ej-title">Simulador: Clave Primaria Unica</div>
+      <div class="ej-badge">simulador.js</div>
+    </div>
+    <textarea class="editor" id="codeSandbox" spellcheck="false">// Simulacion conceptual de una tabla "productos" con clave primaria
+let tablaProductos = [];
+
+function insertar(fila) {
+  const existe = tablaProductos.some(p => p.id === fila.id);
+  if (existe) {
+    console.log(`ERROR: ya existe una fila con id ${fila.id} (clave primaria duplicada)`);
+    return;
+  }
+  tablaProductos.push(fila);
+  console.log("Fila insertada:", fila);
+}
+
+insertar({ id: 1, nombre: "Mouse inalambrico", precio: 4500 });
+insertar({ id: 2, nombre: "Teclado mecanico", precio: 12000 });
+insertar({ id: 1, nombre: "Otro producto duplicado", precio: 999 }); // deberia fallar
+
+console.log("Tabla final:", tablaProductos);
+</textarea>
+    <button class="run-btn" onclick="runSandbox()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Ejecutar C&oacute;digo
+    </button>
+    <div class="terminal-out" id="termOut"></div>
+  </div>
+</div>
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">09</span>Cuestionario de Autoevaluaci&oacute;n</h2>
+  <p class="body">Verifica tus conocimientos te&oacute;ricos antes de proceder con las tareas obligatorias de desarrollo de software.</p>
+
+  <div class="quiz-wrap">
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 1</span>
+        &iquest;Cu&aacute;l es el principal problema de guardar datos en un array en memoria de Node.js?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,0)"><span class="opt-letter">A</span> Que los datos se pierden apenas el servidor se reinicia.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,0)"><span class="opt-letter">B</span> Que JavaScript no permite crear arrays con m&aacute;s de 100 elementos.</button>
+      </div>
+      <div class="quiz-feedback" id="fb0"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 2</span>
+        &iquest;Qu&eacute; caracter&iacute;stica distingue a una base de datos SQL de una NoSQL?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,1)"><span class="opt-letter">A</span> SQL organiza la informaci&oacute;n en tablas con columnas fijas y tipos de dato definidos.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,1)"><span class="opt-letter">B</span> SQL nunca permite relacionar datos entre s&iacute;.</button>
+      </div>
+      <div class="quiz-feedback" id="fb1"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 3</span>
+        En el modelo relacional, &iquest;qu&eacute; representa una fila dentro de una tabla?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,2)"><span class="opt-letter">A</span> Un atributo o caracter&iacute;stica compartida por todos los registros.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,2)"><span class="opt-letter">B</span> Una instancia particular de esa entidad (un registro individual).</button>
+      </div>
+      <div class="quiz-feedback" id="fb2"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 4</span>
+        &iquest;Qu&eacute; tipo de dato de PostgreSQL es la elecci&oacute;n est&aacute;ndar para representar precios de dinero?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,3)"><span class="opt-letter">A</span> FLOAT</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,3)"><span class="opt-letter">B</span> NUMERIC(p,s)</button>
+      </div>
+      <div class="quiz-feedback" id="fb3"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 5</span>
+        &iquest;Qu&eacute; caracteriza a una clave primaria (Primary Key)?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,4)"><span class="opt-letter">A</span> Identifica de forma &uacute;nica a cada fila; no puede repetirse ni quedar vac&iacute;a.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,4)"><span class="opt-letter">B</span> Puede repetirse en varias filas de la misma tabla sin ning&uacute;n problema.</button>
+      </div>
+      <div class="quiz-feedback" id="fb4"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 6</span>
+        &iquest;Qu&eacute; hace una clave for&aacute;nea (Foreign Key)?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,5)"><span class="opt-letter">A</span> Guarda el id de una fila de otra tabla, estableciendo una relaci&oacute;n entre ambas.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,5)"><span class="opt-letter">B</span> Cambia autom&aacute;ticamente el tipo de dato de una columna existente.</button>
+      </div>
+      <div class="quiz-feedback" id="fb5"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 7</span>
+        En una relaci&oacute;n de uno a muchos entre categor&iacute;as y productos, &iquest;d&oacute;nde se ubica la clave for&aacute;nea?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,6)"><span class="opt-letter">A</span> En la tabla productos, como una columna categoria_id que apunta a categorias.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,6)"><span class="opt-letter">B</span> En la tabla categorias, como una columna producto_id que apunta a productos.</button>
+      </div>
+      <div class="quiz-feedback" id="fb6"></div>
+    </div>
+  </div>
+
+  <div class="quiz-score" id="quizScore">
+    <div class="quiz-score-num" id="scoreNum">0/7</div>
+    <div>
+      <div style="font-size:14px;color:var(--fg2)" id="scoreLabel"></div>
+      <button onclick="resetQuiz()" style="margin-top:8px;font-size:13px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;text-decoration:underline">&#8630; Reintentar</button>
+    </div>
+  </div>
+</div>
+<div class="section">
+  <div class="tarea">
+    <h3>Tarea para la Pr&oacute;xima Clase (Obligatoria)</h3>
+    <ol>
+      <li><strong>Instalar el entorno:</strong> Completar la instalaci&oacute;n de PostgreSQL y Antares SQL Client, verificando que ambos funcionen correctamente.</li>
+      <li><strong>Reconfigurar Postman:</strong> Volver a instalar Postman y crear el Workspace, la Collection y la Environment con la variable baseUrl.</li>
+      <li><strong>Dise&ntilde;ar en papel:</strong> Definir la estructura de la tabla usuarios (columnas, tipos de dato, clave primaria) para la tienda virtual.</li>
+      <li><strong>Investigaci&oacute;n pr&oacute;xima clase:</strong> &iquest;Qu&eacute; instrucci&oacute;n SQL se usa para crear una tabla nueva? &iquest;Qu&eacute; instrucci&oacute;n se usa para insertar una fila en esa tabla?</li>
+    </ol>
+  </div>
+</div>
+<div class="footer">
+  <div class="footer-brand">CapOL Escuela</div>
+  <div class="footer-right">Curso Backend desde Cero &middot; Clase 25</div>
+</div>
+</div>
+
+<script>
+const html=document.documentElement;
+const MOON=`<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+const SUN=`<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+const icon=document.getElementById('themeIcon');
+function applyTheme(t){html.dataset.theme=t;icon.innerHTML=t==='dark'?SUN:MOON;localStorage.setItem('theme',t);}
+document.getElementById('themeBtn').addEventListener('click',()=>applyTheme(html.dataset.theme==='dark'?'light':'dark'));
+applyTheme(localStorage.getItem('theme')||'dark');
+
+const fill=document.getElementById('progress-fill');
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  fill.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+},{passive:true});
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function runSandbox(){
+  const code=document.getElementById('codeSandbox').value;
+  const out=document.getElementById('termOut');
+  out.classList.add('show');
+  const lines=[], orig=console.log;
+  console.log=(...a)=>lines.push(a.map(x=>x===null?'null':x===undefined?'undefined':typeof x==='object'?JSON.stringify(x,null,2):String(x)).join(' '));
+  let h='<div class="t-prompt">&#9654; OUTPUT</div>';
+  try{
+    new Function(code)();
+    h+=lines.length?lines.map(l=>`<div class="t-line">${esc(l)}</div>`).join(''):'<div class="t-ok">&#10003; Sin output</div>';
+  }catch(e){h+=`<div class="t-err">&#10007; Error: ${esc(e.message)}</div>`;}
+  out.innerHTML=h;
+  console.log=orig;
+}
+
+const CORRECT=[0,0,1,1,0,0,0];
+const EXPLAIN=['Un array en memoria vive dentro del proceso; al reiniciarse el servidor, esa memoria se libera y todo se pierde.','La estructura tabular con tipos de dato fijos es justamente la caracter&iacute;stica central del modelo relacional (SQL).','Los atributos compartidos son las columnas; cada fila es un registro concreto, como un producto puntual.','NUMERIC evita los errores de redondeo t&iacute;picos de los tipos de punto flotante, algo cr&iacute;tico al manejar dinero.','La unicidad y la obligatoriedad son justamente lo que define a una clave primaria dentro de una tabla.','La clave for&aacute;nea es el mecanismo que conecta una tabla con otra mediante un id compartido.','El lado \'muchos\' de la relaci&oacute;n (productos) es el que guarda la referencia hacia el lado \'uno\' (categorias).'];
+
+let answers=new Array(CORRECT.length).fill(null);
+let done=new Array(CORRECT.length).fill(false);
+
+window.checkAnswer=function(btn,sel,qi){
+  if(done[qi])return;
+  done[qi]=true; answers[qi]=sel;
+  btn.closest('.quiz-opts').querySelectorAll('.quiz-opt-btn').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===CORRECT[qi])b.classList.add('correct');
+    else if(i===sel)b.classList.add('wrong');
+  });
+  const fb=document.getElementById('fb'+qi);
+  fb.classList.add('show');
+  if(sel===CORRECT[qi]){fb.classList.add('ok');fb.innerHTML='&#10003; Correcto. '+EXPLAIN[qi];}
+  else{fb.classList.add('no');fb.innerHTML='&#10007; Incorrecto. '+EXPLAIN[qi];}
+  if(done.every(Boolean))showScore();
+};
+
+function showScore(){
+  const correct=answers.filter((a,i)=>a===CORRECT[i]).length;
+  const total=CORRECT.length;
+  const pct=Math.round(correct/total*100);
+  document.getElementById('scoreNum').textContent=correct+'/'+total;
+  document.getElementById('scoreLabel').textContent=
+    pct===100?'\ud83c\udf89 Perfecto. Dominaste el tema.':
+    pct>=75?'\ud83d\udcaa Muy bien. Repas\u00e1 los que erraste.':
+    pct>=50?'\ud83d\udcda Pasable. Vale la pena releer la clase.':
+            '\ud83d\udd04 Repas\u00e1 el material y volv\u00e9 a intentarlo.';
+  document.getElementById('quizScore').classList.add('show');
+}
+
+window.resetQuiz=function(){
+  answers=new Array(CORRECT.length).fill(null);
+  done=new Array(CORRECT.length).fill(false);
+  document.querySelectorAll('.quiz-opt-btn').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong');});
+  document.querySelectorAll('.quiz-feedback').forEach(fb=>{fb.classList.remove('show','ok','no');fb.innerHTML='';});
+  document.getElementById('quizScore').classList.remove('show');
+};
+</script>
+</body>
+</html>
