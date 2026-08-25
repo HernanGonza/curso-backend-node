@@ -222,7 +222,7 @@
     "archivo": "clases/clase25.html",
     "duracion": "60 min",
     "temas": ["SQL vs NoSQL", "Tablas", "Tipos de datos", "Claves"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 26,
