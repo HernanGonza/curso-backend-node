@@ -231,7 +231,7 @@
     "archivo": "clases/clase26.html",
     "duracion": "60 min",
     "temas": ["CREATE TABLE", "INSERT", "SELECT", "WHERE"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 27,
