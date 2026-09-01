@@ -240,7 +240,7 @@
     "archivo": "clases/clase27.html",
     "duracion": "60 min",
     "temas": ["UPDATE", "DELETE", "JOIN", "COUNT/SUM"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 28,
