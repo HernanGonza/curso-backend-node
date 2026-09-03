@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 28 &mdash; Conexion Node y PostgreSQL &middot; CapOL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#00c896;--danger:#ff4757;--warn:#ffa502;--purple:#a29bfe;--blue-tag:#74b9ff}
+[data-theme="dark"]{--bg:#0f0f11;--bg2:#16161a;--bg3:#1c1c21;--border:#2a2a32;--border2:#35353f;--fg:#e2e2ec;--fg2:#a0a0b0;--fg3:#606070;--card-bg:#16161a;--code-bg:#0a0a0d;--code-fg:#b8d0c8;--shadow:0 4px 24px rgba(0,0,0,.5)}
+[data-theme="light"]{--bg:#f5f5f0;--bg2:#ffffff;--bg3:#ebebeb;--border:#d8d8d0;--border2:#c5c5bc;--fg:#1a1a24;--fg2:#505060;--fg3:#909098;--card-bg:#ffffff;--code-bg:#1a1a24;--code-fg:#c8e0d8;--shadow:0 4px 24px rgba(0,0,0,.1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;line-height:1.75;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+.page{max-width:800px;margin:0 auto;padding:0 24px 120px}
+#topbar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:15px;text-decoration:none;color:var(--fg)}
+.brand-dot{width:30px;height:30px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#000;font-size:13px;font-weight:800;font-family:'IBM Plex Mono',monospace}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fg2);transition:all .2s}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+.powered{font-size:11px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+.back-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s}
+.back-btn:hover{color:var(--accent)}
+#progress-bar{position:fixed;top:56px;left:0;right:0;height:2px;background:var(--border);z-index:99}
+#progress-fill{height:100%;background:var(--accent);width:0%;transition:width .1s}
+.hero{padding:64px 0 40px;border-bottom:1px solid var(--border);margin-bottom:48px}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.hero-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--accent)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(32px,6vw,52px);font-weight:700;line-height:1.1;color:var(--fg);margin-bottom:18px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-desc{font-size:16px;color:var(--fg2);max-width:560px;line-height:1.7;margin-bottom:28px}
+.hero-meta{display:flex;gap:20px;flex-wrap:wrap}
+.hero-chip{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--fg2);font-family:'IBM Plex Mono',monospace}
+.hero-chip svg{color:var(--accent)}
+.objetivos{background:color-mix(in srgb,var(--accent) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);border-radius:12px;padding:24px 28px;margin-bottom:48px}
+.objetivos-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.objetivos ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.objetivos li{display:flex;gap:10px;font-size:14.5px}
+.objetivos li::before{content:'▸';color:var(--accent);flex-shrink:0;margin-top:2px}
+.section{margin-bottom:52px}
+.sec-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--fg);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:2px 8px;border-radius:5px}
+p.body{font-size:15px;line-height:1.8;color:var(--fg2);margin-bottom:12px}
+h4.sub{font-family:'DM Sans',sans-serif;font-weight:600;font-size:15px;color:var(--fg);margin:24px 0 8px;display:flex;align-items:center;gap:8px}
+h4.sub::before{content:'●';font-size:8px;color:var(--accent)}
+.cb{background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:12px 0}
+.cb-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border2);background:color-mix(in srgb,#000 20%,var(--code-bg))}
+.cb-dots{display:flex;gap:5px}
+.cb-dots span{width:10px;height:10px;border-radius:50%}
+.cb-dots .r{background:#ff5f56}.cb-dots .y{background:#ffbd2e}.cb-dots .g{background:#27c93f}
+.cb-lang{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#555}
+.cb pre{padding:16px 18px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--code-fg);white-space:pre}
+.ce{width:100%;border-collapse:collapse;background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:16px 0}
+.ce th{background:color-mix(in srgb,#000 20%,var(--code-bg));padding:10px 14px;font-size:13px;text-align:left;font-weight:600;border-bottom:1px solid var(--border2)}
+.ce tr{border-top:1px solid #1e1e28}
+.ce td{padding:10px 14px;font-size:13px;vertical-align:top;line-height:1.6}
+.ce td:first-child{font-family:'IBM Plex Mono',monospace;color:var(--code-fg);width:40%}
+.ce td:last-child{color:var(--fg2);padding-left:18px;border-left:1px solid #1e1e28}
+.ce tr:hover td{background:#0f0f14}
+[data-theme="light"] .ce tr:hover td{background:#f0f0e8}
+code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix(in srgb,var(--blue-tag) 10%,var(--bg3));color:var(--blue-tag);padding:1px 6px;border-radius:4px}
+.ib{border-radius:10px;padding:14px 18px;margin:12px 0;display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.65}
+.ib .ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.ib.green{background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 28%,transparent)}
+.ib.amber{background:color-mix(in srgb,var(--warn) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--warn) 28%,transparent)}
+.ib.red{background:color-mix(in srgb,var(--danger) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--danger) 28%,transparent)}
+.ib.blue{background:color-mix(in srgb,var(--blue-tag) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 28%,transparent)}
+.ejercicio{background:color-mix(in srgb,#000 30%,var(--bg2));border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin:16px 0}
+[data-theme="light"] .ejercicio{background:#f0f0ea}
+.ej-header{padding:10px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;background:var(--code-bg)}
+.ej-title{font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;color:var(--fg)}
+.ej-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--fg3)}
+textarea.editor{width:100%;background:var(--code-bg);color:#b8d0c8;border:none;outline:none;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;padding:16px 18px;resize:vertical;min-height:220px;tab-size:2}
+.run-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:var(--accent);color:#000;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;transition:background .15s}
+.run-btn:hover{background:color-mix(in srgb,var(--accent) 80%,#fff)}
+.terminal-out{font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:14px 18px;line-height:1.7;background:color-mix(in srgb,#000 50%,var(--code-bg));border-top:1px solid var(--border2);display:none}
+.terminal-out.show{display:block}
+.t-line{color:#a0c8a8}.t-ok{color:var(--accent)}.t-err{color:var(--danger)}.t-prompt{color:var(--fg3);margin-bottom:8px;font-size:11px}
+.quiz-wrap{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+.quiz-item{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.quiz-q{padding:14px 18px;border-bottom:1px solid var(--border);font-size:14.5px;font-weight:600;background:var(--bg2)}
+.quiz-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:4px}
+.quiz-opts{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.quiz-opt-btn{width:100%;text-align:left;padding:10px 16px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;color:var(--fg);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:10px;transition:all .15s}
+.quiz-opt-btn:hover:not(:disabled){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--bg3))}
+.opt-letter{width:22px;height:22px;border-radius:6px;background:var(--border2);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;color:var(--fg3)}
+.quiz-opt-btn:hover:not(:disabled) .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.correct{background:color-mix(in srgb,var(--accent) 12%,var(--bg3));border-color:var(--accent);color:var(--accent)}
+.quiz-opt-btn.correct .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.wrong{background:color-mix(in srgb,var(--danger) 10%,var(--bg3));border-color:var(--danger);color:var(--danger)}
+.quiz-opt-btn.wrong .opt-letter{background:var(--danger);color:#fff}
+.quiz-opt-btn:disabled{cursor:default}
+.quiz-feedback{padding:10px 18px 14px;font-size:13.5px;display:none}
+.quiz-feedback.show{display:flex;align-items:center;gap:8px}
+.quiz-feedback.ok{color:var(--accent)}.quiz-feedback.no{color:var(--danger)}
+.quiz-score{margin-top:20px;padding:18px 22px;background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:12px;display:none;align-items:center;gap:16px}
+.quiz-score.show{display:flex}
+.quiz-score-num{font-family:'Fraunces',serif;font-size:40px;font-weight:700;color:var(--accent);line-height:1}
+.tarea{background:color-mix(in srgb,var(--blue-tag) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 25%,transparent);border-radius:12px;padding:24px 28px}
+.tarea h3{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--blue-tag);margin-bottom:14px}
+.tarea ol{padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.footer{border-top:1px solid var(--border);padding:32px 0 0;margin-top:64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-brand{font-family:'Fraunces',serif;font-weight:700;font-size:15px}
+.footer-right{font-size:12px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <a href="../index.html" class="back-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Inicio</a>
+  <div class="brand"><div class="brand-dot">B</div>Backend desde Cero</div>
+  <div class="topbar-right">
+    <span class="powered">CapOL &times; Apoc Automation</span>
+    <button class="theme-btn" id="themeBtn" title="Cambiar tema">
+      <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+
+<div class="page">
+<div class="hero">
+  <div class="hero-eyebrow">Clase 28 &middot; Bloque 6: PostgreSQL</div>
+  <h1><em>Conexi&oacute;n Node + PostgreSQL</em></h1>
+  <p class="hero-desc">Conect&aacute; tu servidor Express a una base de datos PostgreSQL real con node-postgres, manej&aacute; credenciales con dotenv, y escrib&iacute; queries seguras con par&aacute;metros. Cierra el Bloque 6.</p>
+  <div class="hero-meta">
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>60 minutos</span>
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Requiere Clase 27</span>
+  </div>
+</div>
+<div class="objetivos">
+  <div class="objetivos-title">Objetivos de la clase</div>
+  <ul>
+    <li>Comprender por qu&eacute; Node.js necesita un paquete driver para poder comunicarse con PostgreSQL.</li>
+    <li>Instalar y configurar node-postgres (pg) en un proyecto Express.</li>
+    <li>Utilizar dotenv para mantener las credenciales de la base de datos fuera del c&oacute;digo fuente.</li>
+    <li>Crear y entender un Pool de conexiones hacia PostgreSQL.</li>
+    <li>Ejecutar la primera consulta SQL real desde c&oacute;digo Node.js.</li>
+    <li>Escribir queries con par&aacute;metros para prevenir SQL Injection al recibir datos del usuario.</li>
+  </ul>
+</div>
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">01</span>&iquest;Por Qu&eacute; Node.js Necesita un Driver?</h2>
+  <p class="body">Hasta ahora ejecutamos SQL directamente en pgAdmin o en VS Code, escribiendo las sentencias a mano. Pero el objetivo final es que sea nuestro <strong>servidor Express</strong> el que hable con PostgreSQL: cuando llega un GET a <code>/productos</code>, el controller tiene que consultar la base de datos real y devolver esos resultados, en lugar del array en memoria que usamos en el Bloque 5.</p>
+  <p class="body">Node.js no sabe, por s&iacute; solo, c&oacute;mo comunicarse con PostgreSQL: son dos programas completamente distintos, escritos en tecnolog&iacute;as diferentes. Para que puedan conversar, se necesita un <strong>driver</strong>: una librer&iacute;a que traduce el c&oacute;digo JavaScript en el protocolo de comunicaci&oacute;n espec&iacute;fico que entiende PostgreSQL.</p>
+  <div class="ib blue">
+    <span class="ico">&#128161;</span>
+    <div><strong>Analog&iacute;a pr&aacute;ctica:</strong> Es como dos personas que hablan idiomas distintos y necesitan un traductor para entenderse. node-postgres es exactamente ese traductor entre el JavaScript de tu servidor y el motor de PostgreSQL.</div>
+  </div>
+</div><div class="section">
+  <h2 class="sec-title"><span class="sec-num">02</span>Instalando node-postgres (pg)</h2>
+  <p class="body"><strong>node-postgres</strong>, distribuido bajo el nombre de paquete <code>pg</code>, es el driver oficial y m&aacute;s utilizado para conectar Node.js con PostgreSQL. Se instala como cualquier otra dependencia del proyecto.</p>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">bash</div>
+    </div>
+    <pre>npm install pg</pre>
+  </div>
+  <p class="body">A diferencia de nodemon, <code>pg</code> es una dependencia de <strong>producci&oacute;n</strong>: la aplicaci&oacute;n la necesita para funcionar en cualquier entorno, no solo durante el desarrollo.</p>
+</div><div class="section">
+  <h2 class="sec-title"><span class="sec-num">03</span>dotenv: Variables de Entorno para las Credenciales</h2>
+  <p class="body">Para conectarse a PostgreSQL, la aplicaci&oacute;n necesita datos sensibles: usuario, contrase&ntilde;a, nombre de la base de datos, host y puerto. Escribir esos valores directamente en el c&oacute;digo ("hardcodeados") es una mala pr&aacute;ctica grave: si el c&oacute;digo se sube a un repositorio p&uacute;blico, esas credenciales quedan expuestas para cualquiera.</p>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">bash</div>
+    </div>
+    <pre>npm install dotenv</pre>
+  </div>
+  <p class="body">El paquete <code>dotenv</code> permite guardar esos valores en un archivo separado llamado <code>.env</code>, que nunca se sube al repositorio (se agrega a <code>.gitignore</code>), y cargarlos como variables de entorno accesibles desde <code>process.env</code>.</p>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">bash</div>
+    </div>
+    <pre># .env
+DB_USER=postgres
+DB_PASSWORD=tu_contrasena
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=tienda_virtual</pre>
+  </div>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>// index.js - al principio de todo, antes de usar process.env
+require('dotenv').config();</pre>
+  </div>
+  <div class="ib amber">
+    <span class="ico">&#9888;&#65039;</span>
+    <div><strong>Nunca subir el .env:</strong> El archivo .env debe estar listado en .gitignore desde el primer commit del proyecto. Si ya se subi&oacute; por error alguna vez, cambiar la contrase&ntilde;a real de la base de datos es la &uacute;nica forma segura de resolverlo.</div>
+  </div>
+</div><div class="section">
+  <h2 class="sec-title"><span class="sec-num">04</span>Creando el Pool de Conexiones</h2>
+  <p class="body">Un <strong>Pool</strong> es un conjunto de conexiones reutilizables hacia la base de datos, administradas autom&aacute;ticamente por <code>pg</code>. En lugar de abrir y cerrar una conexi&oacute;n nueva por cada consulta (una operaci&oacute;n relativamente costosa), el Pool mantiene varias conexiones abiertas y las reparte entre las distintas queries que van llegando.</p>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>// db.js
+require('dotenv').config();
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  database: process.env.DB_NAME,
+});
+
+module.exports = pool;</pre>
+  </div>
+  <div class="ib green">
+    <span class="ico">&#128737;&#65039;</span>
+    <div><strong>Por qu&eacute; se centraliza en db.js:</strong> Crear el Pool una &uacute;nica vez, en su propio archivo, y exportarlo, permite que cualquier controller del proyecto lo importe y lo reutilice, en vez de crear una conexi&oacute;n nueva en cada archivo.</div>
+  </div>
+</div><div class="section">
+  <h2 class="sec-title"><span class="sec-num">05</span>Ejecutando la Primera Query desde Node</h2>
+  <p class="body">El Pool expone un m&eacute;todo <code>query()</code>, que recibe una sentencia SQL como string y devuelve una <strong>promesa</strong>. Como ya se practic&oacute; con fetch y las funciones as&iacute;ncronas del Bloque 5, se puede resolver con <code>async/await</code>.</p>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>// controllers/productos.controller.js
+const pool = require('../db');
+
+exports.obtenerTodos = async (req, res) => {
+  try {
+    const resultado = await pool.query('SELECT * FROM productos');
+    res.json(resultado.rows);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al consultar productos' });
+  }
+};</pre>
+  </div>
+  <p class="body">El objeto que devuelve <code>pool.query()</code> trae varias propiedades; la m&aacute;s usada con diferencia es <code>rows</code>, que contiene un array con las filas del resultado, ya convertidas en objetos JavaScript listos para usar con <code>res.json()</code>.</p>
+</div><div class="section">
+  <h2 class="sec-title"><span class="sec-num">06</span>Queries con Par&aacute;metros: Previniendo SQL Injection</h2>
+  <p class="body">Cuando una query necesita incorporar un valor din&aacute;mico &mdash;por ejemplo, un id que llega por <code>req.params</code>&mdash; <strong>nunca</strong> se debe concatenar ese valor directamente dentro del string SQL. Hacerlo abre la puerta a un ataque conocido como <strong>SQL Injection</strong>, donde alguien malintencionado inyecta c&oacute;digo SQL propio disfrazado de un par&aacute;metro normal.</p>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>// (X) PELIGROSO: nunca concatenar directamente
+const id = req.params.id;
+const resultado = await pool.query(`SELECT * FROM productos WHERE id = ${id}`);
+
+// (OK) CORRECTO: query parametrizada, con $1 como placeholder
+const resultado = await pool.query(
+  'SELECT * FROM productos WHERE id = $1',
+  [id]
+);</pre>
+  </div>
+  <p class="body">El s&iacute;mbolo <code>$1</code> es un marcador de posici&oacute;n: <code>pg</code> se encarga de insertar el valor de forma segura, escapando cualquier car&aacute;cter que pudiera alterar la estructura de la consulta. Con varios par&aacute;metros, se numeran en orden: <code>$1</code>, <code>$2</code>, <code>$3</code>, etc.</p>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>exports.crear = async (req, res) => {
+  const { nombre, precio } = req.body;
+  const resultado = await pool.query(
+    'INSERT INTO productos (nombre, precio) VALUES ($1, $2) RETURNING *',
+    [nombre, precio]
+  );
+  res.status(201).json(resultado.rows[0]);
+};</pre>
+  </div>
+  <div class="ib amber">
+    <span class="ico">&#9888;&#65039;</span>
+    <div><strong>Sobre RETURNING *:</strong> Agregar RETURNING * al final de un INSERT le pide a PostgreSQL que devuelva la fila reci&eacute;n creada (con su id ya generado por SERIAL) en el mismo resultado, evitando tener que hacer una segunda consulta para obtenerla.</div>
+  </div>
+</div>
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">07</span>Simulador Conceptual: Query Segura vs Insegura</h2>
+  <p class="body">Este entorno simula, en JavaScript, la diferencia entre construir una consulta concatenando texto (riesgoso) y usar par&aacute;metros (seguro). No ejecuta SQL real ni PostgreSQL.</p>
+
+  <div class="ejercicio">
+    <div class="ej-header">
+      <div class="ej-title">Simulador: Concatenacion vs Parametros</div>
+      <div class="ej-badge">simulador.js</div>
+    </div>
+    <textarea class="editor" id="codeSandbox" spellcheck="false">// Simulacion conceptual: por que la concatenacion es riesgosa
+const idNormal = "5";
+const idMalicioso = "5 OR 1=1"; // intento de manipular la consulta
+
+function construirQueryInsegura(id) {
+  return `SELECT * FROM productos WHERE id = ${id}`;
+}
+
+function construirQuerySegura(id) {
+  return { texto: "SELECT * FROM productos WHERE id = $1", valores: [id] };
+}
+
+console.log("--- Insegura (concatenada) ---");
+console.log(construirQueryInsegura(idNormal));
+console.log(construirQueryInsegura(idMalicioso)); // el WHERE queda roto/manipulado
+
+console.log("--- Segura (parametrizada) ---");
+console.log(construirQuerySegura(idNormal));
+console.log(construirQuerySegura(idMalicioso)); // el valor completo se trata como un solo dato
+</textarea>
+    <button class="run-btn" onclick="runSandbox()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Ejecutar C&oacute;digo
+    </button>
+    <div class="terminal-out" id="termOut"></div>
+  </div>
+</div>
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">08</span>Cuestionario de Autoevaluaci&oacute;n</h2>
+  <p class="body">Verifica tus conocimientos te&oacute;ricos antes de proceder con las tareas obligatorias de desarrollo de software.</p>
+
+  <div class="quiz-wrap">
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 1</span>
+        &iquest;Qu&eacute; paquete de npm es el driver oficial m&aacute;s usado para conectar Node.js con PostgreSQL?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,0)"><span class="opt-letter">A</span> pg</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,0)"><span class="opt-letter">B</span> postgres-node</button>
+      </div>
+      <div class="quiz-feedback" id="fb0"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 2</span>
+        &iquest;Para qu&eacute; sirve dotenv en un proyecto Express?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,1)"><span class="opt-letter">A</span> Para cargar variables de entorno desde un archivo .env, sin exponer credenciales en el c&oacute;digo.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,1)"><span class="opt-letter">B</span> Para instalar autom&aacute;ticamente PostgreSQL en la m&aacute;quina.</button>
+      </div>
+      <div class="quiz-feedback" id="fb1"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 3</span>
+        &iquest;Qu&eacute; es un Pool de conexiones?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,2)"><span class="opt-letter">A</span> Un conjunto de conexiones reutilizables hacia la base de datos, administrado autom&aacute;ticamente.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,2)"><span class="opt-letter">B</span> Una tabla especial que guarda &uacute;nicamente los errores de conexi&oacute;n.</button>
+      </div>
+      <div class="quiz-feedback" id="fb2"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 4</span>
+        &iquest;Qu&eacute; propiedad del resultado de pool.query() contiene las filas devueltas?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,3)"><span class="opt-letter">A</span> rows</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,3)"><span class="opt-letter">B</span> data</button>
+      </div>
+      <div class="quiz-feedback" id="fb3"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 5</span>
+        &iquest;Qu&eacute; riesgo se corre al concatenar directamente un valor recibido del usuario dentro de un string SQL?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,4)"><span class="opt-letter">A</span> SQL Injection: el usuario podr&iacute;a inyectar c&oacute;digo SQL malicioso.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,4)"><span class="opt-letter">B</span> El servidor se reinicia autom&aacute;ticamente por seguridad.</button>
+      </div>
+      <div class="quiz-feedback" id="fb4"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 6</span>
+        &iquest;C&oacute;mo se indica un par&aacute;metro seguro en una query de pg?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,5)"><span class="opt-letter">A</span> Con un marcador de posici&oacute;n como $1, pasando el valor real en un array aparte.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,5)"><span class="opt-letter">B</span> Escribiendo el valor directamente dentro del template string con backticks.</button>
+      </div>
+      <div class="quiz-feedback" id="fb5"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 7</span>
+        &iquest;Qu&eacute; hace agregar RETURNING * al final de un INSERT?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,6)"><span class="opt-letter">A</span> Devuelve la fila reci&eacute;n insertada, incluyendo el id generado por SERIAL.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,6)"><span class="opt-letter">B</span> Elimina autom&aacute;ticamente la fila insertada si hubo alg&uacute;n error.</button>
+      </div>
+      <div class="quiz-feedback" id="fb6"></div>
+    </div>
+  </div>
+
+  <div class="quiz-score" id="quizScore">
+    <div class="quiz-score-num" id="scoreNum">0/7</div>
+    <div>
+      <div style="font-size:14px;color:var(--fg2)" id="scoreLabel"></div>
+      <button onclick="resetQuiz()" style="margin-top:8px;font-size:13px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;text-decoration:underline">&#8630; Reintentar</button>
+    </div>
+  </div>
+</div>
+<div class="section">
+  <div class="tarea">
+    <h3>Tarea para la Pr&oacute;xima Clase (Obligatoria)</h3>
+    <ol>
+      <li><strong>Configurar el driver:</strong> Instalar pg y dotenv, crear el archivo .env y el archivo db.js con el Pool configurado, agregando .env a .gitignore.</li>
+      <li><strong>Migrar el CRUD:</strong> Reemplazar el array en memoria del controller de productos por consultas reales a PostgreSQL usando pool.query(), incluyendo al menos un GET por id con query parametrizada.</li>
+      <li><strong>Cierre de Bloque 6:</strong> El proyecto ya tiene Express conectado a una base de datos PostgreSQL real. En el Bloque 7 se integra todo en el Proyecto Final de la tienda virtual.</li>
+    </ol>
+  </div>
+</div>
+<div class="footer">
+  <div class="footer-brand">CapOL Escuela</div>
+  <div class="footer-right">Curso Backend desde Cero &middot; Clase 28</div>
+</div>
+</div>
+
+<script>
+const html=document.documentElement;
+const MOON=`<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+const SUN=`<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+const icon=document.getElementById('themeIcon');
+function applyTheme(t){html.dataset.theme=t;icon.innerHTML=t==='dark'?SUN:MOON;localStorage.setItem('theme',t);}
+document.getElementById('themeBtn').addEventListener('click',()=>applyTheme(html.dataset.theme==='dark'?'light':'dark'));
+applyTheme(localStorage.getItem('theme')||'dark');
+
+const fill=document.getElementById('progress-fill');
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  fill.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+},{passive:true});
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function runSandbox(){
+  const code=document.getElementById('codeSandbox').value;
+  const out=document.getElementById('termOut');
+  out.classList.add('show');
+  const lines=[], orig=console.log;
+  console.log=(...a)=>lines.push(a.map(x=>x===null?'null':x===undefined?'undefined':typeof x==='object'?JSON.stringify(x,null,2):String(x)).join(' '));
+  let h='<div class="t-prompt">&#9654; OUTPUT</div>';
+  try{
+    new Function(code)();
+    h+=lines.length?lines.map(l=>`<div class="t-line">${esc(l)}</div>`).join(''):'<div class="t-ok">&#10003; Sin output</div>';
+  }catch(e){h+=`<div class="t-err">&#10007; Error: ${esc(e.message)}</div>`;}
+  out.innerHTML=h;
+  console.log=orig;
+}
+
+const CORRECT=[0,0,0,0,0,0,0];
+const EXPLAIN=['node-postgres se distribuye bajo el nombre de paquete pg, y es el driver est&aacute;ndar de facto en el ecosistema Node.js.','dotenv solo se encarga de leer el archivo .env y volcarlo en process.env; no instala software adicional.','El Pool evita el costo de abrir y cerrar una conexi&oacute;n nueva por cada consulta, reutilizando un conjunto ya abierto.','pg devuelve un objeto con varias propiedades; rows es la que contiene el array de filas resultantes.','Concatenar valores sin sanitizar permite que un valor de entrada altere la estructura misma de la consulta SQL.','Los placeholders $1, $2, etc. le indican a pg d&oacute;nde insertar de forma segura cada valor del array de par&aacute;metros.','RETURNING * evita tener que hacer un SELECT aparte para obtener los datos completos de la fila reci&eacute;n creada.'];
+
+let answers=new Array(CORRECT.length).fill(null);
+let done=new Array(CORRECT.length).fill(false);
+
+window.checkAnswer=function(btn,sel,qi){
+  if(done[qi])return;
+  done[qi]=true; answers[qi]=sel;
+  btn.closest('.quiz-opts').querySelectorAll('.quiz-opt-btn').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===CORRECT[qi])b.classList.add('correct');
+    else if(i===sel)b.classList.add('wrong');
+  });
+  const fb=document.getElementById('fb'+qi);
+  fb.classList.add('show');
+  if(sel===CORRECT[qi]){fb.classList.add('ok');fb.innerHTML='&#10003; Correcto. '+EXPLAIN[qi];}
+  else{fb.classList.add('no');fb.innerHTML='&#10007; Incorrecto. '+EXPLAIN[qi];}
+  if(done.every(Boolean))showScore();
+};
+
+function showScore(){
+  const correct=answers.filter((a,i)=>a===CORRECT[i]).length;
+  const total=CORRECT.length;
+  const pct=Math.round(correct/total*100);
+  document.getElementById('scoreNum').textContent=correct+'/'+total;
+  document.getElementById('scoreLabel').textContent=
+    pct===100?'\ud83c\udf89 Perfecto. Dominaste el tema.':
+    pct>=75?'\ud83d\udcaa Muy bien. Repas\u00e1 los que erraste.':
+    pct>=50?'\ud83d\udcda Pasable. Vale la pena releer la clase.':
+            '\ud83d\udd04 Repas\u00e1 el material y volv\u00e9 a intentarlo.';
+  document.getElementById('quizScore').classList.add('show');
+}
+
+window.resetQuiz=function(){
+  answers=new Array(CORRECT.length).fill(null);
+  done=new Array(CORRECT.length).fill(false);
+  document.querySelectorAll('.quiz-opt-btn').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong');});
+  document.querySelectorAll('.quiz-feedback').forEach(fb=>{fb.classList.remove('show','ok','no');fb.innerHTML='';});
+  document.getElementById('quizScore').classList.remove('show');
+};
+</script>
+</body>
+</html>
