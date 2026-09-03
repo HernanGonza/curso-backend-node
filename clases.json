@@ -249,7 +249,7 @@
     "archivo": "clases/clase28.html",
     "duracion": "60 min",
     "temas": ["node-postgres", "Pool", "dotenv", "Queries con parámetros"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 29,
