@@ -258,7 +258,7 @@
     "archivo": "clases/clase29.html",
     "duracion": "60 min",
     "temas": ["Arquitectura en capas", "routes/controllers/services", ".env"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 30,
