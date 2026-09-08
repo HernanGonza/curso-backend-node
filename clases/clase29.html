@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 29 — Proyecto Final: Setup · CapOL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+:root{--accent:#00c896;--danger:#ff4757;--warn:#ffa502;--purple:#a29bfe;--blue-tag:#74b9ff}
+[data-theme="dark"]{--bg:#0f0f11;--bg2:#16161a;--bg3:#1c1c21;--border:#2a2a32;--border2:#35353f;--fg:#e2e2ec;--fg2:#a0a0b0;--fg3:#606070;--card-bg:#16161a;--code-bg:#0a0a0d;--code-fg:#b8d0c8;--shadow:0 4px 24px rgba(0,0,0,.5)}
+[data-theme="light"]{--bg:#f5f5f0;--bg2:#ffffff;--bg3:#ebebeb;--border:#d8d8d0;--border2:#c5c5bc;--fg:#1a1a24;--fg2:#505060;--fg3:#909098;--card-bg:#ffffff;--code-bg:#1a1a24;--code-fg:#c8e0d8;--shadow:0 4px 24px rgba(0,0,0,.1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;line-height:1.75;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+.page{max-width:800px;margin:0 auto;padding:0 24px 120px}
+#topbar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:15px;text-decoration:none;color:var(--fg)}
+.brand-dot{width:30px;height:30px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#000;font-size:13px;font-weight:800;font-family:'IBM Plex Mono',monospace}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fg2);transition:all .2s}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+.powered{font-size:11px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+.back-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s}
+.back-btn:hover{color:var(--accent)}
+#progress-bar{position:fixed;top:56px;left:0;right:0;height:2px;background:var(--border);z-index:99}
+#progress-fill{height:100%;background:var(--accent);width:0%;transition:width .1s}
+.hero{padding:64px 0 40px;border-bottom:1px solid var(--border);margin-bottom:48px}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.hero-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--accent)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(32px,6vw,52px);font-weight:700;line-height:1.1;color:var(--fg);margin-bottom:18px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-desc{font-size:16px;color:var(--fg2);max-width:560px;line-height:1.7;margin-bottom:28px}
+.hero-meta{display:flex;gap:20px;flex-wrap:wrap}
+.hero-chip{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--fg2);font-family:'IBM Plex Mono',monospace}
+.hero-chip svg{color:var(--accent)}
+.objetivos{background:color-mix(in srgb,var(--accent) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);border-radius:12px;padding:24px 28px;margin-bottom:48px}
+.objetivos-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.objetivos ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.objetivos li{display:flex;gap:10px;font-size:14.5px}
+.objetivos li::before{content:'▸';color:var(--accent);flex-shrink:0;margin-top:2px}
+.section{margin-bottom:52px}
+.sec-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--fg);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:2px 8px;border-radius:5px}
+p.body{font-size:15px;line-height:1.8;color:var(--fg2);margin-bottom:12px}
+h4.sub{font-family:'DM Sans',sans-serif;font-weight:600;font-size:15px;color:var(--fg);margin:24px 0 8px;display:flex;align-items:center;gap:8px}
+h4.sub::before{content:'●';font-size:8px;color:var(--accent)}
+.cb{background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:12px 0}
+.cb-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border2);background:color-mix(in srgb,#000 20%,var(--code-bg))}
+.cb-dots{display:flex;gap:5px}
+.cb-dots span{width:10px;height:10px;border-radius:50%}
+.cb-dots .r{background:#ff5f56}.cb-dots .y{background:#ffbd2e}.cb-dots .g{background:#27c93f}
+.cb-lang{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#555}
+.cb pre{padding:16px 18px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--code-fg);white-space:pre}
+.ce{width:100%;border-collapse:collapse;background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:16px 0}
+.ce th{background:color-mix(in srgb,#000 20%,var(--code-bg));padding:10px 14px;font-size:13px;text-align:left;font-weight:600;border-bottom:1px solid var(--border2)}
+.ce tr{border-top:1px solid #1e1e28}
+.ce td{padding:10px 14px;font-size:13px;vertical-align:top;line-height:1.6}
+.ce td:first-child{font-family:'IBM Plex Mono',monospace;color:var(--code-fg);width:40%}
+.ce td:last-child{color:var(--fg2);padding-left:18px;border-left:1px solid #1e1e28}
+.ce tr:hover td{background:#0f0f14}
+[data-theme="light"] .ce tr:hover td{background:#f0f0e8}
+code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix(in srgb,var(--blue-tag) 10%,var(--bg3));color:var(--blue-tag);padding:1px 6px;border-radius:4px}
+.ib{border-radius:10px;padding:14px 18px;margin:12px 0;display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.65}
+.ib .ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.ib.green{background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 28%,transparent)}
+.ib.amber{background:color-mix(in srgb,var(--warn) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--warn) 28%,transparent)}
+.ib.red{background:color-mix(in srgb,var(--danger) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--danger) 28%,transparent)}
+.ib.blue{background:color-mix(in srgb,var(--blue-tag) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 28%,transparent)}
+.ejercicio{background:color-mix(in srgb,#000 30%,var(--bg2));border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin:16px 0}
+[data-theme="light"] .ejercicio{background:#f0f0ea}
+.ej-header{padding:10px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;background:var(--code-bg)}
+.ej-title{font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;color:var(--fg)}
+.ej-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--fg3)}
+textarea.editor{width:100%;background:var(--code-bg);color:#b8d0c8;border:none;outline:none;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;padding:16px 18px;resize:vertical;min-height:220px;tab-size:2}
+.run-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:var(--accent);color:#000;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;transition:background .15s}
+.run-btn:hover{background:color-mix(in srgb,var(--accent) 80%,#fff)}
+.terminal-out{font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:14px 18px;line-height:1.7;background:color-mix(in srgb,#000 50%,var(--code-bg));border-top:1px solid var(--border2);display:none}
+.terminal-out.show{display:block}
+.t-line{color:#a0c8a8}.t-ok{color:var(--accent)}.t-err{color:var(--danger)}.t-prompt{color:var(--fg3);margin-bottom:8px;font-size:11px}
+.quiz-wrap{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+.quiz-item{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.quiz-q{padding:14px 18px;border-bottom:1px solid var(--border);font-size:14.5px;font-weight:600;background:var(--bg2)}
+.quiz-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:4px}
+.quiz-opts{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.quiz-opt-btn{width:100%;text-align:left;padding:10px 16px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;color:var(--fg);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:10px;transition:all .15s}
+.quiz-opt-btn:hover:not(:disabled){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--bg3))}
+.opt-letter{width:22px;height:22px;border-radius:6px;background:var(--border2);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;color:var(--fg3)}
+.quiz-opt-btn:hover:not(:disabled) .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.correct{background:color-mix(in srgb,var(--accent) 12%,var(--bg3));border-color:var(--accent);color:var(--accent)}
+.quiz-opt-btn.correct .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.wrong{background:color-mix(in srgb,var(--danger) 10%,var(--bg3));border-color:var(--danger);color:var(--danger)}
+.quiz-opt-btn.wrong .opt-letter{background:var(--danger);color:#fff}
+.quiz-opt-btn:disabled{cursor:default}
+.quiz-feedback{padding:10px 18px 14px;font-size:13.5px;display:none}
+.quiz-feedback.show{display:flex;align-items:center;gap:8px}
+.quiz-feedback.ok{color:var(--accent)}.quiz-feedback.no{color:var(--danger)}
+.quiz-score{margin-top:20px;padding:18px 22px;background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:12px;display:none;align-items:center;gap:16px}
+.quiz-score.show{display:flex}
+.quiz-score-num{font-family:'Fraunces',serif;font-size:40px;font-weight:700;color:var(--accent);line-height:1}
+.tarea{background:color-mix(in srgb,var(--blue-tag) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 25%,transparent);border-radius:12px;padding:24px 28px}
+.tarea h3{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--blue-tag);margin-bottom:14px}
+.tarea ol{padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.footer{border-top:1px solid var(--border);padding:32px 0 0;margin-top:64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-brand{font-family:'Fraunces',serif;font-weight:700;font-size:15px}
+.footer-right{font-size:12px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <a href="../index.html" class="back-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Inicio</a>
+  <div class="brand"><div class="brand-dot">B</div>Backend desde Cero</div>
+  <div class="topbar-right">
+    <span class="powered">CapOL × Apoc Automation</span>
+    <button class="theme-btn" id="themeBtn" title="Cambiar tema">
+      <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+
+<div class="page">
+
+<div class="hero">
+  <div class="hero-eyebrow">Clase 29 · Bloque 7: Proyecto Final</div>
+  <h1><em>Proyecto Final: Arquitectura y Setup desde Cero</em></h1>
+  <p class="hero-desc">Arrancamos el proyecto final del curso: una API de productos construida completamente desde cero. En esta clase se define el modelo de datos, la arquitectura en capas, y se deja todo el proyecto inicializado, configurado y con su base de datos lista.</p>
+  <div class="hero-meta">
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>60 minutos</span>
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Requiere Bloque 6 completo</span>
+  </div>
+</div>
+
+<div class="objetivos">
+  <div class="objetivos-title">Objetivos de la clase</div>
+  <ul>
+    <li>Comprender el alcance completo del Proyecto Final: una API de productos construida de punta a punta.</li>
+    <li>Diseñar el modelo de datos con dos tablas relacionadas: productos y categoria_producto.</li>
+    <li>Definir por escrito todos los endpoints de la API antes de programar.</li>
+    <li>Armar la estructura de carpetas del proyecto siguiendo una arquitectura en capas.</li>
+    <li>Inicializar el proyecto de Node.js desde cero con npm.</li>
+    <li>Instalar y comprender cada una de las dependencias necesarias.</li>
+    <li>Configurar correctamente las variables de entorno y el control de versiones.</li>
+    <li>Crear las tablas en PostgreSQL usando Antares y cargar datos de prueba.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">01</span>¿Qué es el Proyecto Final?</h2>
+  
+  <p class="body">A partir de esta clase arrancamos el <strong>Proyecto Final</strong> del curso: una API REST de productos, construida completamente desde cero a lo largo de cuatro clases. No vamos a reutilizar ningún archivo de ejercicios anteriores &mdash; el proyecto empieza literalmente en una carpeta vac&iacute;a y termina publicado en internet en la Clase 32.</p>
+  <p class="body">El recurso principal de la API es <code>productos</code>. Para mantenerlo simple pero funcional, cada producto va a tener solo tres datos propios: su nombre, su precio y la categor&iacute;a a la que pertenece.</p>
+  <div class="ib blue">
+    <span class="ico">&#128161;</span>
+    <div><strong>Por qu&eacute; empezar de cero:</strong> Arrancar un proyecto real desde una carpeta vac&iacute;a es distinto a completar ejercicios sueltos. Ac&aacute; se practica tambi&eacute;n el orden de las decisiones: primero se piensa el modelo de datos y los endpoints, despu&eacute;s se arma la carpeta, y reci&eacute;n ah&iacute; se escribe la primera l&iacute;nea de c&oacute;digo.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">02</span>Arquitectura en Capas</h2>
+  
+  <p class="body">El proyecto se organiza en capas, cada una con una &uacute;nica responsabilidad.</p>
+  <table class="ce"><thead><tr><th>Capa</th><th>Responsabilidad</th></tr></thead><tbody><tr><td>routes</td><td>Define qu&eacute; URL y qu&eacute; m&eacute;todo HTTP dispara cada funci&oacute;n.</td></tr><tr><td>controllers</td><td>Recibe el request, llama a la capa service, y decide qu&eacute; responde al cliente.</td></tr><tr><td>services</td><td>Contiene las queries SQL reales contra PostgreSQL.</td></tr><tr><td>middlewares</td><td>Funciones que se ejecutan antes del controller: validaciones y manejo de errores.</td></tr></tbody></table><div class="ib green">
+    <span class="ico">&#128737;&#65039;</span>
+    <div><strong>Por qu&eacute; separar en capas:</strong> Si cambia la forma de guardar los datos, solo se modifica services/. Si cambia una validaci&oacute;n, solo se toca middlewares/. Cada capa se puede editar sin romper a las dem&aacute;s.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">03</span>Diseñando el Modelo de Datos</h2>
+  
+  <p class="body">El proyecto usa dos tablas relacionadas. <code>categoria_producto</code> es una tabla simple de referencia, y <code>productos</code> es la tabla principal, con una clave for&aacute;nea hacia la primera.</p>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">sql</div>
+    </div>
+    <pre>CREATE TABLE categoria_producto (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE productos (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  precio NUMERIC(10,2) NOT NULL,
+  categoria_producto_id INTEGER NOT NULL REFERENCES categoria_producto(id)
+);</pre>
+  </div>
+  <p class="body">Cada producto tiene exactamente tres propiedades propias: <code>nombre</code>, <code>precio</code> y <code>categoria_producto_id</code> (adem&aacute;s del <code>id</code> autogenerado).</p>
+  <div class="ib green">
+    <span class="ico">&#128737;&#65039;</span>
+    <div><strong>Por qu&eacute; agregar la tabla de categor&iacute;as:</strong> categoria_producto no tiene su propio CRUD en esta API: solo se carga con un par de filas de prueba. Su &uacute;nico prop&oacute;sito es habilitar un JOIN real cuando se consulten productos.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">04</span>Definiendo los Endpoints de la API</h2>
+  <table class="ce"><thead><tr><th>M&eacute;todo</th><th>Endpoint</th><th>Descripci&oacute;n</th></tr></thead><tbody><tr><td><code>GET</code></td><td>/productos</td><td>Lista todos los productos, incluyendo el nombre de su categor&iacute;a.</td></tr><tr><td><code>GET</code></td><td>/productos/:id</td><td>Devuelve un producto puntual por su id.</td></tr><tr><td><code>POST</code></td><td>/productos</td><td>Crea un producto nuevo.</td></tr><tr><td><code>PUT</code></td><td>/productos/:id</td><td>Actualiza un producto existente.</td></tr><tr><td><code>DELETE</code></td><td>/productos/:id</td><td>Elimina un producto existente.</td></tr></tbody></table>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">05</span>Estructura de Carpetas del Proyecto</h2>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">text</div>
+    </div>
+    <pre>proyecto-final-api/
+├── .env
+├── .gitignore
+├── package.json
+├── index.js
+├── db.js
+├── routes/
+│   └── productos.routes.js
+├── controllers/
+│   └── productos.controller.js
+├── services/
+│   └── productos.service.js
+└── middlewares/
+    ├── validarProducto.js
+    └── errorHandler.js</pre>
+  </div><p class="body">Los archivos de <code>middlewares/</code> se completan reci&eacute;n en la Clase 31.</p>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">06</span>Inicializando el Proyecto con npm</h2>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">bash</div>
+    </div>
+    <pre># Crear la carpeta del proyecto y entrar en ella
+mkdir proyecto-final-api
+cd proyecto-final-api
+
+# Inicializar el proyecto de Node.js
+npm init -y</pre>
+  </div><p class="body">As&iacute; queda el package.json generado autom&aacute;ticamente &mdash; resultado real de npm init -y, sin editar nada todav&iacute;a:</p><div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">json</div>
+    </div>
+    <pre>{
+  "name": "proyecto-final-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}</pre>
+  </div><div class="ib amber">
+    <span class="ico">&#9888;&#65039;</span>
+    <div><strong>Esto es lo que npm genera por defecto:</strong> No tiene todav&iacute;a express, pg, dotenv ni un script start. Todo eso se agrega en los pr&oacute;ximos pasos.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">07</span>Instalando las Dependencias</h2>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">bash</div>
+    </div>
+    <pre># Dependencias de produccion
+npm install express pg dotenv
+
+# Dependencia de desarrollo
+npm install --save-dev nodemon</pre>
+  </div><table class="ce"><thead><tr><th>Paquete</th><th>Para qu&eacute; se usa</th></tr></thead><tbody><tr><td><code>express</code></td><td>El framework sobre el que se construye el servidor.</td></tr><tr><td><code>pg</code></td><td>El driver para conectarse a PostgreSQL.</td></tr><tr><td><code>dotenv</code></td><td>Carga las credenciales desde .env.</td></tr><tr><td><code>nodemon</code></td><td>Reinicia el servidor autom&aacute;ticamente en desarrollo.</td></tr></tbody></table><p class="body">Los scripts start y dev hay que escribirlos a mano:</p><div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">json</div>
+    </div>
+    <pre>{
+  "name": "proyecto-final-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.11.5",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">08</span>Configurando .env y .gitignore</h2>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">bash</div>
+    </div>
+    <pre># .env
+DB_USER=postgres
+DB_PASSWORD=tu_contrasena
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=proyecto_final
+PORT=3000</pre>
+  </div><div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">bash</div>
+    </div>
+    <pre># .gitignore
+node_modules/
+.env</pre>
+  </div><div class="ib amber">
+    <span class="ico">&#9888;&#65039;</span>
+    <div><strong>Nunca subir el .env:</strong> Verificar el .gitignore antes del primer commit es el primer paso, no un detalle final.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">09</span>Creando las Tablas en Antares</h2>
+  <p class="body">Con las credenciales del .env ya definidas, se abre <strong>Antares</strong>, se conecta a la base proyecto_final, y se ejecuta el script completo:</p><div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">sql</div>
+    </div>
+    <pre>CREATE TABLE categoria_producto (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE productos (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  precio NUMERIC(10,2) NOT NULL,
+  categoria_producto_id INTEGER NOT NULL REFERENCES categoria_producto(id)
+);
+
+INSERT INTO categoria_producto (nombre) VALUES
+  ('Perifericos'),
+  ('Accesorios');
+
+INSERT INTO productos (nombre, precio, categoria_producto_id) VALUES
+  ('Mouse inalambrico', 4500, 1),
+  ('Teclado mecanico', 12000, 1),
+  ('Auriculares bluetooth', 8000, 2);</pre>
+  </div><div class="ib blue">
+    <span class="ico">&#128161;</span>
+    <div><strong>Por qu&eacute; Antares y no la terminal:</strong> Permite ejecutar el script completo de una vez y ver el resultado en una grilla.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">10</span>Creando el Repositorio en GitHub</h2>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">bash</div>
+    </div>
+    <pre>git init
+git add .
+git commit -m "Setup inicial: estructura, dependencias y base de datos"
+
+git remote add origin https://github.com/tu-usuario/proyecto-final-api.git
+git branch -M main
+git push -u origin main</pre>
+  </div><div class="ib green">
+    <span class="ico">&#128737;&#65039;</span>
+    <div><strong>Verificaci&oacute;n obligatoria:</strong> Despu&eacute;s del push, confirmar en GitHub que .env no aparece en la lista de archivos subidos.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">11</span>Ejercicios Prácticos de Laboratorio</h2>
+  
+  <p class="body"><strong>Ejercicio 1:</strong> Crear la carpeta del proyecto desde cero, inicializarla con npm init -y, e instalar express, pg, dotenv y nodemon.</p>
+  <p class="body"><strong>Ejercicio 2:</strong> Crear las tablas en Antares con los datos de prueba de la secci&oacute;n 09.</p>
+  <p class="body"><strong>Ejercicio 3:</strong> Crear el repositorio en GitHub, hacer el primer commit y push, y verificar que .env no qued&oacute; subido.</p>
+  
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">12</span>Consola Interactiva de Pruebas</h2>
+  <p class="body">Escribe, modifica y ejecuta la lógica conceptual de esta clase directamente en este entorno integrado.</p>
+
+  <div class="ejercicio">
+    <div class="ej-header">
+      <div class="ej-title">Entorno de Pruebas: Contrato de Endpoints</div>
+      <div class="ej-badge">sandbox.js</div>
+    </div>
+    <textarea class="editor" id="codeSandbox" spellcheck="false">// Simulacion conceptual del contrato de endpoints definido en esta clase
+const endpoints = [
+  { metodo: "GET", path: "/productos" },
+  { metodo: "GET", path: "/productos/:id" },
+  { metodo: "POST", path: "/productos" },
+  { metodo: "PUT", path: "/productos/:id" },
+  { metodo: "DELETE", path: "/productos/:id" },
+];
+
+endpoints.forEach(e => {
+  console.log(e.metodo + " " + e.path);
+});
+</textarea>
+    <button class="run-btn" onclick="runSandbox()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Ejecutar Código
+    </button>
+    <div class="terminal-out" id="termOut"></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">13</span>Cuestionario de Autoevaluación</h2>
+  <p class="body">Verifica tus conocimientos teóricos antes de proceder con las tareas obligatorias de desarrollo de software.</p>
+
+  <div class="quiz-wrap">
+
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 1</span>
+        &iquest;Qu&eacute; comando crea el archivo package.json de un proyecto Node.js nuevo?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,0)"><span class="opt-letter">A</span> npm init -y</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,0)"><span class="opt-letter">B</span> npm install -y</button>
+      </div>
+      <div class="quiz-feedback" id="fb0"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 2</span>
+        &iquest;npm init -y agrega autom&aacute;ticamente los scripts start y dev?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,1)"><span class="opt-letter">A</span> No, hay que escribirlos a mano.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,1)"><span class="opt-letter">B</span> S&iacute;, siempre.</button>
+      </div>
+      <div class="quiz-feedback" id="fb1"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 3</span>
+        &iquest;Qu&eacute; paquete permite a Node.js conectarse a PostgreSQL?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,2)"><span class="opt-letter">A</span> pg</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,2)"><span class="opt-letter">B</span> dotenv</button>
+      </div>
+      <div class="quiz-feedback" id="fb2"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 4</span>
+        &iquest;Por qu&eacute; nodemon se instala con --save-dev?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,3)"><span class="opt-letter">A</span> Porque solo se usa durante el desarrollo.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,3)"><span class="opt-letter">B</span> Porque no es compatible con Express.</button>
+      </div>
+      <div class="quiz-feedback" id="fb3"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 5</span>
+        &iquest;Cu&aacute;ntas propiedades propias tiene cada producto (sin contar el id)?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,4)"><span class="opt-letter">A</span> Tres: nombre, precio y categoria_producto_id.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,4)"><span class="opt-letter">B</span> Cinco, incluyendo descripci&oacute;n y stock.</button>
+      </div>
+      <div class="quiz-feedback" id="fb4"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 6</span>
+        &iquest;Para qu&eacute; se agrega la tabla categoria_producto?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,5)"><span class="opt-letter">A</span> Para habilitar un JOIN real al consultar productos.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,5)"><span class="opt-letter">B</span> Para reemplazar por completo a productos.</button>
+      </div>
+      <div class="quiz-feedback" id="fb5"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 7</span>
+        &iquest;Qu&eacute; debe contener el .gitignore, como m&iacute;nimo?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,6)"><span class="opt-letter">A</span> node_modules/ y .env</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,6)"><span class="opt-letter">B</span> Solo package.json</button>
+      </div>
+      <div class="quiz-feedback" id="fb6"></div>
+    </div>
+  </div>
+
+  <div class="quiz-score" id="quizScore">
+    <div class="quiz-score-num" id="scoreNum">0/7</div>
+    <div>
+      <div style="font-size:14px;color:var(--fg2)" id="scoreLabel"></div>
+      <button onclick="resetQuiz()" style="margin-top:8px;font-size:13px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;text-decoration:underline">↺ Reintentar</button>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="tarea">
+    <h3>Tarea para la Próxima Clase (Obligatoria)</h3>
+    <ol>
+      <li>Completar la inicializaci&oacute;n del proyecto: npm init, instalaci&oacute;n de dependencias, .env y .gitignore.</li>
+      <li>Crear las tablas en Antares con los datos de prueba indicados.</li>
+      <li>Crear el repositorio en GitHub, hacer el primer commit y push, y verificar que .env no qued&oacute; subido.</li>
+      <li><strong>Investigaci&oacute;n pr&oacute;xima clase:</strong> &iquest;C&oacute;mo se usa pool.query() con par&aacute;metros? &iquest;Qu&eacute; es un INNER JOIN?</li>
+    </ol>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-brand">CapOL Escuela</div>
+  <div class="footer-right">Curso Backend desde Cero · Clase 29</div>
+</div>
+
+</div>
+
+<script>
+const html = document.documentElement;
+const MOON = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+const SUN  = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+const icon = document.getElementById('themeIcon');
+function applyTheme(t) { html.dataset.theme = t; icon.innerHTML = t === 'dark' ? SUN : MOON; localStorage.setItem('theme', t); }
+document.getElementById('themeBtn').addEventListener('click', () => applyTheme(html.dataset.theme === 'dark' ? 'light' : 'dark'));
+applyTheme(localStorage.getItem('theme') || 'dark');
+
+const fill = document.getElementById('progress-fill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+}, { passive: true });
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function runSandbox() {
+  const code = document.getElementById('codeSandbox').value;
+  const out  = document.getElementById('termOut');
+  out.classList.add('show');
+  const lines = [], orig = console.log;
+  console.log = (...a) => lines.push(a.map(x => x === null ? 'null' : x === undefined ? 'undefined' : typeof x === 'object' ? JSON.stringify(x, null, 2) : String(x)).join(' '));
+  let h = '<div class="t-prompt">▶ OUTPUT</div>';
+  try {
+    new Function(code)();
+    h += lines.length ? lines.map(l => `<div class="t-line">${esc(l)}</div>`).join('') : '<div class="t-ok">✓ Sin output</div>';
+  } catch(e) { h += `<div class="t-err">✗ Error: ${esc(e.message)}</div>`; }
+  out.innerHTML = h;
+  console.log = orig;
+}
+
+const CORRECT = [0, 0, 0, 0, 0, 0, 0];
+const EXPLAIN = [
+  'npm init -y genera package.json con valores por defecto.',
+  'npm nunca agrega scripts personalizados por s&iacute; solo.',
+  'pg es el driver que traduce JavaScript al protocolo de PostgreSQL.',
+  'nodemon es exclusivo del flujo de trabajo local.',
+  'El esquema se simplific&oacute; a tres campos funcionales.',
+  'Es una tabla de referencia pensada para combinarse mediante JOIN.',
+  'Esos dos elementos nunca deben subirse al repositorio.'
+];
+
+let answers = new Array(CORRECT.length).fill(null);
+let done    = new Array(CORRECT.length).fill(false);
+
+window.checkAnswer = function(btn, sel, qi) {
+  if (done[qi]) return;
+  done[qi] = true; answers[qi] = sel;
+  btn.closest('.quiz-opts').querySelectorAll('.quiz-opt-btn').forEach((b, i) => {
+    b.disabled = true;
+    if (i === CORRECT[qi]) b.classList.add('correct');
+    else if (i === sel)    b.classList.add('wrong');
+  });
+  const fb = document.getElementById('fb' + qi);
+  fb.classList.add('show');
+  if (sel === CORRECT[qi]) { fb.classList.add('ok'); fb.innerHTML = '✓ Correcto. '   + EXPLAIN[qi]; }
+  else                     { fb.classList.add('no'); fb.innerHTML = '✗ Incorrecto. ' + EXPLAIN[qi]; }
+  if (done.every(Boolean)) showScore();
+};
+
+function showScore() {
+  const correct = answers.filter((a, i) => a === CORRECT[i]).length;
+  const total   = CORRECT.length;
+  const pct     = Math.round(correct / total * 100);
+  document.getElementById('scoreNum').textContent = correct + '/' + total;
+  document.getElementById('scoreLabel').textContent =
+    pct === 100 ? '🎉 Perfecto. Dominaste el tema.' :
+    pct >= 75   ? '💪 Muy bien. Repasá los que erraste.' :
+    pct >= 50   ? '📚 Pasable. Vale la pena releer la clase.' :
+                  '🔄 Repasá el material y volvé a intentarlo.';
+  document.getElementById('quizScore').classList.add('show');
+}
+
+window.resetQuiz = function() {
+  answers = new Array(CORRECT.length).fill(null);
+  done    = new Array(CORRECT.length).fill(false);
+  document.querySelectorAll('.quiz-opt-btn').forEach(b => { b.disabled = false; b.classList.remove('correct','wrong'); });
+  document.querySelectorAll('.quiz-feedback').forEach(fb => { fb.classList.remove('show','ok','no'); fb.innerHTML = ''; });
+  document.getElementById('quizScore').classList.remove('show');
+};
+</script>
+</body>
+</html>
