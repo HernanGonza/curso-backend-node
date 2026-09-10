@@ -267,7 +267,7 @@
     "archivo": "clases/clase30.html",
     "duracion": "60 min",
     "temas": ["Todos los endpoints", "PostgreSQL real", "Thunder Client"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 31,
