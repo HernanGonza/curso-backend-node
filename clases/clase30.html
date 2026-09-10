@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 30 — Proyecto Final: CRUD · CapOL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+:root{--accent:#00c896;--danger:#ff4757;--warn:#ffa502;--purple:#a29bfe;--blue-tag:#74b9ff}
+[data-theme="dark"]{--bg:#0f0f11;--bg2:#16161a;--bg3:#1c1c21;--border:#2a2a32;--border2:#35353f;--fg:#e2e2ec;--fg2:#a0a0b0;--fg3:#606070;--card-bg:#16161a;--code-bg:#0a0a0d;--code-fg:#b8d0c8;--shadow:0 4px 24px rgba(0,0,0,.5)}
+[data-theme="light"]{--bg:#f5f5f0;--bg2:#ffffff;--bg3:#ebebeb;--border:#d8d8d0;--border2:#c5c5bc;--fg:#1a1a24;--fg2:#505060;--fg3:#909098;--card-bg:#ffffff;--code-bg:#1a1a24;--code-fg:#c8e0d8;--shadow:0 4px 24px rgba(0,0,0,.1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;line-height:1.75;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+.page{max-width:800px;margin:0 auto;padding:0 24px 120px}
+#topbar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:15px;text-decoration:none;color:var(--fg)}
+.brand-dot{width:30px;height:30px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#000;font-size:13px;font-weight:800;font-family:'IBM Plex Mono',monospace}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fg2);transition:all .2s}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+.powered{font-size:11px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+.back-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--fg3);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .2s}
+.back-btn:hover{color:var(--accent)}
+#progress-bar{position:fixed;top:56px;left:0;right:0;height:2px;background:var(--border);z-index:99}
+#progress-fill{height:100%;background:var(--accent);width:0%;transition:width .1s}
+.hero{padding:64px 0 40px;border-bottom:1px solid var(--border);margin-bottom:48px}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.hero-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--accent)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(32px,6vw,52px);font-weight:700;line-height:1.1;color:var(--fg);margin-bottom:18px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-desc{font-size:16px;color:var(--fg2);max-width:560px;line-height:1.7;margin-bottom:28px}
+.hero-meta{display:flex;gap:20px;flex-wrap:wrap}
+.hero-chip{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--fg2);font-family:'IBM Plex Mono',monospace}
+.hero-chip svg{color:var(--accent)}
+.objetivos{background:color-mix(in srgb,var(--accent) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);border-radius:12px;padding:24px 28px;margin-bottom:48px}
+.objetivos-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.objetivos ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.objetivos li{display:flex;gap:10px;font-size:14.5px}
+.objetivos li::before{content:'▸';color:var(--accent);flex-shrink:0;margin-top:2px}
+.section{margin-bottom:52px}
+.sec-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--fg);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:2px 8px;border-radius:5px}
+p.body{font-size:15px;line-height:1.8;color:var(--fg2);margin-bottom:12px}
+h4.sub{font-family:'DM Sans',sans-serif;font-weight:600;font-size:15px;color:var(--fg);margin:24px 0 8px;display:flex;align-items:center;gap:8px}
+h4.sub::before{content:'●';font-size:8px;color:var(--accent)}
+.cb{background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:12px 0}
+.cb-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border2);background:color-mix(in srgb,#000 20%,var(--code-bg))}
+.cb-dots{display:flex;gap:5px}
+.cb-dots span{width:10px;height:10px;border-radius:50%}
+.cb-dots .r{background:#ff5f56}.cb-dots .y{background:#ffbd2e}.cb-dots .g{background:#27c93f}
+.cb-lang{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#555}
+.cb pre{padding:16px 18px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--code-fg);white-space:pre}
+.ce{width:100%;border-collapse:collapse;background:var(--code-bg);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:16px 0}
+.ce th{background:color-mix(in srgb,#000 20%,var(--code-bg));padding:10px 14px;font-size:13px;text-align:left;font-weight:600;border-bottom:1px solid var(--border2)}
+.ce tr{border-top:1px solid #1e1e28}
+.ce td{padding:10px 14px;font-size:13px;vertical-align:top;line-height:1.6}
+.ce td:first-child{font-family:'IBM Plex Mono',monospace;color:var(--code-fg);width:40%}
+.ce td:last-child{color:var(--fg2);padding-left:18px;border-left:1px solid #1e1e28}
+.ce tr:hover td{background:#0f0f14}
+[data-theme="light"] .ce tr:hover td{background:#f0f0e8}
+code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:color-mix(in srgb,var(--blue-tag) 10%,var(--bg3));color:var(--blue-tag);padding:1px 6px;border-radius:4px}
+.ib{border-radius:10px;padding:14px 18px;margin:12px 0;display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.65}
+.ib .ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.ib.green{background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 28%,transparent)}
+.ib.amber{background:color-mix(in srgb,var(--warn) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--warn) 28%,transparent)}
+.ib.red{background:color-mix(in srgb,var(--danger) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--danger) 28%,transparent)}
+.ib.blue{background:color-mix(in srgb,var(--blue-tag) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 28%,transparent)}
+.ejercicio{background:color-mix(in srgb,#000 30%,var(--bg2));border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin:16px 0}
+[data-theme="light"] .ejercicio{background:#f0f0ea}
+.ej-header{padding:10px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;background:var(--code-bg)}
+.ej-title{font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;color:var(--fg)}
+.ej-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--fg3)}
+textarea.editor{width:100%;background:var(--code-bg);color:#b8d0c8;border:none;outline:none;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;padding:16px 18px;resize:vertical;min-height:220px;tab-size:2}
+.run-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:var(--accent);color:#000;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;transition:background .15s}
+.run-btn:hover{background:color-mix(in srgb,var(--accent) 80%,#fff)}
+.terminal-out{font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:14px 18px;line-height:1.7;background:color-mix(in srgb,#000 50%,var(--code-bg));border-top:1px solid var(--border2);display:none}
+.terminal-out.show{display:block}
+.t-line{color:#a0c8a8}.t-ok{color:var(--accent)}.t-err{color:var(--danger)}.t-prompt{color:var(--fg3);margin-bottom:8px;font-size:11px}
+.quiz-wrap{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+.quiz-item{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.quiz-q{padding:14px 18px;border-bottom:1px solid var(--border);font-size:14.5px;font-weight:600;background:var(--bg2)}
+.quiz-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:4px}
+.quiz-opts{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.quiz-opt-btn{width:100%;text-align:left;padding:10px 16px;background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;color:var(--fg);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:10px;transition:all .15s}
+.quiz-opt-btn:hover:not(:disabled){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--bg3))}
+.opt-letter{width:22px;height:22px;border-radius:6px;background:var(--border2);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;color:var(--fg3)}
+.quiz-opt-btn:hover:not(:disabled) .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.correct{background:color-mix(in srgb,var(--accent) 12%,var(--bg3));border-color:var(--accent);color:var(--accent)}
+.quiz-opt-btn.correct .opt-letter{background:var(--accent);color:#000}
+.quiz-opt-btn.wrong{background:color-mix(in srgb,var(--danger) 10%,var(--bg3));border-color:var(--danger);color:var(--danger)}
+.quiz-opt-btn.wrong .opt-letter{background:var(--danger);color:#fff}
+.quiz-opt-btn:disabled{cursor:default}
+.quiz-feedback{padding:10px 18px 14px;font-size:13.5px;display:none}
+.quiz-feedback.show{display:flex;align-items:center;gap:8px}
+.quiz-feedback.ok{color:var(--accent)}.quiz-feedback.no{color:var(--danger)}
+.quiz-score{margin-top:20px;padding:18px 22px;background:color-mix(in srgb,var(--accent) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:12px;display:none;align-items:center;gap:16px}
+.quiz-score.show{display:flex}
+.quiz-score-num{font-family:'Fraunces',serif;font-size:40px;font-weight:700;color:var(--accent);line-height:1}
+.tarea{background:color-mix(in srgb,var(--blue-tag) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--blue-tag) 25%,transparent);border-radius:12px;padding:24px 28px}
+.tarea h3{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--blue-tag);margin-bottom:14px}
+.tarea ol{padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.footer{border-top:1px solid var(--border);padding:32px 0 0;margin-top:64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-brand{font-family:'Fraunces',serif;font-weight:700;font-size:15px}
+.footer-right{font-size:12px;color:var(--fg3);font-family:'IBM Plex Mono',monospace}
+
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <a href="../index.html" class="back-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Inicio</a>
+  <div class="brand"><div class="brand-dot">B</div>Backend desde Cero</div>
+  <div class="topbar-right">
+    <span class="powered">CapOL × Apoc Automation</span>
+    <button class="theme-btn" id="themeBtn" title="Cambiar tema">
+      <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+
+<div class="page">
+
+<div class="hero">
+  <div class="hero-eyebrow">Clase 30 · Bloque 7: Proyecto Final</div>
+  <h1><em>Proyecto Final: CRUD Completo</em></h1>
+  <p class="hero-desc">Escribimos el c&oacute;digo completo de la API: conexi&oacute;n a PostgreSQL, las tres capas del backend (service, controller, routes), y probamos cada endpoint en Postman.</p>
+  <div class="hero-meta">
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>60 minutos</span>
+    <span class="hero-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Requiere Clase 29</span>
+  </div>
+</div>
+
+<div class="objetivos">
+  <div class="objetivos-title">Objetivos de la clase</div>
+  <ul>
+    <li>Escribir la conexi&oacute;n a PostgreSQL con Pool en db.js.</li>
+    <li>Implementar la capa service con las cinco operaciones del CRUD, incluyendo un INNER JOIN.</li>
+    <li>Implementar la capa controller, conectando HTTP con el service.</li>
+    <li>Escribir las rutas del recurso productos y montarlas en index.js.</li>
+    <li>Levantar el servidor completo y probar todos los endpoints con Postman.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">01</span>Repaso Rápido: Lo que Ya Tenemos Armado</h2>
+  <p class="body">Al cierre de la Clase 29, la carpeta proyecto-final-api/ ya tiene package.json con dependencias instaladas, .env con las credenciales, .gitignore, y las tablas productos y categoria_producto creadas en Antares con datos de prueba. En esta clase se escribe todo el c&oacute;digo.</p>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">02</span>db.js: Conectando Node.js con PostgreSQL</h2>
+  <p class="body">Se usa un <strong>Pool</strong> de conexiones de la librer&iacute;a pg, leyendo las credenciales desde .env mediante dotenv.</p><div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>// db.js
+require('dotenv').config();
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  database: process.env.DB_NAME,
+});
+
+module.exports = pool;</pre>
+  </div><div class="ib blue">
+    <span class="ico">&#128161;</span>
+    <div><strong>Por qu&eacute; un Pool:</strong> Abre varias conexiones y las reutiliza entre requests, en vez de abrir y cerrar una conexi&oacute;n nueva cada vez.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">03</span>La Capa Service: Lectura con JOIN</h2>
+  <p class="body">Las consultas de lectura usan INNER JOIN para devolver tambi&eacute;n el nombre de la categor&iacute;a.</p><div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>// services/productos.service.js
+const pool = require('../db');
+
+exports.obtenerTodos = async () => {
+  const resultado = await pool.query(`
+    SELECT p.id, p.nombre, p.precio, cp.nombre AS categoria
+    FROM productos p
+    INNER JOIN categoria_producto cp ON p.categoria_producto_id = cp.id
+    ORDER BY p.id
+  `);
+  return resultado.rows;
+};
+
+exports.obtenerPorId = async (id) => {
+  const resultado = await pool.query(`
+    SELECT p.id, p.nombre, p.precio, cp.nombre AS categoria
+    FROM productos p
+    INNER JOIN categoria_producto cp ON p.categoria_producto_id = cp.id
+    WHERE p.id = $1
+  `, [id]);
+  return resultado.rows[0] || null;
+};</pre>
+  </div><div class="ib green">
+    <span class="ico">&#128737;&#65039;</span>
+    <div><strong>Por qu&eacute; el service devuelve datos, no HTTP:</strong> obtenerPorId devuelve null si no encuentra nada, nunca un status 404. Decidir el status es responsabilidad del controller.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">04</span>La Capa Service: Crear, Actualizar y Eliminar</h2>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>// services/productos.service.js (continuacion)
+exports.crear = async (datos) => {
+  const { nombre, precio, categoria_producto_id } = datos;
+  const resultado = await pool.query(
+    'INSERT INTO productos (nombre, precio, categoria_producto_id) VALUES ($1, $2, $3) RETURNING *',
+    [nombre, precio, categoria_producto_id]
+  );
+  return resultado.rows[0];
+};
+
+exports.actualizar = async (id, datos) => {
+  const { nombre, precio, categoria_producto_id } = datos;
+  const resultado = await pool.query(
+    'UPDATE productos SET nombre=$1, precio=$2, categoria_producto_id=$3 WHERE id=$4 RETURNING *',
+    [nombre, precio, categoria_producto_id, id]
+  );
+  return resultado.rows[0] || null;
+};
+
+exports.eliminar = async (id) => {
+  const resultado = await pool.query('DELETE FROM productos WHERE id = $1 RETURNING *', [id]);
+  return resultado.rows[0] || null;
+};</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">05</span>La Capa Controller</h2>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>// controllers/productos.controller.js
+const service = require('../services/productos.service');
+
+exports.obtenerTodos = async (req, res, next) => {
+  try {
+    const productos = await service.obtenerTodos();
+    res.json(productos);
+  } catch (error) { next(error); }
+};
+
+exports.obtenerPorId = async (req, res, next) => {
+  try {
+    const producto = await service.obtenerPorId(req.params.id);
+    if (!producto) return res.status(404).json({ error: 'Producto no encontrado' });
+    res.json(producto);
+  } catch (error) { next(error); }
+};
+
+exports.crear = async (req, res, next) => {
+  try {
+    const nuevo = await service.crear(req.body);
+    res.status(201).json(nuevo);
+  } catch (error) { next(error); }
+};
+
+exports.actualizar = async (req, res, next) => {
+  try {
+    const actualizado = await service.actualizar(req.params.id, req.body);
+    if (!actualizado) return res.status(404).json({ error: 'Producto no encontrado' });
+    res.json(actualizado);
+  } catch (error) { next(error); }
+};
+
+exports.eliminar = async (req, res, next) => {
+  try {
+    const eliminado = await service.eliminar(req.params.id);
+    if (!eliminado) return res.status(404).json({ error: 'Producto no encontrado' });
+    res.status(204).send();
+  } catch (error) { next(error); }
+};</pre>
+  </div><div class="ib blue">
+    <span class="ico">&#128161;</span>
+    <div><strong>&iquest;Por qu&eacute; next(error)?</strong> Permite centralizar el manejo de errores en un solo lugar, completado en la Clase 31.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">06</span>La Capa Routes</h2>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>// routes/productos.routes.js
+const express = require('express');
+const router = express.Router();
+const controller = require('../controllers/productos.controller');
+
+router.get('/', controller.obtenerTodos);
+router.get('/:id', controller.obtenerPorId);
+router.post('/', controller.crear);
+router.put('/:id', controller.actualizar);
+router.delete('/:id', controller.eliminar);
+
+module.exports = router;</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">07</span>index.js: Levantando el Servidor Completo</h2>
+  <div class="cb">
+    <div class="cb-header">
+      <div class="cb-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+      <div class="cb-lang">javascript</div>
+    </div>
+    <pre>// index.js
+require('dotenv').config();
+const express = require('express');
+const productosRoutes = require('./routes/productos.routes');
+
+const app = express();
+app.use(express.json());
+app.use('/productos', productosRoutes);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
+});</pre>
+  </div><div class="ib amber">
+    <span class="ico">&#9888;&#65039;</span>
+    <div><strong>app.use(express.json()) va antes de las rutas:</strong> Sin este middleware, req.body llegar&iacute;a undefined en los POST y PUT.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">08</span>Probando la API en Postman</h2>
+  <table class="ce"><thead><tr><th>Request en Postman</th><th>Resultado esperado</th></tr></thead><tbody><tr><td>GET http://localhost:3000/productos</td><td>200, con los 3 productos de prueba y su campo categoria.</td></tr><tr><td>POST http://localhost:3000/productos (body JSON)</td><td>201, el producto reci&eacute;n creado.</td></tr><tr><td>GET http://localhost:3000/productos/1</td><td>200, el producto con id 1.</td></tr><tr><td>PUT http://localhost:3000/productos/1 (body JSON)</td><td>200, el producto actualizado.</td></tr><tr><td>DELETE http://localhost:3000/productos/1</td><td>204, sin cuerpo de respuesta.</td></tr></tbody></table><div class="ib blue">
+    <span class="ico">&#128161;</span>
+    <div><strong>Body en formato JSON:</strong> En Postman, Body en modo raw + JSON, con el header Content-Type: application/json.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">09</span>Ejercicios Prácticos de Laboratorio</h2>
+  
+  <p class="body"><strong>Ejercicio 1:</strong> Escribir db.js, service, controller, routes e index.js, y levantar el servidor con npm run dev.</p>
+  <p class="body"><strong>Ejercicio 2:</strong> Probar los cinco endpoints en Postman, en orden.</p>
+  <p class="body"><strong>Ejercicio 3:</strong> Probar GET y DELETE con un id inexistente (999), confirmando 404.</p>
+  
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">10</span>Consola Interactiva de Pruebas</h2>
+  <p class="body">Escribe, modifica y ejecuta la lógica conceptual de esta clase directamente en este entorno integrado.</p>
+
+  <div class="ejercicio">
+    <div class="ej-header">
+      <div class="ej-title">Entorno de Pruebas: Flujo de Capas</div>
+      <div class="ej-badge">sandbox.js</div>
+    </div>
+    <textarea class="editor" id="codeSandbox" spellcheck="false">// Simulacion del flujo de capas para GET /productos/:id, incluyendo el JOIN
+const productos = [
+  { id: 1, nombre: "Mouse inalambrico", precio: 4500, categoria_producto_id: 1 },
+  { id: 2, nombre: "Teclado mecanico", precio: 12000, categoria_producto_id: 2 },
+];
+const categorias = [
+  { id: 1, nombre: "Perifericos" },
+  { id: 2, nombre: "Accesorios" },
+];
+
+function serviceObtenerPorId(id) {
+  const producto = productos.find(p => p.id === id);
+  if (!producto) return null;
+  const categoria = categorias.find(c => c.id === producto.categoria_producto_id);
+  return { ...producto, categoria: categoria.nombre };
+}
+
+function controllerObtenerPorId(idRecibido) {
+  const producto = serviceObtenerPorId(idRecibido);
+  if (!producto) return { status: 404, body: { error: "Producto no encontrado" } };
+  return { status: 200, body: producto };
+}
+
+console.log("GET /productos/1 ->", controllerObtenerPorId(1));
+console.log("GET /productos/99 ->", controllerObtenerPorId(99));
+</textarea>
+    <button class="run-btn" onclick="runSandbox()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Ejecutar Código
+    </button>
+    <div class="terminal-out" id="termOut"></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="sec-title"><span class="sec-num">11</span>Cuestionario de Autoevaluación</h2>
+  <p class="body">Verifica tus conocimientos teóricos antes de proceder con las tareas obligatorias de desarrollo de software.</p>
+
+  <div class="quiz-wrap">
+
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 1</span>
+        &iquest;Qu&eacute; devuelve una funci&oacute;n t&iacute;pica del service, como obtenerPorId?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,0)"><span class="opt-letter">A</span> Los datos crudos: la fila encontrada, o null si no existe.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,0)"><span class="opt-letter">B</span> Directamente una respuesta HTTP con status.</button>
+      </div>
+      <div class="quiz-feedback" id="fb0"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 2</span>
+        &iquest;Qui&eacute;n decide el status code HTTP en cada caso?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,1)"><span class="opt-letter">A</span> El service.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,1)"><span class="opt-letter">B</span> El controller.</button>
+      </div>
+      <div class="quiz-feedback" id="fb1"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 3</span>
+        &iquest;Por qu&eacute; obtenerTodos usa INNER JOIN?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,2)"><span class="opt-letter">A</span> Para incluir el nombre de la categor&iacute;a en la respuesta.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,2)"><span class="opt-letter">B</span> Porque Express exige un JOIN para devolver JSON.</button>
+      </div>
+      <div class="quiz-feedback" id="fb2"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 4</span>
+        &iquest;Por qu&eacute; crear y actualizar no usan JOIN?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,3)"><span class="opt-letter">A</span> Porque INSERT y UPDATE trabajan directo sobre productos.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,3)"><span class="opt-letter">B</span> Porque JOIN nunca se combina con INSERT o UPDATE.</button>
+      </div>
+      <div class="quiz-feedback" id="fb3"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 5</span>
+        &iquest;Qu&eacute; status corresponde a un DELETE exitoso sin body?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,4)"><span class="opt-letter">A</span> 204</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,4)"><span class="opt-letter">B</span> 200</button>
+      </div>
+      <div class="quiz-feedback" id="fb4"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 6</span>
+        &iquest;Qu&eacute; pasa si falta app.use(express.json())?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,5)"><span class="opt-letter">A</span> req.body llega undefined en POST y PUT.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,5)"><span class="opt-letter">B</span> El servidor no arranca.</button>
+      </div>
+      <div class="quiz-feedback" id="fb5"></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">
+        <span class="quiz-num">Pregunta 7</span>
+        &iquest;Por qu&eacute; el catch usa next(error) en vez de responder directo?
+      </div>
+      <div class="quiz-opts">
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,0,6)"><span class="opt-letter">A</span> Para centralizar el manejo de errores en un solo lugar.</button>
+        <button class="quiz-opt-btn" onclick="checkAnswer(this,1,6)"><span class="opt-letter">B</span> Porque next(error) es obligatorio en JavaScript.</button>
+      </div>
+      <div class="quiz-feedback" id="fb6"></div>
+    </div>
+  </div>
+
+  <div class="quiz-score" id="quizScore">
+    <div class="quiz-score-num" id="scoreNum">0/7</div>
+    <div>
+      <div style="font-size:14px;color:var(--fg2)" id="scoreLabel"></div>
+      <button onclick="resetQuiz()" style="margin-top:8px;font-size:13px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;text-decoration:underline">↺ Reintentar</button>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="tarea">
+    <h3>Tarea para la Próxima Clase (Obligatoria)</h3>
+    <ol>
+      <li>Completar los cinco archivos de c&oacute;digo y dejar la API funcionando en local.</li>
+      <li>Probar los cinco endpoints en Postman, documentando el status code obtenido en cada caso.</li>
+      <li><strong>Investigaci&oacute;n pr&oacute;xima clase:</strong> &iquest;Qu&eacute; significa validar los datos de un POST o PUT?</li>
+    </ol>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-brand">CapOL Escuela</div>
+  <div class="footer-right">Curso Backend desde Cero · Clase 30</div>
+</div>
+
+</div>
+
+<script>
+const html = document.documentElement;
+const MOON = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+const SUN  = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+const icon = document.getElementById('themeIcon');
+function applyTheme(t) { html.dataset.theme = t; icon.innerHTML = t === 'dark' ? SUN : MOON; localStorage.setItem('theme', t); }
+document.getElementById('themeBtn').addEventListener('click', () => applyTheme(html.dataset.theme === 'dark' ? 'light' : 'dark'));
+applyTheme(localStorage.getItem('theme') || 'dark');
+
+const fill = document.getElementById('progress-fill');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  fill.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+}, { passive: true });
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function runSandbox() {
+  const code = document.getElementById('codeSandbox').value;
+  const out  = document.getElementById('termOut');
+  out.classList.add('show');
+  const lines = [], orig = console.log;
+  console.log = (...a) => lines.push(a.map(x => x === null ? 'null' : x === undefined ? 'undefined' : typeof x === 'object' ? JSON.stringify(x, null, 2) : String(x)).join(' '));
+  let h = '<div class="t-prompt">▶ OUTPUT</div>';
+  try {
+    new Function(code)();
+    h += lines.length ? lines.map(l => `<div class="t-line">${esc(l)}</div>`).join('') : '<div class="t-ok">✓ Sin output</div>';
+  } catch(e) { h += `<div class="t-err">✗ Error: ${esc(e.message)}</div>`; }
+  out.innerHTML = h;
+  console.log = orig;
+}
+
+const CORRECT = [0, 1, 0, 0, 0, 0, 0];
+const EXPLAIN = [
+  'El service solo trabaja con datos, nunca con HTTP.',
+  'El controller es quien conoce el contexto HTTP del request.',
+  'El JOIN combina productos con categoria_producto.',
+  'El JOIN solo hace falta al leer datos combinados.',
+  '204 (No Content) es la convenci&oacute;n est&aacute;ndar.',
+  'express.json() es el que lee el body JSON del request.',
+  'Se completa con el errorHandler de la Clase 31.'
+];
+
+let answers = new Array(CORRECT.length).fill(null);
+let done    = new Array(CORRECT.length).fill(false);
+
+window.checkAnswer = function(btn, sel, qi) {
+  if (done[qi]) return;
+  done[qi] = true; answers[qi] = sel;
+  btn.closest('.quiz-opts').querySelectorAll('.quiz-opt-btn').forEach((b, i) => {
+    b.disabled = true;
+    if (i === CORRECT[qi]) b.classList.add('correct');
+    else if (i === sel)    b.classList.add('wrong');
+  });
+  const fb = document.getElementById('fb' + qi);
+  fb.classList.add('show');
+  if (sel === CORRECT[qi]) { fb.classList.add('ok'); fb.innerHTML = '✓ Correcto. '   + EXPLAIN[qi]; }
+  else                     { fb.classList.add('no'); fb.innerHTML = '✗ Incorrecto. ' + EXPLAIN[qi]; }
+  if (done.every(Boolean)) showScore();
+};
+
+function showScore() {
+  const correct = answers.filter((a, i) => a === CORRECT[i]).length;
+  const total   = CORRECT.length;
+  const pct     = Math.round(correct / total * 100);
+  document.getElementById('scoreNum').textContent = correct + '/' + total;
+  document.getElementById('scoreLabel').textContent =
+    pct === 100 ? '🎉 Perfecto. Dominaste el tema.' :
+    pct >= 75   ? '💪 Muy bien. Repasá los que erraste.' :
+    pct >= 50   ? '📚 Pasable. Vale la pena releer la clase.' :
+                  '🔄 Repasá el material y volvé a intentarlo.';
+  document.getElementById('quizScore').classList.add('show');
+}
+
+window.resetQuiz = function() {
+  answers = new Array(CORRECT.length).fill(null);
+  done    = new Array(CORRECT.length).fill(false);
+  document.querySelectorAll('.quiz-opt-btn').forEach(b => { b.disabled = false; b.classList.remove('correct','wrong'); });
+  document.querySelectorAll('.quiz-feedback').forEach(fb => { fb.classList.remove('show','ok','no'); fb.innerHTML = ''; });
+  document.getElementById('quizScore').classList.remove('show');
+};
+</script>
+</body>
+</html>
