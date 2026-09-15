@@ -276,7 +276,7 @@
     "archivo": "clases/clase31.html",
     "duracion": "60 min",
     "temas": ["Validar entrada", "Middleware de validación", "Mensajes de error"],
-    "disponible": false
+    "disponible": true
   },
   {
     "id": 32,
