@@ -285,6 +285,15 @@
     "archivo": "clases/clase32.html",
     "duracion": "60 min",
     "temas": ["Render / Railway", "Variables de entorno", "URL pública"],
-    "disponible": false
+    "disponible": true
+  },
+  {
+    "id": 32b,
+    "titulo": "Bonus",
+    "bloque": "Bloque 7 · Proyecto Final",
+    "archivo": "clases/clase32b.html",
+    "duracion": "60 min",
+    "temas": ["Supabase y alternativas"],
+    "disponible": true
   }
 ]
